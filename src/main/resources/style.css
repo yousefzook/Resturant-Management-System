@@ -1,8 +1,44 @@
-#main_btn {
+
+
+
+
+#myhbox {
+    -fx-background-color: #DEB887;
+    -fx-padding: 100 15 0 15;
+    -fx-spacing: 15;
+    -fx-pref-width: 666;
+    -fx-pref-height: 350;
+}
+
+#bossHbox {
+    -fx-background-color: #DEB887;
+    -fx-padding: 100 15 0 15;
+    -fx-spacing: 15;
+    -fx-pref-width: 666;
+    -fx-pref-height: 400;
+     -fx-background-position:center ;
+
+}
+
+
+#myvbox {
+    -fx-background-color: #DEB887;
+    -fx-padding: 100 15 0 15;
+    -fx-spacing: 10;
+    -fx-border-width: 12;
+    -fx-border-color: #4f3222;
+    -fx-pref-width: 600;
+    -fx-pref-height: 500;
+}
+
+
+
+.button {
     -fx-padding: 8 15 15 15;
     -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;
     -fx-background-radius: 8;
-    -fx-background-color: 
+    -fx-background-size: 199 196;
+    -fx-background-color:
         linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),
         #9d4024,
         #d86e3a,
@@ -10,4 +46,44 @@
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
     -fx-font-weight: bold;
     -fx-font-size: 1.1em;
+
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(#2A5058, #61a2b1);
+}
+
+#bossBtn{
+    -fx-background-image: url("photos/boss.jpg");
+   -fx-background-position:center ;
+      -fx-background-repeat: no-repeat;
+       -fx-background-image-repeat: stretch;
+         -fx-padding: 8 15 15 15;
+           -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;
+           -fx-background-radius: 8;
+ }
+
+#menuBtn {
+    -fx-background-image: url("photos/menu3.jpg");
+    -fx-background-position:center ;
+    -fx-background-repeat: no-repeat;
+    -fx-background-image-repeat: stretch;
+}
+
+#empBtn {
+    -fx-background-image: url("photos/cook2.jpg");
+    -fx-background-position:center ;
+    -fx-background-repeat: no-repeat;
+     -fx-background-image-repeat: stretch;
+
+
+
+}
+
+#analysisBtn {
+    -fx-background-image: url("photos/statistics.jpg");
+    -fx-background-position:center ;
+    -fx-background-repeat: no-repeat;
+     -fx-background-image-repeat: stretch;
+
 }
