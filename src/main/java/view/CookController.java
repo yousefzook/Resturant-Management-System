@@ -11,21 +11,24 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
+import model.Cook;
+import model.actionresults.CookResponse;
+import model.actionresults.EmptyResponse;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class CookController implements Initializable {
 
     @Setter
-    private ManagerController managerController;
     private Stage primaryStage;
 
     @FXML
@@ -36,6 +39,8 @@ public class CookController implements Initializable {
 
     @FXML
     TextField firstText, lastName;
+
+    private Map<HBox, Integer> map;
 
     public CookController(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -53,30 +58,34 @@ public class CookController implements Initializable {
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        map = new HashMap<HBox, Integer>();
         VBox vBox = new VBox();
         vBox.setSpacing(10);
-        int t = 10 ;
-        while(t-- >0) {
-            HBox crnt = getItem();
-           // map.put(crnt, t);
-            vBox.getChildren().add(crnt);
+
+        CookResponse r =  ManagerController.getInstance().getCooks();
+        if(!r.isSuccess())
+            showError(r.getMessage());
+        else {
+           List<Cook> list = r.getCooks();
+           for(Cook c : list) {
+                HBox crnt = getItem(c);
+                map.put(crnt, c.getId());
+                vBox.getChildren().add(crnt);
+            }
+            scPane.setContent(vBox);
         }
-        scPane.setContent(vBox);
     }
 
-    private HBox getItem() {
-
-
+    private HBox getItem(Cook cook) {
         //name and description
         VBox vBox = new VBox();
-        Label fName = new Label("First Name:");
-        Label lName = new Label("Last Name: ");
+        Label fName = new Label("First Name: " + cook.getFirstName());
+        Label lName = new Label("Last Name: " + cook.getLastName());
         vBox.getChildren().addAll(fName, lName);
         vBox.setSpacing(10);
         vBox.setPadding(new Insets(15, 320, 15, 10));
 
         //buttons
-
         Button delete = new Button();
         delete.setId("delBtn");
         delete.setPadding(new Insets(150, 150, 150, 150));
@@ -129,15 +138,25 @@ public class CookController implements Initializable {
     private void addDeleteAction(final Button delete) {
         delete.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent actionEvent) {
-
                 for(Node n : delete.getParent().getParent().getChildrenUnmodifiable()){
                     if(n.equals(delete.getParent())){
-                        ( (VBox) delete.getParent().getParent()).getChildren().remove(n);
+                        EmptyResponse r = ManagerController.getInstance().fireCook(map.get((HBox) delete.getParent()));
+                        if(r.isSuccess()) {
+                            ((VBox) delete.getParent().getParent()).getChildren().remove(n);
+                        } else {
+                            showError(r.getMessage());
+                        }
                         break;
                     }
                 }
-
             }
         });
+    }
+
+    private void showError(String s) {
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("Error");
+        errorAlert.setContentText(s);
+        errorAlert.showAndWait();
     }
 }

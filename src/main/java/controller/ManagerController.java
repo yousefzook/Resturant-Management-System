@@ -29,6 +29,8 @@ public class ManagerController {
     }
 
     public static ManagerController getInstance() {
+        if(instance == null)
+            instance = new ManagerController();
         return instance;
     }
 

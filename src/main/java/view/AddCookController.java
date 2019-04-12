@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import model.Cook;
+import model.actionresults.EmptyResponse;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,8 +33,6 @@ public class AddCookController implements Initializable {
 
     public AddCookController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-
-        managerController = ManagerController.getInstance();
     }
 
     public AddCookController() {
@@ -50,15 +49,22 @@ public class AddCookController implements Initializable {
     @FXML
     public void save(MouseEvent mouseEvent) throws IOException {
         if(!isValid()) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setHeaderText("Input not valid");
-            errorAlert.setContentText("Name should only contain letters and spaces");
-            errorAlert.showAndWait();
+           showError("Name should only contain letters and spaces");
         } else {
             Cook cook = new Cook(null, firstText.getText(), lastText.getText());
-            //ManagerController.addCook(cook);
+            EmptyResponse r = ManagerController.getInstance().addCook(cook);
+            if(!r.isSuccess()) {
+                showError(r.getMessage());
+            }
             backToMenu(mouseEvent);
         }
+    }
+
+    private void showError(String message) {
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("Input not valid");
+        errorAlert.setContentText(message);
+        errorAlert.showAndWait();
     }
 
     private boolean isValid() {

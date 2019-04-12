@@ -18,10 +18,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
+import model.Dish;
+import model.actionresults.DishResponse;
+import model.actionresults.EmptyResponse;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -29,7 +33,6 @@ import java.util.ResourceBundle;
 public class MenuController implements Initializable {
 
     @Setter
-    private ManagerController managerController;
     private Stage primaryStage;
 
     private Map<HBox, Integer> map = new HashMap<HBox, Integer>();
@@ -57,19 +60,32 @@ public class MenuController implements Initializable {
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // get dishes from DB
+        map = new HashMap<HBox, Integer>();
         VBox vBox = new VBox();
         vBox.setSpacing(10);
-        int t = 10 ;
-        while(t-- >0) {
-            HBox crnt = getItem();
-            map.put(crnt, t);
-            vBox.getChildren().add(crnt);
+
+        DishResponse r =  ManagerController.getInstance().getDishes();
+        if(!r.isSuccess())
+            showError(r.getMessage());
+        else {
+            List<Dish> list = r.getDishes();
+            for(Dish d : list) {
+                HBox crnt = getItem(d);
+                map.put(crnt, d.getId());
+                vBox.getChildren().add(crnt);
+            }
+            scPane.setContent(vBox);
         }
-        scPane.setContent(vBox);
     }
 
-    private HBox getItem() {
+    private void showError(String message) {
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("Error");
+        errorAlert.setContentText(message);
+        errorAlert.showAndWait();
+    }
+
+    private HBox getItem(Dish d) {
         //image //ByteArray
         Image  image = new Image("/photos/chicken1.jpg");
         ImageView imageView = new ImageView();
@@ -79,9 +95,9 @@ public class MenuController implements Initializable {
 
         //name and description
         VBox vBox = new VBox();
-        TextField name = new TextField("Chicken with Rosemary Butter Sauce");
+        TextField name = new TextField(d.getName());
         name.setEditable(false);
-        TextArea desc = new TextArea("Sauteed chicken breasts smothered in a creamy rosemary butter sauce.");
+        TextArea desc = new TextArea(d.getDescription());
         vBox.getChildren().addAll(name, desc);
         vBox.setSpacing(10);
         desc.setMaxHeight(70);
@@ -99,13 +115,13 @@ public class MenuController implements Initializable {
         HBox deleteAndSettings = new HBox(settings, delete);
         deleteAndSettings.setSpacing(10);
 
-        Label rating = new Label("Rate: ");
+        Label rating = new Label("Rate: " + d.getRate());
         rating.setId("rateLable");
 
-        Label time = new Label("Time: ");
+        Label time = new Label("Time: " + d.getTimeToPrepare());
         rating.setId("timeLabel");
 
-        Label price = new Label("Price: ");
+        Label price = new Label("Price: " + d.getPrice());
         rating.setId("priceLabel");
 
         Button  save = new Button();
@@ -141,29 +157,54 @@ public class MenuController implements Initializable {
     }
 
     private void addSaveAction(final Button save) {
+        final HBox hbox = (HBox) save.getParent().getParent();
+        final Dish d = new Dish();
         save.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent actionEvent) {
                 editRoutine(false , save);
-                HBox hbox = (HBox) save.getParent().getParent();
-                //addDish
-               // managerController.addDish().builder.build()
-                //call database
+                for(Node n : hbox.getChildrenUnmodifiable()){
+
+                    String className = n.getClass().getName().split("\\.")[3];
+                    if(className.equals("VBox")){
+                        VBox b = (VBox) n;
+
+                        for(Node n2 : b.getChildren()){
+                            String className2 = n2.getClass().getName().split("\\.")[3];
+                            if(className2.equals("TextArea")){
+                                TextArea t = (TextArea) n2;
+                                d.setDescription((t.getText()));
+                            }
+                            if(className2.equals("TextField")){
+                                TextField t = (TextField) n2;
+                                   d.setName((t.getText()));
+                                }
+                            }
+                            break;
+                        }
+                    }
+                EmptyResponse r = ManagerController.getInstance().updateDish(map.get(hbox), d);
+                if(!r.isSuccess()) {
+                    showError(r.getMessage());
+                }
             }
         });
     }
 
     private void addDeleteAction(final Button delete) {
-        // delete from DB
         delete.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent actionEvent) {
 
                 for(Node n : delete.getParent().getParent().getParent().getParent().getChildrenUnmodifiable()){
                     if(n.equals(delete.getParent().getParent().getParent())){
-                        ( (VBox) delete.getParent().getParent().getParent().getParent()).getChildren().remove(n);
+                        EmptyResponse r = ManagerController.getInstance().removeDish(map.get((HBox) delete.getParent()));
+                        if(r.isSuccess()) {
+                            ( (VBox) delete.getParent().getParent().getParent().getParent()).getChildren().remove(n);
+                        } else {
+                            showError(r.getMessage());
+                        }
                         break;
                     }
                 }
-
             }
         });
     }
@@ -220,7 +261,7 @@ public class MenuController implements Initializable {
 
 
         for(Node n : ol){
-            System.out.println(n.getClass().getName());
+
             String className = n.getClass().getName().split("\\.")[3];
             if(className.equals("VBox")){
                 VBox b = (VBox) n;
