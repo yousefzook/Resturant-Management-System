@@ -203,4 +203,9 @@ public class ResturantDBLayer implements DBMethods {
 		db.closeConnection();
 	}
 
+	public List<Dish> getTopDishes(int limit) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -25,6 +25,17 @@ public interface DBMethods {
 	 * @throws Exception, if some error happens in data base
 	 */
 	public Dish[] getDishes(int[] DishesIDs) throws Exception;
+	
+	/**
+	 * get list of dishes
+	 * 
+	 * @param DishesIDs
+	 * @return the list of dishes found, Null in the array if dish #i in the given
+	 *         IDs is not exist, an empty array will be returned if no dishes
+	 *         available
+	 * @throws Exception, if some error happens in data base
+	 */
+	public List<Dish> getTopDishes(int limit) throws Exception;
 
 	/**
 	 * get all available dishes
