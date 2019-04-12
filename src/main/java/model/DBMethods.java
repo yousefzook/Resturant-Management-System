@@ -8,14 +8,6 @@ import java.util.List;
 public interface DBMethods {
 
 	/**
-	 * 
-	 * create the tables for resturant
-	 * 
-	 * @throws Exception if no connection is established
-	 */
-	public void createTables() throws Exception;
-
-	/**
 	 * Insert new dish to the menu
 	 * 
 	 * @param dishToAdd
@@ -36,15 +28,17 @@ public interface DBMethods {
 
 	/**
 	 * get all available dishes
+	 * 
 	 * @return
 	 */
-	public List<Dish> getAvailableDishes()throws SQLException, Exception;
+	public List<Dish> getAvailableDishes() throws SQLException, Exception;
 
 	/**
 	 * get all unavailable dishes
+	 * 
 	 * @return
 	 */
-	public List<Dish> getUnAvailableDishes()throws SQLException, Exception;
+	public List<Dish> getUnAvailableDishes() throws SQLException, Exception;
 
 	/**
 	 * get all dishes in an order

@@ -11,9 +11,8 @@ public class DatabaseTest {
 	@Test
 	public void connectionTest() throws Exception {
 		Exception ex = null;
-		Database db = Database.getInstance();
+		Database db = new Database();
 		try {
-			db.closeConnection();
 			db.connectToDB("test1");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -33,7 +32,7 @@ public class DatabaseTest {
 	@Test
 	public void closeConnectionTest() {
 		Exception ex = null;
-		Database db = Database.getInstance();
+		Database db = new Database();
 		try {
 			db.closeConnection(); // close any opened connection before testing
 			db.connectToDB("Test1"); // shouldn't give exception
@@ -43,12 +42,13 @@ public class DatabaseTest {
 			ex = e;
 		}
 		assertNull(ex);
+		db.closeConnection();
 	}
 
 	@Test
 	public void createTableTest() throws Exception {
 		Exception ex = null;
-		Database db = Database.getInstance();
+		Database db = new Database();
 		db.closeConnection();
 		db.connectToDB("Test1");
 		try {
@@ -59,12 +59,13 @@ public class DatabaseTest {
 			ex = e;
 		}
 		assertNull(ex);
+		db.closeConnection();
 	}
 
 	@Test
 	public void executeTableTest() throws Exception {
 		Exception ex = null;
-		Database db = Database.getInstance();
+		Database db = new Database();
 		try {
 			db.closeConnection();
 			db.execute("select * from tables");
@@ -78,7 +79,6 @@ public class DatabaseTest {
 		ex = null;
 		db.connectToDB("Test1");
 		db.createResturantTables();
-
 		try {
 			db.execute("insert into tables values(4);");
 		} catch (Exception e) {
@@ -105,14 +105,14 @@ public class DatabaseTest {
 			ex = e;
 		}
 		assertNotNull(ex);
-
+		db.closeConnection();
 	}
 	
 	
 	@Test
 	public void executeQueryTableTest() throws Exception {
 		Exception ex = null;
-		Database db = Database.getInstance();
+		Database db = new Database();
 		try {
 			db.closeConnection();
 			db.executeQuery("select * from tables;");
@@ -153,6 +153,6 @@ public class DatabaseTest {
 			ex = e;
 		}
 		assertNotNull(ex);
-
+		db.closeConnection();
 	}
 }

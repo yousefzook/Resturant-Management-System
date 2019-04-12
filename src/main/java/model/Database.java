@@ -6,15 +6,8 @@ public class Database {
 
 	private Connection conn;
 
-	private static Database db;
 
-	public static Database getInstance() {
-		if (db == null)
-			db = new Database();
-		return db;
-	}
-
-	private Database() {
+	public Database() {
 	}
 
 	/**
@@ -127,7 +120,8 @@ public class Database {
 		if (conn == null)
 			throw new Exception("No connection to a database had been established!");
 		Statement stmt = conn.createStatement();
-		return stmt.executeQuery(sqlQuery);
+		ResultSet result = stmt.executeQuery(sqlQuery);
+		return result;
 	}
 
 //	public static void main(String[] args) {

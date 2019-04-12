@@ -11,9 +11,9 @@ import lombok.Getter;
 public class Dish {
 
 	@Getter
-	int rate, id, timeToPrepare, rateCount;
+	public int rate, id, timeToPrepare, rateCount;
 	@Getter
-	String name, description;
+	public String name, description;
 	@Getter
 	float price;
 	@Getter
@@ -33,14 +33,17 @@ public class Dish {
 
 	public ArrayList<Pair<String, String>> getDBAttributes() {
 		ArrayList<Pair<String, String>> attrs = new ArrayList<Pair<String, String>>();
-		attrs.add(new Pair<String, String>("id", Integer.toString(this.id)));
-		attrs.add(new Pair<String, String>("name", this.name));
+		attrs.add(new Pair<String, String>("did", Integer.toString(this.id)));
+		attrs.add(new Pair<String, String>("name", "'" + this.name + "'"));
 		attrs.add(new Pair<String, String>("price", Float.toString(this.price)));
-		attrs.add(new Pair<String, String>("description", this.description));
+		attrs.add(new Pair<String, String>("description", "'"+this.description+"'"));
 		attrs.add(new Pair<String, String>("rate", Integer.toString(this.rate)));
 		attrs.add(new Pair<String, String>("rate_count", Integer.toString(this.rateCount)));
 		attrs.add(new Pair<String, String>("time_to_prepare_in_minutes", Integer.toString(this.timeToPrepare)));
-		attrs.add(new Pair<String, String>("image", Arrays.toString(this.image)));
+		String img = "";
+		for(byte b:this.image)
+			img += Byte.toString(b);
+		attrs.add(new Pair<String, String>("image", img));
 		return attrs;
 	}
 }
