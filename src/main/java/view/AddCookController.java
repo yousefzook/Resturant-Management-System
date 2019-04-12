@@ -32,7 +32,8 @@ public class AddCookController implements Initializable {
 
     public AddCookController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        managerController = ManagerController.getInstence();
+
+        managerController = ManagerController.getInstance();
     }
 
     public AddCookController() {
@@ -55,7 +56,7 @@ public class AddCookController implements Initializable {
             errorAlert.showAndWait();
         } else {
             Cook cook = new Cook(null, firstText.getText(), lastText.getText());
-            ManagerController.addCook(cook);
+            //ManagerController.addCook(cook);
             backToMenu(mouseEvent);
         }
     }

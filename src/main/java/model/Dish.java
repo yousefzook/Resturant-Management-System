@@ -1,9 +1,11 @@
 package model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 @AllArgsConstructor
 public class Dish {
 
@@ -14,5 +16,10 @@ public class Dish {
     private float rate, price;
 
     private byte[] image;
+
+    private String imagePath;
+
+    public Dish() {
+    }
 
 }

@@ -10,16 +10,26 @@ import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
 import model.actionresults.NumericResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 public class ManagerController {
+    private static ManagerController instance;
+
     @Setter
     private DBMethods db;
 
-    public ManagerController() {
+    private ManagerController() {
+    }
+
+    public static ManagerController getInstance() {
+        return instance;
     }
 
     public EmptyResponse addDish(@NotNull Dish dishToAdd) {
@@ -60,11 +70,11 @@ public class ManagerController {
     }
 
 
-    public EmptyResponse updateDish(@NotNull Dish oldDish, @NotNull Dish newDish) {
+    public EmptyResponse updateDish(int oldDishId, @NotNull Dish newDish) {
         EmptyResponse response = new EmptyResponse();
         response.setSuccess(false);
 
-        if (oldDish.getId() < 0) {
+        if (oldDishId < 0) {
             response.setMessage("Dish id cannot be less than zero");
         } else if (StringUtils.isBlank(newDish.getName()) ||
                 StringUtils.isBlank(newDish.getDescription())) {
@@ -75,7 +85,7 @@ public class ManagerController {
             response.setMessage("Dish price, rate, time to prepare cannot be less than zero");
         } else {
             try {
-                db.updateDish(oldDish, newDish);
+                db.updateDish(oldDishId, newDish);
                 response.setSuccess(true);
             } catch (Exception e) {
                 response.setMessage(e.getMessage());
@@ -141,7 +151,29 @@ public class ManagerController {
         return response;
     }
 
-    public NumericResponse getTotalIncome(@NotNull Date startDate, @NotNull Date endDate) {
+    public NumericResponse getIncomeToday() {
+        Date startDate = Date.from(LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        Date endDate = DateUtils.addMilliseconds(
+                DateUtils.ceiling(
+                        new Date(System.currentTimeMillis()), Calendar.DATE
+                ),
+                -1);
+        return getTotalIncome(startDate, endDate);
+    }
+
+    public NumericResponse getIncomeThisMonth() {
+        Date startDate = Date.from(LocalDate.now()
+                .withDayOfMonth(1)
+                .atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        Date endDate = new Date(System.currentTimeMillis());
+        return getTotalIncome(startDate, endDate);
+    }
+
+
+    private NumericResponse getTotalIncome(@NotNull Date startDate, @NotNull Date endDate) {
         NumericResponse response = new NumericResponse();
         response.setSuccess(false);
 
@@ -155,6 +187,42 @@ public class ManagerController {
                 response.setMessage(e.getMessage());
             }
         }
+        return response;
+    }
+
+    public DishResponse getTopDishes(int limit) {
+        DishResponse response = new DishResponse();
+        response.setSuccess(false);
+
+        if (limit < 1) {
+            response.setMessage("Limit must be a positive integer");
+        } else {
+            try {
+//                 response.setDishes(Arrays.asList(db.getTopDishes(limit)));
+                response.setSuccess(true);
+            } catch (Exception e) {
+                response.setMessage(e.getMessage());
+            }
+        }
+
+        return response;
+    }
+
+    public CookResponse getTopCooks(int limit) {
+        CookResponse response = new CookResponse();
+        response.setSuccess(false);
+
+        if (limit < 1) {
+            response.setMessage("Limit must be a positive integer");
+        } else {
+            try {
+//                response.setCooks(Arrays.asList(db.getTopDishes(limit)));
+                response.setSuccess(true);
+            } catch (Exception e) {
+                response.setMessage(e.getMessage());
+            }
+        }
+
         return response;
     }
 }

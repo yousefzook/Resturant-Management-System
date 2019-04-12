@@ -28,12 +28,20 @@ class TestManagerController {
     @BeforeEach
     public void setup() {
         initMocks(DBMethods.class);
-        controller = new ManagerController();
+        controller = ManagerController.getInstance();
         controller.setDb(db);
 
-        testDish = new Dish(1, 5, 4,
-                "TestDish", "Desc",
-                4, 55, new byte[]{});
+        testDish = Dish.builder()
+                .id(1)
+                .name("TestDish")
+                .description("Desc")
+                .price(55.5F)
+                .timeToPrepare(5)
+                .rate(4.2F)
+                .rateCount(5)
+                .imagePath("Path/To/Image.png")
+                .image(new byte[]{})
+                .build();
     }
 
     @Test

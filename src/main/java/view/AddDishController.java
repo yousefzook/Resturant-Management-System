@@ -34,7 +34,7 @@ public class AddDishController implements Initializable {
     private ImageView imageView;
 
     @FXML
-    private TextArea  descText;
+    private TextArea descText;
 
     @FXML
     private TextField nameText, priceText, timeText;
@@ -45,7 +45,7 @@ public class AddDishController implements Initializable {
 
     public AddDishController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        managerController = ManagerController.getInstence();
+        managerController = ManagerController.getInstance();
     }
 
     public AddDishController() {
@@ -63,9 +63,22 @@ public class AddDishController implements Initializable {
     @FXML
     public void save(MouseEvent mouseEvent) throws IOException {
         // save data to dataBase
+<<<<<<< HEAD
       /*  Dish dish = new Dish(null, nameText.getText(),
                 null, descText.getText(), Float.valueOf(priceText.getText()),
                 null, null, Integer.valueOf(timeText.getText()));*/
+=======
+        Dish dish = Dish.builder()
+                .name(nameText.getText())
+                .description(descText.getText())
+                .price(Float.valueOf(priceText.getText()))
+                .timeToPrepare(Integer.valueOf(timeText.getText()))
+                .imagePath(timeText.getText())
+                .build();
+//        Dish dish = new Dish(null, nameText.getText(),
+//                null, descText.getText(), Float.valueOf(priceText.getText()),
+//                null, null, Integer.valueOf(timeText.getText()));
+>>>>>>> 96089714f1ed8fa9a578257e71673e77ffdde196
 
         backToMenu(mouseEvent);
     }
@@ -82,7 +95,7 @@ public class AddDishController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("PNG", "*.png")
-                ,new FileChooser.ExtensionFilter("JPEG", "*.jpg")
+                , new FileChooser.ExtensionFilter("JPEG", "*.jpg")
         );
         Node node = (Node) mouseEvent.getSource();
         File selectedFile = fileChooser.showOpenDialog((Stage) node.getScene().getWindow());
@@ -93,6 +106,6 @@ public class AddDishController implements Initializable {
 
     @FXML
     public void back(MouseEvent mouseEvent) throws IOException {
-       backToMenu(mouseEvent);
+        backToMenu(mouseEvent);
     }
 }
