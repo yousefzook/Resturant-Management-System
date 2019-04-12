@@ -29,7 +29,7 @@ public class ManagerController {
     }
 
     public static ManagerController getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new ManagerController();
         return instance;
     }
@@ -183,7 +183,7 @@ public class ManagerController {
             response.setMessage("End date must be after start date.");
         } else {
             try {
-                db.getTotalIncome(startDate, endDate);
+                response.setNumber(db.getTotalIncome(startDate, endDate));
                 response.setSuccess(true);
             } catch (Exception e) {
                 response.setMessage(e.getMessage());

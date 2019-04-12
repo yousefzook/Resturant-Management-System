@@ -36,7 +36,7 @@ public class RestaurantDBLayer implements DBMethods {
     }
 
     private List<Dish> parseDishSet(ResultSet resultSet) {
-        List<Dish> dishes = new ArrayList<Dish>();
+        List<Dish> dishes = new ArrayList<>();
         try {
             while (resultSet.next()) {
                 int id = resultSet.getInt("did");
@@ -70,10 +70,10 @@ public class RestaurantDBLayer implements DBMethods {
 
     public Dish[] getDishes(int[] dishesIDs) throws Exception {
         db.connectToDB(dbName);
-        String ids = "";
+        StringBuilder ids = new StringBuilder();
         for (int i = 0; i < dishesIDs.length - 1; i++)
-            ids += dishesIDs[i] + ",";
-        ids += dishesIDs[dishesIDs.length - 1];
+            ids.append(dishesIDs[i]).append(",");
+        ids.append(dishesIDs[dishesIDs.length - 1]);
         ResultSet resultSet = db.executeQuery("select * from dish where did in (" + ids + ");");
         List<Dish> dishes = parseDishSet(resultSet);
         db.closeConnection();
@@ -166,13 +166,10 @@ public class RestaurantDBLayer implements DBMethods {
 
     public ResultSet executeCustomQuery(String sqlQuery) throws Exception {
         db.connectToDB(dbName);
-        ResultSet resultSet = db.executeQuery(sqlQuery);
-        db.closeConnection();
-        return resultSet;
+        return db.executeQuery(sqlQuery);
     }
 
-    public List<Dish> getAvailableDishes() throws SQLException, Exception {
-        db.connectToDB(dbName);
+    public List<Dish> getAvailableDishes() throws Exception {
         ResultSet resultSet = executeCustomQuery("select * from dish where is_available='FALSE';");
         List<Dish> dishes = parseDishSet(resultSet);
         db.closeConnection();
@@ -180,7 +177,6 @@ public class RestaurantDBLayer implements DBMethods {
     }
 
     public List<Dish> getUnAvailableDishes() throws Exception {
-        db.connectToDB(dbName);
         ResultSet resultSet = executeCustomQuery("select * from dish where is_available='TRUE';");
         List<Dish> dishes = parseDishSet(resultSet);
         db.closeConnection();
@@ -188,9 +184,8 @@ public class RestaurantDBLayer implements DBMethods {
     }
 
     public List<Cook> getCooks() throws Exception {
-        db.connectToDB(dbName);
         ResultSet resultSet = executeCustomQuery("select * from cook;");
-        List<Cook> cooks = new ArrayList<Cook>();
+        List<Cook> cooks = new ArrayList<>();
         while (resultSet.next()) {
             cooks.add(new Cook(resultSet.getInt("cid"), resultSet.getString("first_name"),
                     resultSet.getString("last_name")));
