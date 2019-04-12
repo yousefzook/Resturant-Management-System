@@ -22,6 +22,10 @@ import model.Dish;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -86,8 +90,13 @@ public class MenuController implements Initializable {
     }
 
     private HBox getItem(Dish d) {
-        //image //ByteArray
-        Image  image = new Image("/photos/chicken1.jpg");
+        BufferedImage img = ImageIO.read(new ByteArrayInputStream(d.getImage());
+        try {
+            ImageIO.write(img, "jpg", new File(d.getName() + ".jpg") );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Image  image = new Image("/resources/" + d.getName() + "jpg");
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitHeight(100);
@@ -158,7 +167,7 @@ public class MenuController implements Initializable {
 
     private void addSaveAction(final Button save) {
         final HBox hbox = (HBox) save.getParent().getParent();
-        final Dish d = new Dish();
+        final Dish d = Dish.builder().build();;
         save.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent actionEvent) {
                 editRoutine(false , save);
@@ -172,7 +181,7 @@ public class MenuController implements Initializable {
                             String className2 = n2.getClass().getName().split("\\.")[3];
                             if(className2.equals("TextArea")){
                                 TextArea t = (TextArea) n2;
-                                d.setDescription((t.getText()));
+                                d.setDescription(t.getText());
                             }
                             if(className2.equals("TextField")){
                                 TextField t = (TextField) n2;
