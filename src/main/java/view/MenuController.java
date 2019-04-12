@@ -7,16 +7,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import lombok.Setter;
 
 import java.io.IOException;
 
 public class MenuController {
+    @Setter
     private ManagerController managerController;
     private Stage primaryStage;
 
     public MenuController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        managerController = new ManagerController();
     }
 
     public MenuController() {
