@@ -1,6 +1,7 @@
 import controller.ManagerController;
 import model.DBMethods;
 import model.Dish;
+import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -115,4 +116,26 @@ class TestManagerController {
         assertFalse(response.isSuccess());
         verify(db, times(1)).addDish(testDish);
     }
+
+    @Test
+    public void getDishesShouldFailWhenGetDishesThrowsException() throws Exception {
+        DishResponse response = controller.getDishes();
+        doThrow(new Exception()).when(db).getDishes(null);
+
+        assertFalse(response.isSuccess());
+        verify(db, times(1)).getDishes(null);
+    }
+
+    @Test
+    public void getDishesShouldReturnListOfDishes() throws Exception {
+        DishResponse response = controller.getDishes();
+        doReturn(new Dish[]{testDish}).when(db).getDishes(new int[]{1});
+
+        assertTrue(response.isSuccess());
+        verify(db, times(1)).getDishes(new int[]{1});
+        assertThat(response.getDishes(), Matchers.hasSize(1));
+        assertThat(response.getDishes().get(0), Matchers.equalTo(testDish));
+    }
+
+
 }

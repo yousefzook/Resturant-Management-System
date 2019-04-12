@@ -11,10 +11,6 @@ import model.actionresults.EmptyResponse;
 import model.actionresults.NumericResponse;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
