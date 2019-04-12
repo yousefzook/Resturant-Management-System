@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -15,6 +16,8 @@ import model.Cook;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddCookController implements Initializable {
 
@@ -29,11 +32,10 @@ public class AddCookController implements Initializable {
 
     public AddCookController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        managerController = new ManagerController();
+        managerController = ManagerController.getInstence();
     }
 
     public AddCookController() {
-
     }
 
     public void showUp() throws IOException {
@@ -46,9 +48,26 @@ public class AddCookController implements Initializable {
 
     @FXML
     public void save(MouseEvent mouseEvent) throws IOException {
-        // save data to dataBase
-        Cook cook = new Cook(null, firstText.getText(), lastText.getText());
-        backToMenu(mouseEvent);
+        if(!isValid()) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("Input not valid");
+            errorAlert.setContentText("Name should only contain letters and spaces");
+            errorAlert.showAndWait();
+        } else {
+            Cook cook = new Cook(null, firstText.getText(), lastText.getText());
+            ManagerController.addCook(cook);
+            backToMenu(mouseEvent);
+        }
+    }
+
+    private boolean isValid() {
+        Pattern pattern = Pattern.compile(new String ("^[a-zA-Z\\s]+$"));
+        Matcher matcherF = pattern.matcher(firstText.getText().trim());
+        Matcher matcherL = pattern.matcher(lastText.getText().trim());
+        if(! matcherF.matches() || !matcherL.matches()) {
+            return false;
+        }
+        return true;
     }
 
     private void backToMenu(MouseEvent mouseEvent) throws IOException {

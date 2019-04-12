@@ -70,7 +70,7 @@ public class MenuController implements Initializable {
     }
 
     private HBox getItem() {
-        //image
+        //image //ByteArray
         Image  image = new Image("/photos/chicken1.jpg");
         ImageView imageView = new ImageView();
         imageView.setImage(image);
@@ -145,6 +145,8 @@ public class MenuController implements Initializable {
             public void handle(ActionEvent actionEvent) {
                 editRoutine(false , save);
                 HBox hbox = (HBox) save.getParent().getParent();
+                //addDish
+               // managerController.addDish().builder.build()
                 //call database
             }
         });

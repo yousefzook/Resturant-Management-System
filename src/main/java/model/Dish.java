@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Dish {
-    
+
     private int id, timeToPrepare, rateCount;
 
     private String name, description;

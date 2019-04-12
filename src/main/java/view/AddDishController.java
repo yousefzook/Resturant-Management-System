@@ -45,7 +45,7 @@ public class AddDishController implements Initializable {
 
     public AddDishController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        managerController = new ManagerController();
+        managerController = ManagerController.getInstence();
     }
 
     public AddDishController() {
@@ -63,9 +63,9 @@ public class AddDishController implements Initializable {
     @FXML
     public void save(MouseEvent mouseEvent) throws IOException {
         // save data to dataBase
-        Dish dish = new Dish(null, nameText.getText(),
+      /*  Dish dish = new Dish(null, nameText.getText(),
                 null, descText.getText(), Float.valueOf(priceText.getText()),
-                null, null, Integer.valueOf(timeText.getText()));
+                null, null, Integer.valueOf(timeText.getText()));*/
 
         backToMenu(mouseEvent);
     }
