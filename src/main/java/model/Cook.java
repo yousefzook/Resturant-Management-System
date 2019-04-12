@@ -1,8 +1,6 @@
 package model;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +8,11 @@ import java.util.List;
 @Data
 public class Cook {
 
-    @Getter @Setter
+
     private List assignedOrders;
-    @Getter @Setter
+
     private Integer id;
-    @Getter @Setter
+
     private String firstName, lastName;
 
     public Cook(Integer id, String firstName, String lastName) {
@@ -25,7 +23,7 @@ public class Cook {
     }
 
     public boolean acceptOrder(Order o) {
-      return true;
+        return true;
     }
 
     public boolean setIrderState(Order o, OrderState s) {

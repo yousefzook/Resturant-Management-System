@@ -1,8 +1,6 @@
 package model;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Date;
 import java.util.Map;
@@ -10,19 +8,18 @@ import java.util.Map;
 @Data
 public class Order {
 
-    @Getter @Setter
     private OrderState state;
-    @Getter @Setter
+
     private Cook cook;
-    @Getter @Setter
+
     private int id;
-    @Getter @Setter
+
     private Map<Dish, Integer> map;
-    @Getter @Setter
+
     private float price;
-    @Getter @Setter
+
     private Table t;
-    @Getter @Setter
+
     private Date date;
 
     public Order(int id, Map<Dish, Integer> map, float price, Table t, Date date) {
@@ -42,5 +39,4 @@ public class Order {
         this.state = s;
         return true;
     }
-
 }

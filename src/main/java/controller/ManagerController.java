@@ -142,7 +142,7 @@ public class ManagerController {
             response.setMessage("Cook id cannot be less than zero.");
         } else {
             try {
-                db.fireCook(null); //TODO fix this to be cookId after changing the db interface.
+                db.fireCook(cookId);
                 response.setSuccess(true);
             } catch (Exception e) {
                 response.setMessage(e.getMessage());
@@ -198,7 +198,7 @@ public class ManagerController {
             response.setMessage("Limit must be a positive integer");
         } else {
             try {
-//                 response.setDishes(Arrays.asList(db.getTopDishes(limit)));
+                response.setDishes(db.getTopDishes(limit));
                 response.setSuccess(true);
             } catch (Exception e) {
                 response.setMessage(e.getMessage());
@@ -216,7 +216,7 @@ public class ManagerController {
             response.setMessage("Limit must be a positive integer");
         } else {
             try {
-//                response.setCooks(Arrays.asList(db.getTopDishes(limit)));
+//                response.setCooks(Arrays.asList(db.getTopCooks(limit)));
                 response.setSuccess(true);
             } catch (Exception e) {
                 response.setMessage(e.getMessage());
