@@ -60,7 +60,6 @@ public class AddDishController implements Initializable {
 
     @FXML
     public void save(MouseEvent mouseEvent) throws IOException {
-
         if(isValid()) {
             dish = Dish.builder()
                     .name(nameText.getText())
