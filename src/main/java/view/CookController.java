@@ -16,12 +16,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class CookController implements Initializable {
+
+    @Setter
     private ManagerController managerController;
     private Stage primaryStage;
 
@@ -36,7 +39,6 @@ public class CookController implements Initializable {
 
     public CookController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        managerController = new ManagerController();
     }
 
     public CookController() {

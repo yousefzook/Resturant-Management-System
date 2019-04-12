@@ -1,26 +1,18 @@
 package model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
+@AllArgsConstructor
 public class Dish {
+    
+    private int id, timeToPrepare, rateCount;
 
-    @Getter
-    Integer id, timeToPrepare, rateCount;
-    @Getter
-    String name, description, photoPath;
-    @Getter
-    Float rate, price;
+    private String name, description;
 
-    public Dish(Integer id, String name, String photoPath, String description, Float price, Float rate, Integer rateCount, Integer timeToPrepare) {
-        this.id = id;
-        this.name = name;
-        this.photoPath = photoPath;
-        this.price = price;
-        this.description = description;
-        this.rate = rate;
-        this.rateCount = rateCount;
-        this.timeToPrepare = timeToPrepare;
-    }
+    private float rate, price;
+
+    private byte[] image;
+
 }

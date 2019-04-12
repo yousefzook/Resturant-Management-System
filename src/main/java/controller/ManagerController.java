@@ -1,6 +1,7 @@
 package controller;
 
 import com.sun.istack.internal.NotNull;
+import lombok.Setter;
 import model.Cook;
 import model.DBMethods;
 import model.Dish;
@@ -15,7 +16,11 @@ import java.util.Date;
 import java.util.List;
 
 public class ManagerController {
+    @Setter
     private DBMethods db;
+
+    public ManagerController() {
+    }
 
     public EmptyResponse addDish(@NotNull Dish dishToAdd) {
         EmptyResponse response = new EmptyResponse();
@@ -25,9 +30,10 @@ public class ManagerController {
                 StringUtils.isBlank(dishToAdd.getDescription())) {
             response.setMessage("Dish name and description can not be empty, null nor a whitespace");
         } else if (dishToAdd.getPrice() < 0 ||
-                dishToAdd.getRateCount() < 0 ||
                 dishToAdd.getTimeToPrepare() < 0) {
             response.setMessage("Dish price, rate, time to prepare cannot be less than zero");
+        } else if (dishToAdd.getImage() == null) {
+            response.setMessage("Error happened while reading the image.");
         } else {
             try {
                 db.addDish(dishToAdd);

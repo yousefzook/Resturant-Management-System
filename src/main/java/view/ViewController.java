@@ -10,17 +10,21 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import lombok.Setter;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+
 public class ViewController implements Initializable {
+
+    @Setter
     private ManagerController managerController;
     private Stage primaryStage;
 
     public ViewController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        managerController = new ManagerController();
     }
 
     public ViewController() {

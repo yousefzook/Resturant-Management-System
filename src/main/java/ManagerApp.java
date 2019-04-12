@@ -1,5 +1,7 @@
+import controller.ManagerController;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import model.DBMethods;
 import view.ViewController;
 
 public class ManagerApp extends Application {
@@ -11,6 +13,10 @@ public class ManagerApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         ViewController viewController = new ViewController(primaryStage);
+        DBMethods db = null;
+        ManagerController managerController = new ManagerController();
+        managerController.setDb(db);
+        viewController.setManagerController(managerController);
         viewController.showUp();
     }
 }

@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,7 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+
 public class MenuController implements Initializable {
+
+    @Setter
     private ManagerController managerController;
     private Stage primaryStage;
 
@@ -39,7 +43,6 @@ public class MenuController implements Initializable {
 
     public MenuController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        managerController = new ManagerController();
     }
 
     public MenuController() {

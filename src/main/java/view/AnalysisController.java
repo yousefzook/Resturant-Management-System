@@ -12,12 +12,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AnalysisController implements Initializable {
+
+    @Setter
     private ManagerController managerController;
     private Stage primaryStage;
 
@@ -26,7 +29,6 @@ public class AnalysisController implements Initializable {
 
     public AnalysisController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        managerController = new ManagerController();
         System.out.println(primaryStage.toString());
     }
 
