@@ -7,6 +7,14 @@ import java.util.List;
 public interface DBMethods {
 
 	/**
+	 * 
+	 * create the tables for resturant
+	 * 
+	 * @throws Exception if no connection is established
+	 */
+	public void createTables() throws Exception;
+
+	/**
 	 * Insert new dish to the menu
 	 * 
 	 * @param dishToAdd
@@ -35,9 +43,9 @@ public interface DBMethods {
 	public List<Dish> getDishesInOrder(int orderId) throws Exception;
 
 	/**
-	 * update a dish in the database, if old dish name or id equals the new dish
-	 * name or id, the old dish state becomes 'unAvailable' which remove it from the
-	 * menu
+	 * update a dish in the database, if old dish name equals the new dish name and
+	 * the price is different, the old dish state becomes 'unAvailable' which remove
+	 * it from the menu
 	 * 
 	 * @param oldDish
 	 * @param newDish
@@ -55,7 +63,8 @@ public interface DBMethods {
 
 	/**
 	 * reset the state of a dish to 'available' state, an exception will be thrown
-	 * if a dish with the same name or id is exist already in 'available' state
+	 * if a dish with the same id is exist already in 'available' state, or if no
+	 * dish exists with this id
 	 * 
 	 * @param dishId
 	 * @throws Exception, if some error happens in data base
@@ -89,18 +98,20 @@ public interface DBMethods {
 
 	/**
 	 * get all income in a time period starting from 'startDate' till 'endDate'
+	 * 
 	 * @param startDate
 	 * @param endDate
 	 * @return
 	 * @throws Exception, if some error happens in data base
 	 */
-	public Double getTotalIncome(Date startDate, Date endDate)throws Exception;
+	public Double getTotalIncome(Date startDate, Date endDate) throws Exception;
 
 	/**
 	 * execute custom query on database
+	 * 
 	 * @param sqlCommand
 	 * @return
 	 * @throws Exception, if the query is not valid or a sql database exception
 	 */
-	public ResultSet executeCustomQuery(String sqlCommand)throws Exception;
+	public ResultSet executeCustomQuery(String sqlCommand) throws Exception;
 }
