@@ -28,7 +28,7 @@ class TestManagerController {
     @BeforeEach
     public void setup() {
         initMocks(DBMethods.class);
-        controller = new ManagerController();
+        controller = ManagerController.getInstance();
         controller.setDb(db);
 
         testDish = Dish.builder()

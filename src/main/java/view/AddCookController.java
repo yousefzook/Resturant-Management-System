@@ -29,7 +29,7 @@ public class AddCookController implements Initializable {
 
     public AddCookController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        managerController = new ManagerController();
+        managerController = ManagerController.getInstance();
     }
 
     public AddCookController() {

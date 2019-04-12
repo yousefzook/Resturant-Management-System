@@ -45,7 +45,7 @@ public class AddDishController implements Initializable {
 
     public AddDishController(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        managerController = new ManagerController();
+        managerController = ManagerController.getInstance();
     }
 
     public AddDishController() {

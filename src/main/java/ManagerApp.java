@@ -14,7 +14,7 @@ public class ManagerApp extends Application {
     public void start(Stage primaryStage) throws Exception {
         ViewController viewController = new ViewController(primaryStage);
         DBMethods db = null;
-        ManagerController managerController = new ManagerController();
+        ManagerController managerController = ManagerController.getInstance();
         managerController.setDb(db);
         viewController.setManagerController(managerController);
         viewController.showUp();

@@ -20,10 +20,16 @@ import java.util.Date;
 import java.util.List;
 
 public class ManagerController {
+    private static ManagerController instance;
+
     @Setter
     private DBMethods db;
 
-    public ManagerController() {
+    private ManagerController() {
+    }
+
+    public static ManagerController getInstance() {
+        return instance;
     }
 
     public EmptyResponse addDish(@NotNull Dish dishToAdd) {
