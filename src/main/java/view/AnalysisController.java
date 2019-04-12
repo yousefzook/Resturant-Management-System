@@ -49,6 +49,6 @@ public class AnalysisController implements Initializable {
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        
+
     }
 }

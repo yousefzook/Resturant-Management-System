@@ -13,11 +13,11 @@ public class Cook {
     @Getter @Setter
     private List assignedOrders;
     @Getter @Setter
-    private int id;
+    private Integer id;
     @Getter @Setter
     private String firstName, lastName;
 
-    public Cook(int id, String firstName, String lastName) {
+    public Cook(Integer id, String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = id;

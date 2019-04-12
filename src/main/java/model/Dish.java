@@ -7,13 +7,13 @@ import lombok.Getter;
 public class Dish {
 
     @Getter
-    int id, timeToPrepare, rateCount;
+    Integer id, timeToPrepare, rateCount;
     @Getter
     String name, description, photoPath;
     @Getter
-    float rate, price;
+    Float rate, price;
 
-    public Dish(int id, String name, String photoPath, String description, float price, float rate, int rateCount, int timeToPrepare) {
+    public Dish(Integer id, String name, String photoPath, String description, Float price, Float rate, Integer rateCount, Integer timeToPrepare) {
         this.id = id;
         this.name = name;
         this.photoPath = photoPath;
