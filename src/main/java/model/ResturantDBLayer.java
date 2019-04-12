@@ -109,6 +109,9 @@ public class ResturantDBLayer implements DBMethods {
 	public void removeDish(int dishId) throws Exception {
 		// TODO Auto-generated method stub
 		db.connectToDB(dbName);
+		ResultSet resultSet = db.executeQuery("select * from dish where did=" + dishId + ";");
+		if (!resultSet.next())
+			throw new Exception("The dish is not exist");
 		db.execute("update dish set is_available=FALSE where did=" + dishId + ";");
 		db.closeConnection();
 	}
@@ -125,27 +128,71 @@ public class ResturantDBLayer implements DBMethods {
 	}
 
 	public void addCook(Cook cook) throws Exception {
-		// TODO Auto-generated method stub
-
+		db.connectToDB(dbName);
+		String values = "";
+		values += cook.id + "," + cook.firstName + "," + cook.lastName + ", TRUE";
+		db.execute("insert into cook values(" + values + ");");
+		db.closeConnection();
 	}
 
-	public void fireCook(Cook cook) throws Exception {
-		// TODO Auto-generated method stub
-
+	public void fireCook(int cookId) throws Exception {
+		db.connectToDB(dbName);
+		ResultSet resultSet = db.executeQuery("select * from cook where cid=" + cookId + ";");
+		if (!resultSet.next())
+			throw new Exception("The cook is not exist");
+		db.execute("update cook set is_active=FALSE where cid=" + cookId + ";");
+		db.closeConnection();
 	}
 
-	public void reHireCook(int CId) throws Exception {
-		// TODO Auto-generated method stub
+	public void reHireCook(int cookId) throws Exception {
+		db.connectToDB(dbName);
+		ResultSet resultSet = db.executeQuery("select * from cook where cid=" + cookId + ";");
+		if (!resultSet.next())
+			throw new Exception("The cook is not exist");
+		if (resultSet.getBoolean("is_active"))
+			throw new Exception("The cook is already active");
+		db.execute("update cook set is_active=TRUE where cid=" + cookId + ";");
+		db.closeConnection();
 
 	}
 
 	public Double getTotalIncome(Date startDate, Date endDate) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		db.connectToDB(dbName);
+
+		ResultSet resultSet = db.executeQuery("select sum(total_price) from order where order_timestamp > "
+				+ startDate.toString() + "and order_timestamp < " + endDate.toString() + ";");
+
+		double totalIncome = resultSet.getDouble(0);
+		db.closeConnection();
+		return totalIncome;
 	}
 
-	public ResultSet executeCustomQuery(String sqlCommand) throws Exception {
-		// TODO Auto-generated method stub
+	public ResultSet executeCustomQuery(String sqlQuery) throws Exception {
+		db.connectToDB(dbName);
+		ResultSet resultSet = db.executeQuery(sqlQuery);
+		db.closeConnection();
+		return resultSet;
+	}
+
+	public List<Dish> getAvailableDishes() throws SQLException, Exception {
+		ResultSet resultSet = executeCustomQuery("select * from dishe where is_available=FALSE;");
+		List<Dish> dishes = parseDishSet(resultSet);
+		return dishes;
+	}
+
+	public List<Dish> getUnAvailableDishes() throws Exception {
+		ResultSet resultSet = executeCustomQuery("select * from dishe where is_available=TRUE;");
+		List<Dish> dishes = parseDishSet(resultSet);
+		return dishes;
+	}
+
+	public List<Cook> getCooks() throws Exception {
+		ResultSet resultSet = executeCustomQuery("select * from cook;");
+		List<Cook> cooks = new ArrayList<Cook>();
+		while (resultSet.next()) {
+			cooks.add(new Cook(resultSet.getInt("cid"), resultSet.getString("first_name"),
+					resultSet.getString("last_name")));
+		}
 		return null;
 	}
 

@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +33,18 @@ public interface DBMethods {
 	 * @throws Exception, if some error happens in data base
 	 */
 	public Dish[] getDishes(int[] DishesIDs) throws Exception;
+
+	/**
+	 * get all available dishes
+	 * @return
+	 */
+	public List<Dish> getAvailableDishes()throws SQLException, Exception;
+
+	/**
+	 * get all unavailable dishes
+	 * @return
+	 */
+	public List<Dish> getUnAvailableDishes()throws SQLException, Exception;
 
 	/**
 	 * get all dishes in an order
@@ -85,7 +98,7 @@ public interface DBMethods {
 	 * @param cook
 	 * @throws Exception, if some error happens in data base
 	 */
-	public void fireCook(Cook cook) throws Exception;
+	public void fireCook(int cookId) throws Exception;
 
 	/**
 	 * reset the state of a cook to 'active' state, an exception will be thrown if a
@@ -114,4 +127,13 @@ public interface DBMethods {
 	 * @throws Exception, if the query is not valid or a sql database exception
 	 */
 	public ResultSet executeCustomQuery(String sqlCommand) throws Exception;
+
+	/**
+	 * get all cooks in the database
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Cook> getCooks() throws Exception;
+
 }

@@ -65,7 +65,7 @@ public class Database {
 				+ "CONSTRAINT fk_cook FOREIGN KEY (cid) REFERENCES cook(cid),"
 				+ "CONSTRAINT fk_dish FOREIGN KEY (tid) REFERENCES tables(tid));";
 
-		commands[4] = "CREATE TABLE IF NOT EXISTS order_dishes (oid INTEGER, did INTEGER,"
+		commands[4] = "CREATE TABLE IF NOT EXISTS order_dishes (oid INTEGER, did INTEGER,count"
 				+ "CONSTRAINT fk_order FOREIGN KEY (oid) REFERENCES orders(oid),"
 				+ "CONSTRAINT fk_dish FOREIGN KEY (did) REFERENCES dish(did)," + "PRIMARY KEY (oid, did));";
 
