@@ -1,9 +1,12 @@
 import org.junit.Test;
 
+import model.Cook;
 import model.Dish;
 import model.ResturantDBLayer;
 
 import static org.junit.Assert.*;
+
+import java.util.List;
 
 public class ResturantDBLayerTest {
 
@@ -91,24 +94,11 @@ public class ResturantDBLayerTest {
 		assertEquals(2, dishes[1].id);
 
 		//////////// update test
-		Dish old = new Dish(1, "dish1", "desc1", (float) 15.2, 5, 2, 10, "abc123".getBytes());
-		Dish newDish = new Dish(1, "dishNew", "desc1", (float) 15.2, 5, 2, 10, "abc123".getBytes());
 
 		ex = null;
+		Dish newDish = new Dish(6, "dishNew", "desc1", (float) 3, 5, 2, 10, "abc123".getBytes());
 		try {
-			dbLayer.updateDish(old, newDish);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			ex = e;
-			e.printStackTrace();
-		}
-		assertNull(ex);
-
-		ex = null;
-		old = new Dish(1, "dishNew", "desc1", (float) 15.2, 5, 2, 10, "abc123".getBytes());
-		newDish = new Dish(6, "dishNew", "desc1", (float) 3, 5, 2, 10, "abc123".getBytes());
-		try {
-			dbLayer.updateDish(old, newDish);
+			dbLayer.updateDish(1, newDish);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			ex = e;
@@ -125,17 +115,120 @@ public class ResturantDBLayerTest {
 			e.printStackTrace();
 		}
 		assertNull(ex);
+
+		///////////////// get available
+		List<Dish> avDish = null;
+		try {
+			avDish = dbLayer.getAvailableDishes();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			ex = e;
+			System.out.println("--------------------------------------------");
+			e.printStackTrace();
+		}
+		assertNull(ex);
+		assertEquals(1, avDish.size());
+		
+		///////////////// get unavailable
+		List<Dish> unAvDish = null;
+		try {
+			unAvDish = dbLayer.getAvailableDishes();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			ex = e;
+			e.printStackTrace();
+		}
+		assertNull(ex);
+		assertEquals(1, unAvDish.size());
+		
 		
 		//////////////// ReAdd
 		ex = null;
 		try {
 			dbLayer.reAddDish(1);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			ex = e;
 			e.printStackTrace();
 		}
 		assertNull(ex);
 
-	}	
+	}
+
+	@Test
+	public void testAddCook() throws Exception {
+
+		ResturantDBLayer dbLayer = new ResturantDBLayer("RESTURANT.db");
+		Cook cook = new Cook(1, "yousef", "zook");
+		Exception ex = null;
+		try {
+			dbLayer.addCook(cook);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			ex = e;
+			e.printStackTrace();
+		}
+		assertNull(ex);
+
+		ex = null;
+		try {
+			dbLayer.addCook(cook);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			ex = e;
+			e.printStackTrace();
+			dbLayer.closeConnection();
+		}
+		assertNotNull(ex); // same id
+
+		ex = null;
+		try {
+			cook.id = 2;
+			dbLayer.addCook(cook);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			ex = e;
+			e.printStackTrace();
+		}
+		assertNull(ex); // different id
+
+		/////////////// Remove
+		ex = null;
+		try {
+			dbLayer.fireCook(1);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			ex = e;
+			e.printStackTrace();
+		}
+		assertNull(ex);
+
+		/////////////// rehire
+		ex = null;
+		try {
+			dbLayer.reHireCook(1);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			ex = e;
+			e.printStackTrace();
+		}
+		assertNull(ex);
+
+		
+		/////////////// getCooks
+		ex = null;
+		List<Cook> cooks = null;
+		try {
+			 cooks = dbLayer.getCooks();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			ex = e;
+			System.out.println("******************************************");
+			e.printStackTrace();
+		}
+		assertNull(ex);
+		assertEquals(2, cooks.size());
+	}
+
+	
 
 }
