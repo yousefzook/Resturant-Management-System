@@ -1,12 +1,10 @@
 package model;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
 public interface DBMethods {
-
     /**
      * Insert new dish to the menu
      *
@@ -26,13 +24,6 @@ public interface DBMethods {
      */
     public Dish[] getDishes(int[] DishesIDs) throws Exception;
 
-    /**
-     * get list of dishes
-     *
-     * @param limit
-     * @return list of dishes sorted by rate | DESC with size = limit
-     * @throws Exception, if some error happens in data base
-     */
     public List<Dish> getTopDishes(int limit) throws Exception;
 
     /**
@@ -40,14 +31,14 @@ public interface DBMethods {
      *
      * @return
      */
-    public List<Dish> getAvailableDishes() throws SQLException, Exception;
+    public List<Dish> getAvailableDishes() throws Exception;
 
     /**
      * get all unavailable dishes
      *
      * @return
      */
-    public List<Dish> getUnAvailableDishes() throws SQLException, Exception;
+    public List<Dish> getUnAvailableDishes() throws Exception;
 
     /**
      * get all dishes in an order
@@ -59,9 +50,8 @@ public interface DBMethods {
     public List<Dish> getDishesInOrder(int orderId) throws Exception;
 
     /**
-     * update a dish in the database, if old dish name equals the new dish name and
-     * the price is different, the old dish state becomes 'unAvailable' which remove
-     * it from the menu
+     * update a dish in the database, the old dish state becomes 'unAvailable' which
+     * remove it from the menu
      *
      * @param oldDishId
      * @param newDish
@@ -120,7 +110,6 @@ public interface DBMethods {
      * @return
      * @throws Exception, if some error happens in data base
      */
-
     public Double getTotalIncome(Date startDate, Date endDate) throws Exception;
 
     /**
@@ -139,4 +128,5 @@ public interface DBMethods {
      * @throws Exception
      */
     public List<Cook> getCooks() throws Exception;
+
 }
