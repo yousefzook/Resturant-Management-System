@@ -24,7 +24,6 @@ public class Database {
 	 * @throws Exception if a connection to a database is already exist
 	 */
 	public void connectToDB(String dbName) throws Exception {
-
 		if (conn != null) {
 			System.out.println("Error, you are connected already to a database");
 			throw new Exception("A connection is already stablished, close connection first before starting new one");
@@ -65,7 +64,7 @@ public class Database {
 				+ "CONSTRAINT fk_cook FOREIGN KEY (cid) REFERENCES cook(cid),"
 				+ "CONSTRAINT fk_dish FOREIGN KEY (tid) REFERENCES tables(tid));";
 
-		commands[4] = "CREATE TABLE IF NOT EXISTS order_dishes (oid INTEGER, did INTEGER,count"
+		commands[4] = "CREATE TABLE IF NOT EXISTS order_dishes (oid INTEGER, did INTEGER,count INTEGER,  "
 				+ "CONSTRAINT fk_order FOREIGN KEY (oid) REFERENCES orders(oid),"
 				+ "CONSTRAINT fk_dish FOREIGN KEY (did) REFERENCES dish(did)," + "PRIMARY KEY (oid, did));";
 
@@ -131,16 +130,16 @@ public class Database {
 		return stmt.executeQuery(sqlQuery);
 	}
 
-	public static void main(String[] args) {
-		Database db = new Database();
-		try {
-			db.connectToDB("RESTURANT.db");
-			db.createResturantTables();
-			db.execute("select * from tables;");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		db.closeConnection();
-	}
+//	public static void main(String[] args) {
+//		Database db = new Database();
+//		try {
+//			db.connectToDB("RESTURANT.db");
+//			db.createResturantTables();
+//			db.execute("select * from tables;");
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		db.closeConnection();
+//	}
 }
