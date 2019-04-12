@@ -63,11 +63,7 @@ public class AddDishController implements Initializable {
     @FXML
     public void save(MouseEvent mouseEvent) throws IOException {
         // save data to dataBase
-<<<<<<< HEAD
-      /*  Dish dish = new Dish(null, nameText.getText(),
-                null, descText.getText(), Float.valueOf(priceText.getText()),
-                null, null, Integer.valueOf(timeText.getText()));*/
-=======
+
         Dish dish = Dish.builder()
                 .name(nameText.getText())
                 .description(descText.getText())
@@ -75,11 +71,7 @@ public class AddDishController implements Initializable {
                 .timeToPrepare(Integer.valueOf(timeText.getText()))
                 .imagePath(timeText.getText())
                 .build();
-//        Dish dish = new Dish(null, nameText.getText(),
-//                null, descText.getText(), Float.valueOf(priceText.getText()),
-//                null, null, Integer.valueOf(timeText.getText()));
->>>>>>> 96089714f1ed8fa9a578257e71673e77ffdde196
-
+        
         backToMenu(mouseEvent);
     }
 
