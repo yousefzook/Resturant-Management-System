@@ -39,11 +39,11 @@ public interface DBMethods {
      * name or id, the old dish state becomes 'unAvailable' which remove it from the
      * menu
      *
-     * @param oldDish
+     * @param oldDishId
      * @param newDish
      * @throws Exception, if some error happens in data base
      */
-    public void updateDish(Dish oldDish, Dish newDish) throws Exception;
+    public void updateDish(int oldDishId, Dish newDish) throws Exception;
 
     /**
      * set the state of dish with ID: 'dishId' to unavilable
