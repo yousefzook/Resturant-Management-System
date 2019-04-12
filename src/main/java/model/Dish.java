@@ -23,6 +23,9 @@ public class Dish {
 
     private String imagePath;
 
+    public Dish() {
+    }
+
     public ArrayList<Pair<String, String>> getDBAttributes() {
         ArrayList<Pair<String, String>> attrs = new ArrayList<Pair<String, String>>();
         attrs.add(new ImmutablePair<>("did", Integer.toString(this.id)));
