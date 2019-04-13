@@ -11,16 +11,10 @@ import model.actionresults.NumericResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
-import javax.activation.MimetypesFileTypeMap;
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class ManagerController {
     private static ManagerController instance;
@@ -90,9 +84,8 @@ public class ManagerController {
         response.setSuccess(false);
 
         try {
-            List<Dish> allDishes = db.getAvailableDishes();
+            response.setDishes(db.getAvailableDishes());
             response.setSuccess(true);
-            response.setDishes(allDishes);
         } catch (Exception e) {
             response.setMessage(e.getMessage());
         }
@@ -194,8 +187,7 @@ public class ManagerController {
         Date endDate = DateUtils.addMilliseconds(
                 DateUtils.ceiling(
                         new Date(System.currentTimeMillis()), Calendar.DATE
-                ),
-                -1);
+                ), -1);
         return getTotalIncome(startDate, endDate);
     }
 

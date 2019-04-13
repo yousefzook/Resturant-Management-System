@@ -229,4 +229,22 @@ class TestManagerController {
         assertThat(response.getMessage(), Matchers.blankOrNullString());
         verify(db, times(1)).getCooks();
     }
+
+    @Test
+    void addCookWithInvalidFName() {
+        testCook.setFirstName(null);
+        EmptyResponse response = controller.addCook(testCook);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
+    }
+
+    @Test
+    void addCookWithInvalidLName() {
+        testCook.setLastName(null);
+        EmptyResponse response = controller.addCook(testCook);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
+    }
 }

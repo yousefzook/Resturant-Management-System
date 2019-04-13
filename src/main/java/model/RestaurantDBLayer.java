@@ -95,7 +95,7 @@ public class RestaurantDBLayer implements DBMethods {
 
     public void updateDish(int oldDishId, Dish newDish) throws Exception {
         db.connectToDB(dbName);
-        db.execute("update dish set" + newDish.getDBAttributes() +" is_available='FALSE' where did =" + oldDishId + ";");
+        db.execute("update dish set" + newDish.getDBAttributes() + " is_available='FALSE' where did =" + oldDishId + ";");
         db.closeConnection();
         if (newDish.getId() == oldDishId)
             throw new Exception("Put the dish with different id value as it is already exist");
@@ -157,7 +157,8 @@ public class RestaurantDBLayer implements DBMethods {
         db.connectToDB(dbName);
 
         ResultSet resultSet = db.executeQuery("select sum(total_price) from order where order_timestamp > "
-                + startDate.toString() + "and order_timestamp < " + endDate.toString() + ";");
+                + startDate.toInstant().getEpochSecond() +
+                " and order_timestamp < " + endDate.toInstant().getEpochSecond() + ";");
 
         double totalIncome = resultSet.getDouble(0);
         db.closeConnection();
