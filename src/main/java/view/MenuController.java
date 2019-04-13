@@ -94,7 +94,6 @@ public class MenuController implements Initializable {
     private HBox getItem(Dish d) {
         try {
             BufferedImage img = ImageIO.read(new ByteArrayInputStream(d.getImage()));
-
             ImageIO.write(img, "jpg", new File(d.getName() + ".jpg"));
         } catch (IOException e) {
             e.printStackTrace();

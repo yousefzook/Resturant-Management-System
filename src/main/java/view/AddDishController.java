@@ -114,8 +114,8 @@ public class AddDishController implements Initializable {
     public void addPhoto(MouseEvent mouseEvent) throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("JPEG", "*.jpg"),
                 new FileChooser.ExtensionFilter("PNG", "*.png")
-                , new FileChooser.ExtensionFilter("JPEG", "*.jpg")
         );
         Node node = (Node) mouseEvent.getSource();
         File selectedFile = fileChooser.showOpenDialog(node.getScene().getWindow());
