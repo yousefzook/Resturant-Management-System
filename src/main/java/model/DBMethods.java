@@ -129,4 +129,5 @@ public interface DBMethods {
      */
     public List<Cook> getCooks() throws Exception;
 
+    public List<Cook> getTopCooks(int limit) throws Exception;
 }
