@@ -13,17 +13,18 @@ import java.util.ArrayList;
 @AllArgsConstructor
 public class Dish {
 
-    private int id, timeToPrepare, rateCount;
+    private Integer id, timeToPrepare, rateCount=1;
 
     private String name, description;
 
-    private float rate, price;
+    private Float rate=5F, price;
 
     private String imagePath;
 
     public ArrayList<Pair<String, String>> getDBAttributes() {
         ArrayList<Pair<String, String>> attrs = new ArrayList<Pair<String, String>>();
         attrs.add(new ImmutablePair<String, String>("did", Integer.toString(this.id)));
+        System.out.println("000000000000000000000000000000000000000000000000000000000000000000000000000");
         attrs.add(new ImmutablePair<String, String>("name", "'" + this.name + "'"));
         attrs.add(new ImmutablePair<String, String>("price", Float.toString(this.price)));
         attrs.add(new ImmutablePair<String, String>("description", "'" + this.description + "'"));
