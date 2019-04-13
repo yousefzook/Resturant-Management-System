@@ -16,7 +16,7 @@ public class RestaurantDBLayer implements DBMethods {
     public RestaurantDBLayer(String dbName) throws Exception {
         db = new Database();
         db.connectToDB(dbName);
-        db.createResturantTables();
+        db.createRestaurantTables();
         db.closeConnection();
         this.dbName = dbName;
     }
@@ -170,14 +170,14 @@ public class RestaurantDBLayer implements DBMethods {
     }
 
     public List<Dish> getAvailableDishes() throws Exception {
-        ResultSet resultSet = executeCustomQuery("select * from dish where is_available='FALSE';");
+        ResultSet resultSet = executeCustomQuery("select * from dish where is_available='TRUE';");
         List<Dish> dishes = parseDishSet(resultSet);
         db.closeConnection();
         return dishes;
     }
 
     public List<Dish> getUnAvailableDishes() throws Exception {
-        ResultSet resultSet = executeCustomQuery("select * from dish where is_available='TRUE';");
+        ResultSet resultSet = executeCustomQuery("select * from dish where is_available='FALSE';");
         List<Dish> dishes = parseDishSet(resultSet);
         db.closeConnection();
         return dishes;

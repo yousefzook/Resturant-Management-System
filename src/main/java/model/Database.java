@@ -38,19 +38,19 @@ public class Database {
 	 * 
 	 * @throws Exception
 	 */
-	public void createResturantTables() throws Exception {
+	public void createRestaurantTables() throws Exception {
 		if (conn == null) {
 			System.out.println("Error, you are connected already to a database");
 			throw new Exception("No connection, Connect to a database first");
 		}
 		String[] commands = new String[5];
-		commands[0] = "CREATE TABLE IF NOT EXISTS dish (did INTEGER AUTO_INCREMENT PRIMARY KEY,"
+		commands[0] = "CREATE TABLE IF NOT EXISTS dish (did INTEGER PRIMARY KEY,"
 				+ " name VARCHAR NOT NULL, description VARCHAR, price DOUBLE, rate INTEGER,"
 				+ " rate_count INTEGER, time_to_prepare_in_minutes integer," + " is_available BOOLEAN, image BLOB);";
 		commands[1] = "CREATE TABLE IF NOT EXISTS cook (cid INTEGER PRIMARY KEY,"
 				+ " first_name VARCHAR NOT NULL, last_name VARCHAR NOT NULL,  is_active BOOLEAN);";
 		commands[2] = "CREATE TABLE IF NOT EXISTS tables (tid INTEGER PRIMARY KEY);";
-		commands[3] = "CREATE TABLE IF NOT EXISTS orders (oid INTEGER AUTO_INCREMENT PRIMARY KEY ,"
+		commands[3] = "CREATE TABLE IF NOT EXISTS orders (oid INTEGER PRIMARY KEY ,"
 				+ "did INTEGER, cid INTEGER, tid INTEGER, total_price DOUBLE, "
 				+ "state VARCHAR, order_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, "
 				+ "CONSTRAINT fk_dish FOREIGN KEY (did) REFERENCES dish(did),"
@@ -128,7 +128,7 @@ public class Database {
 //		Database db = new Database();
 //		try {
 //			db.connectToDB("RESTURANT.db");
-//			db.createResturantTables();
+//			db.createRestaurantTables();
 //			db.execute("select * from tables;");
 //		} catch (Exception e) {
 //			// TODO Auto-generated catch block

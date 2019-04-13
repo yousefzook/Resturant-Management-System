@@ -11,9 +11,13 @@ import model.actionresults.NumericResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
+import javax.activation.MimetypesFileTypeMap;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,14 +42,15 @@ public class ManagerController {
         response.setSuccess(false);
 
         if (StringUtils.isBlank(dishToAdd.getName()) ||
-                StringUtils.isBlank(dishToAdd.getDescription())) {
-            response.setMessage("Dish name and description can not be empty, null nor a whitespace");
+                StringUtils.isBlank(dishToAdd.getDescription()) ||
+                StringUtils.isBlank(dishToAdd.getImagePath())) {
+            response.setMessage("Dish name, description and imagePath can't be empty, null nor a whitespace");
         } else if (dishToAdd.getPrice() < 0 ||
                 dishToAdd.getTimeToPrepare() < 0) {
             response.setMessage("Dish price, rate, time to prepare cannot be less than zero");
-        } else if (dishToAdd.getImage() == null) {
-            response.setMessage("Error happened while reading the image.");
-        } else {
+        }
+
+        if (checkImage(dishToAdd, response)) {
             try {
                 db.addDish(dishToAdd);
                 response.setSuccess(true);
@@ -53,7 +58,31 @@ public class ManagerController {
                 response.setMessage(e.getMessage());
             }
         }
+
         return response;
+    }
+
+    private boolean checkImage(Dish dishToAdd, EmptyResponse response) {
+        File tempFile = new File(dishToAdd.getImagePath());
+        System.out.println(dishToAdd.getImagePath());
+        if (tempFile.exists()) {
+            File f = new File(dishToAdd.getImagePath());
+            try {
+                if (ImageIO.read(f.getAbsoluteFile()) != null) {
+                    dishToAdd.setImage(Files.readAllBytes(f.toPath()));
+                    return true;
+                } else {
+                    response.setMessage("The file is not an image");
+                    return false;
+                }
+            } catch (IOException e) {
+                response.setMessage(e.getMessage());
+                return false;
+            }
+        } else {
+            response.setMessage("Invalid path");
+            return false;
+        }
     }
 
     public DishResponse getDishes() {
@@ -61,7 +90,7 @@ public class ManagerController {
         response.setSuccess(false);
 
         try {
-            List<Dish> allDishes = Arrays.asList(db.getDishes(null));
+            List<Dish> allDishes = db.getAvailableDishes();
             response.setSuccess(true);
             response.setDishes(allDishes);
         } catch (Exception e) {

@@ -26,7 +26,7 @@ public class AnalysisController implements Initializable {
     private Stage primaryStage;
 
     @FXML
-    private Text incomeToday, incomeMonth, cookTop, dishTop;
+    private Text incomeToday, incomeMonth, dishTop;
 
     public AnalysisController(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -61,7 +61,6 @@ public class AnalysisController implements Initializable {
         incomeToday.setText(String.valueOf(r1.getNumber()));
         incomeMonth.setText(String.valueOf(r2.getNumber()));
         dishTop.setText(r3.getDishes().get(0).getName());
-        cookTop.setText(r4.getCooks().get(0).getFirstName() + " " + r4.getCooks().get(0).getLastName());
     }
 
     private void showError(String s) {

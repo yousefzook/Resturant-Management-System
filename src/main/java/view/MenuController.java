@@ -68,16 +68,18 @@ public class MenuController implements Initializable {
         VBox vBox = new VBox();
         vBox.setSpacing(10);
 
-        DishResponse r =  ManagerController.getInstance().getDishes();
-        if(!r.isSuccess())
+        DishResponse r = ManagerController.getInstance().getDishes();
+        if (!r.isSuccess())
             showError(r.getMessage());
         else {
             List<Dish> list = r.getDishes();
-            for(Dish d : list) {
+            for (Dish d : list) {
                 HBox crnt = getItem(d);
                 map.put(crnt, d.getId());
                 vBox.getChildren().add(crnt);
             }
+            addBackAction();
+            addDishAction();
             scPane.setContent(vBox);
         }
     }
@@ -93,11 +95,11 @@ public class MenuController implements Initializable {
         try {
             BufferedImage img = ImageIO.read(new ByteArrayInputStream(d.getImage()));
 
-            ImageIO.write(img, "jpg", new File(d.getName() + ".jpg") );
+            ImageIO.write(img, "jpg", new File(d.getName() + ".jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Image  image = new Image("/resources/" + d.getName() + "jpg");
+        Image image = new Image("/resources/" + d.getName() + "jpg");
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitHeight(100);
@@ -134,11 +136,11 @@ public class MenuController implements Initializable {
         Label price = new Label("Price: " + d.getPrice());
         rating.setId("priceLabel");
 
-        Button  save = new Button();
+        Button save = new Button();
         save.setId("saveBtn");
         save.setVisible(false);
 
-        VBox vBox2 = new VBox(deleteAndSettings , rating, time,price, save);
+        VBox vBox2 = new VBox(deleteAndSettings, rating, time, price, save);
         vBox2.setSpacing(10);
 
         HBox crnt = new HBox(imageView, vBox, vBox2);
@@ -150,50 +152,49 @@ public class MenuController implements Initializable {
         return crnt;
     }
 
-    private void actionListener(Button settings, Button save, Button delete){
+    private void actionListener(Button settings, Button save, Button delete) {
         addSettingsAction(settings);
         addSaveAction(save);
         addDeleteAction(delete);
-        addBackAction();
-        addDishAction();
     }
 
     private void addSettingsAction(final Button settings) {
         settings.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent actionEvent) {
-                editRoutine(true , settings);
+                editRoutine(true, settings);
             }
         });
     }
 
     private void addSaveAction(final Button save) {
         final HBox hbox = (HBox) save.getParent().getParent();
-        final Dish d = Dish.builder().build();;
+        final Dish d = Dish.builder().build();
+        ;
         save.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent actionEvent) {
-                editRoutine(false , save);
-                for(Node n : hbox.getChildrenUnmodifiable()){
+                editRoutine(false, save);
+                for (Node n : hbox.getChildrenUnmodifiable()) {
 
                     String className = n.getClass().getName().split("\\.")[3];
-                    if(className.equals("VBox")){
+                    if (className.equals("VBox")) {
                         VBox b = (VBox) n;
 
-                        for(Node n2 : b.getChildren()){
+                        for (Node n2 : b.getChildren()) {
                             String className2 = n2.getClass().getName().split("\\.")[3];
-                            if(className2.equals("TextArea")){
+                            if (className2.equals("TextArea")) {
                                 TextArea t = (TextArea) n2;
                                 d.setDescription(t.getText());
                             }
-                            if(className2.equals("TextField")){
+                            if (className2.equals("TextField")) {
                                 TextField t = (TextField) n2;
-                                   d.setName((t.getText()));
-                                }
+                                d.setName((t.getText()));
                             }
-                            break;
                         }
+                        break;
                     }
+                }
                 EmptyResponse r = ManagerController.getInstance().updateDish(map.get(hbox), d);
-                if(!r.isSuccess()) {
+                if (!r.isSuccess()) {
                     showError(r.getMessage());
                 }
             }
@@ -204,11 +205,11 @@ public class MenuController implements Initializable {
         delete.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent actionEvent) {
 
-                for(Node n : delete.getParent().getParent().getParent().getParent().getChildrenUnmodifiable()){
-                    if(n.equals(delete.getParent().getParent().getParent())){
+                for (Node n : delete.getParent().getParent().getParent().getParent().getChildrenUnmodifiable()) {
+                    if (n.equals(delete.getParent().getParent().getParent())) {
                         EmptyResponse r = ManagerController.getInstance().removeDish(map.get((HBox) delete.getParent()));
-                        if(r.isSuccess()) {
-                            ( (VBox) delete.getParent().getParent().getParent().getParent()).getChildren().remove(n);
+                        if (r.isSuccess()) {
+                            ((VBox) delete.getParent().getParent().getParent().getParent()).getChildren().remove(n);
                         } else {
                             showError(r.getMessage());
                         }
@@ -219,7 +220,7 @@ public class MenuController implements Initializable {
         });
     }
 
-    private void addBackAction()  {
+    private void addBackAction() {
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent actionEvent) {
                 Node node = (Node) actionEvent.getSource();
@@ -249,49 +250,49 @@ public class MenuController implements Initializable {
         });
     }
 
-    private void editRoutine(Boolean bool , final Button button){
+    private void editRoutine(Boolean bool, final Button button) {
         ObservableList<Node> ol;
-        if(bool == true)
-           ol = button.getParent().getParent().getChildrenUnmodifiable();
+        if (bool == true)
+            ol = button.getParent().getParent().getChildrenUnmodifiable();
         else
             ol = button.getParent().getChildrenUnmodifiable();
 
-        for(Node n : ol){
+        for (Node n : ol) {
             String className = n.getClass().getName().split("\\.")[3];
-            if(className.equals("Button")){
+            if (className.equals("Button")) {
                 Button b = (Button) n;
                 b.setVisible(bool);
             }
         }
 
-        if(bool == true)
+        if (bool == true)
             ol = button.getParent().getParent().getParent().getChildrenUnmodifiable();
         else
             ol = button.getParent().getParent().getChildrenUnmodifiable();
 
 
-        for(Node n : ol){
+        for (Node n : ol) {
 
             String className = n.getClass().getName().split("\\.")[3];
-            if(className.equals("VBox")){
+            if (className.equals("VBox")) {
                 VBox b = (VBox) n;
 
-                for(Node n2 : ((VBox) n).getChildren()){
+                for (Node n2 : ((VBox) n).getChildren()) {
 
                     String className2 = n2.getClass().getName().split("\\.")[3];
 
-                    if(className2.equals("TextArea")){
+                    if (className2.equals("TextArea")) {
                         TextArea t = (TextArea) n2;
                         System.out.println(bool + className2);
                         ((TextArea) n2).setEditable(bool);
-                        if(!bool) {
+                        if (!bool) {
                             ((TextArea) n2).setText(((TextArea) n2).getText());
                         }
                     }
-                    if(className2.equals("TextField")){
+                    if (className2.equals("TextField")) {
                         TextField t = (TextField) n2;
                         ((TextField) n2).setEditable(bool);
-                        if(!bool) {
+                        if (!bool) {
                             ((TextField) t).setText(((TextField) t).getText());
                         }
                     }

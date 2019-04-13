@@ -52,7 +52,7 @@ public class DatabaseTest {
         db.closeConnection();
         db.connectToDB("Test1");
         try {
-            db.createResturantTables();
+            db.createRestaurantTables();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -69,7 +69,7 @@ public class DatabaseTest {
         db.closeConnection();
         db.connectToDB("RESTAURANT.db");
         try {
-            ResultSet set = db.executeQuery("SELECT * FROM cook;");
+            ResultSet set = db.executeQuery("SELECT * FROM dish;");
 
             while (set.next()) {
                 System.out.println(set.getInt(1));
@@ -100,7 +100,7 @@ public class DatabaseTest {
 
         ex = null;
         db.connectToDB("Test1");
-        db.createResturantTables();
+        db.createRestaurantTables();
         try {
             db.execute("insert into tables values(4);");
         } catch (Exception e) {
@@ -147,7 +147,7 @@ public class DatabaseTest {
 
         ex = null;
         db.connectToDB("Test1");
-        db.createResturantTables();
+        db.createRestaurantTables();
 
         try {
             db.executeQuery("insert into tables values(3);");

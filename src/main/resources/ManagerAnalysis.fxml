@@ -33,11 +33,6 @@
                   <Font size="26.0" />
                </font>
             </Text>
-            <Text fill="#403508" strokeType="OUTSIDE" strokeWidth="0.0" text="Top Cook" wrappingWidth="180.0" GridPane.rowIndex="2">
-               <font>
-                  <Font size="26.0" />
-               </font>
-            </Text>
             <Text fill="#403508" strokeType="OUTSIDE" strokeWidth="0.0" text="Top Dish" wrappingWidth="180.0" GridPane.rowIndex="3">
                <font>
                   <Font size="26.0" />
@@ -49,11 +44,6 @@
                </font>
             </Text>
             <Text id="topDish" fx:id="dishTop" fill="#403508" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" GridPane.columnIndex="1" GridPane.rowIndex="3">
-               <font>
-                  <Font size="26.0" />
-               </font>
-            </Text>
-            <Text id="topCook" fx:id="cookTop" fill="#403508" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <font>
                   <Font size="26.0" />
                </font>

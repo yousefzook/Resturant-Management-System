@@ -38,6 +38,7 @@ public class AddDishController implements Initializable {
     private TextField nameText, priceText, timeText;
 
     private Dish dish;
+    private String photoPath;
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -60,20 +61,21 @@ public class AddDishController implements Initializable {
 
     @FXML
     public void save(MouseEvent mouseEvent) throws IOException {
-        if(isValid()) {
+        if (isValid()) {
             dish = Dish.builder()
                     .name(nameText.getText())
                     .description(descText.getText())
                     .price(Float.valueOf(priceText.getText()))
                     .timeToPrepare(Integer.valueOf(timeText.getText()))
+                    .imagePath(photoPath)
                     .build();
             EmptyResponse r = ManagerController.getInstance().addDish(dish);
-            if(!r.isSuccess()) {
+            if (!r.isSuccess()) {
                 showError(r.getMessage());
             }
             backToMenu(mouseEvent);
         } else {
-          showError("Check input");
+            showError("Check input");
         }
     }
 
@@ -86,10 +88,10 @@ public class AddDishController implements Initializable {
 
     private boolean isValid() {
         // name and description
-        Pattern pattern = Pattern.compile(new String ("^[a-zA-Z\\s]+$"));
+        Pattern pattern = Pattern.compile(new String("^[a-zA-Z\\s]+$"));
         Matcher matcherF = pattern.matcher(nameText.getText().trim());
         Matcher matcherL = pattern.matcher(descText.getText().trim());
-        if(! matcherF.matches() || !matcherL.matches()) {
+        if (!matcherF.matches() || !matcherL.matches()) {
             return false;
         }
         try {
@@ -116,8 +118,8 @@ public class AddDishController implements Initializable {
                 , new FileChooser.ExtensionFilter("JPEG", "*.jpg")
         );
         Node node = (Node) mouseEvent.getSource();
-        File selectedFile = fileChooser.showOpenDialog((Stage) node.getScene().getWindow());
-        dish.setImagePath(selectedFile.toURI().toString());
+        File selectedFile = fileChooser.showOpenDialog(node.getScene().getWindow());
+        photoPath = selectedFile.toPath().toString();
     }
 
     @FXML
