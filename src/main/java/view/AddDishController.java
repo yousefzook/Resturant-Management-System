@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
@@ -17,6 +18,7 @@ import javafx.stage.Stage;
 import model.Dish;
 import model.actionresults.EmptyResponse;
 
+import javax.sound.midi.Soundbank;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -83,6 +85,8 @@ public class AddDishController implements Initializable {
         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
         errorAlert.setHeaderText("Input not valid");
         errorAlert.setContentText(message);
+        System.out.println(message);
+        errorAlert.setResizable(true);
         errorAlert.showAndWait();
     }
 
@@ -120,6 +124,14 @@ public class AddDishController implements Initializable {
         Node node = (Node) mouseEvent.getSource();
         File selectedFile = fileChooser.showOpenDialog(node.getScene().getWindow());
         photoPath = selectedFile.toPath().toString();
+
+
+
+        File file = new File(photoPath);
+        Image image = new Image(file.toURI().toString());
+        imageView.setImage(image);
+        imageView.setFitHeight(100);
+        imageView.setFitWidth(100);
     }
 
     @FXML

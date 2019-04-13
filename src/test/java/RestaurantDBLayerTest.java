@@ -21,7 +21,7 @@ public class RestaurantDBLayerTest {
                 .rate(5)
                 .rateCount(2)
                 .timeToPrepare(10)
-                .image("abc123".getBytes())
+                .imagePath("photos/chicken1.jpg")
                 .build();
 
         Exception ex = null;
@@ -74,7 +74,7 @@ public class RestaurantDBLayerTest {
                 .rate(5)
                 .rateCount(2)
                 .timeToPrepare(10)
-                .image("abc123".getBytes())
+                .imagePath("photos/chicken1.jpg")
                 .build();
         try {
             assert dbLayer != null;
@@ -125,7 +125,7 @@ public class RestaurantDBLayerTest {
                 .rate(5)
                 .rateCount(2)
                 .timeToPrepare(10)
-                .image("abc123".getBytes())
+                .imagePath("photos/chicken1.jpg")
                 .build();
 
         try {

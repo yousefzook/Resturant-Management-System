@@ -27,6 +27,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -87,18 +88,14 @@ public class MenuController implements Initializable {
     private void showError(String message) {
         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
         errorAlert.setHeaderText("Error");
+        errorAlert.setResizable(true);
         errorAlert.setContentText(message);
         errorAlert.showAndWait();
     }
 
     private HBox getItem(Dish d) {
-        try {
-            BufferedImage img = ImageIO.read(new ByteArrayInputStream(d.getImage()));
-            ImageIO.write(img, "jpg", new File(d.getName() + ".jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Image image = new Image("/resources/" + d.getName() + "jpg");
+        File file = new File(d.getImagePath());
+        Image image = new Image(file.toURI().toString());
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitHeight(100);
@@ -206,7 +203,8 @@ public class MenuController implements Initializable {
 
                 for (Node n : delete.getParent().getParent().getParent().getParent().getChildrenUnmodifiable()) {
                     if (n.equals(delete.getParent().getParent().getParent())) {
-                        EmptyResponse r = ManagerController.getInstance().removeDish(map.get((HBox) delete.getParent()));
+
+                        EmptyResponse r = ManagerController.getInstance().removeDish(map.get(n));
                         if (r.isSuccess()) {
                             ((VBox) delete.getParent().getParent().getParent().getParent()).getChildren().remove(n);
                         } else {

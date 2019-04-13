@@ -50,40 +50,40 @@ public class ManagerController {
             response.setMessage("Dish price, rate, time to prepare cannot be less than zero");
         }
 
-        if (checkImage(dishToAdd, response)) {
-            try {
-                db.addDish(dishToAdd);
-                response.setSuccess(true);
-            } catch (Exception e) {
-                response.setMessage(e.getMessage());
-            }
+//        if (checkImage(dishToAdd, response)) {
+        try {
+            db.addDish(dishToAdd);
+            response.setSuccess(true);
+        } catch (Exception e) {
+            response.setMessage(e.getMessage());
+//            }
         }
 
         return response;
     }
 
-    private boolean checkImage(Dish dishToAdd, EmptyResponse response) {
-        File tempFile = new File(dishToAdd.getImagePath());
-        System.out.println(dishToAdd.getImagePath());
-        if (tempFile.exists()) {
-            File f = new File(dishToAdd.getImagePath());
-            try {
-                if (ImageIO.read(f.getAbsoluteFile()) != null) {
-                    dishToAdd.setImage(Files.readAllBytes(f.toPath()));
-                    return true;
-                } else {
-                    response.setMessage("The file is not an image");
-                    return false;
-                }
-            } catch (IOException e) {
-                response.setMessage(e.getMessage());
-                return false;
-            }
-        } else {
-            response.setMessage("Invalid path");
-            return false;
-        }
-    }
+//    private boolean checkImage(Dish dishToAdd, EmptyResponse response) {
+//        File tempFile = new File(dishToAdd.getImagePath());
+//        System.out.println(dishToAdd.getImagePath());
+//        if (tempFile.exists()) {
+//            File f = new File(dishToAdd.getImagePath());
+//            try {
+//                if (ImageIO.read(f.getAbsoluteFile()) != null) {
+//                    dishToAdd.setImage(Files.readAllBytes(f.toPath()));
+//                    return true;
+//                } else {
+//                    response.setMessage("The file is not an image");
+//                    return false;
+//                }
+//            } catch (IOException e) {
+//                response.setMessage(e.getMessage());
+//                return false;
+//            }
+//        } else {
+//            response.setMessage("Invalid path");
+//            return false;
+//        }
+//    }
 
     public DishResponse getDishes() {
         DishResponse response = new DishResponse();

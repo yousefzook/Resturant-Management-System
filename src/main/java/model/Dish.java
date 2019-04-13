@@ -19,8 +19,6 @@ public class Dish {
 
     private float rate, price;
 
-    private byte[] image;
-
     private String imagePath;
 
     public ArrayList<Pair<String, String>> getDBAttributes() {
@@ -32,10 +30,7 @@ public class Dish {
         attrs.add(new ImmutablePair<String, String>("rate", Float.toString(this.rate)));
         attrs.add(new ImmutablePair<String, String>("rate_count", Integer.toString(this.rateCount)));
         attrs.add(new ImmutablePair<String, String>("time_to_prepare_in_minutes", Integer.toString(this.timeToPrepare)));
-        StringBuilder img = new StringBuilder();
-        for (byte b : this.image)
-            img.append(Byte.toString(b));
-        attrs.add(new ImmutablePair<String, String>("image", img.toString()));
+        attrs.add(new ImmutablePair<String, String>("image_path", this.imagePath));
         return attrs;
     }
 

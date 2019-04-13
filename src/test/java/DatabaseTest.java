@@ -72,8 +72,9 @@ public class DatabaseTest {
             ResultSet set = db.executeQuery("SELECT * FROM dish;");
 
             while (set.next()) {
-                System.out.println(set.getInt(1));
-                System.out.println(set.getString(2));
+                for (int i = 1; i <= set.getMetaData().getColumnCount(); i++) {
+                    System.out.println(set.getString(i));
+                }
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block

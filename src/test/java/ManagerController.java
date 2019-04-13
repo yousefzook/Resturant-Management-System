@@ -54,7 +54,6 @@ class TestManagerController {
                 .rate(4.2F)
                 .rateCount(5)
                 .imagePath("Path/To/Image.png")
-                .image(new byte[]{})
                 .build();
 
         testCook = new Cook(0, "F_NAME", "L_NAME");
@@ -98,7 +97,7 @@ class TestManagerController {
 
     @Test
     void addDishShouldReturnNotSuccessWhenImageIsNull() {
-        testDish.setImage(null);
+        testDish.setImagePath(null);
         EmptyResponse response = controller.addDish(testDish);
 
         assertFalse(response.isSuccess());

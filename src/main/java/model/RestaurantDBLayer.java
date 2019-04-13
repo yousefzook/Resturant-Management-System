@@ -26,12 +26,12 @@ public class RestaurantDBLayer implements DBMethods {
 
         StringBuilder values = new StringBuilder();
         ArrayList<Pair<String, String>> attrs = dishToAdd.getDBAttributes();
-        for (int i = 0; i < attrs.size() - 1; i++)
+        for (int i = 1; i < attrs.size() - 1; i++)
             values.append(attrs.get(i).getValue()).append(",");
         values.append("'TRUE',");
         values.append("'").append(attrs.get(attrs.size() - 1).getValue()).append("'");
         System.out.println(values);
-        db.execute("insert into dish values(" + values + ");");
+        db.execute("insert into dish values(null," + values + ");");
         db.closeConnection();
     }
 
@@ -46,7 +46,7 @@ public class RestaurantDBLayer implements DBMethods {
                 int rate = resultSet.getInt("rate");
                 int rateCount = resultSet.getInt("rate_count");
                 int timeToPrepare = resultSet.getInt("time_to_prepare_in_minutes");
-                byte[] image = resultSet.getBytes("image");
+                String imagePath = resultSet.getString("image_path");
 
                 Dish dishToAdd = Dish.builder()
                         .id(id)
@@ -56,7 +56,7 @@ public class RestaurantDBLayer implements DBMethods {
                         .rate(rate)
                         .rateCount(rateCount)
                         .timeToPrepare(timeToPrepare)
-                        .image(image)
+                        .imagePath(imagePath)
                         .build();
 
                 dishes.add(dishToAdd);
@@ -95,7 +95,7 @@ public class RestaurantDBLayer implements DBMethods {
 
     public void updateDish(int oldDishId, Dish newDish) throws Exception {
         db.connectToDB(dbName);
-        db.execute("update dish set is_available='updateValues' where did =" + oldDishId + ";");
+        db.execute("update dish set" + newDish.getDBAttributes() +" is_available='FALSE' where did =" + oldDishId + ";");
         db.closeConnection();
         if (newDish.getId() == oldDishId)
             throw new Exception("Put the dish with different id value as it is already exist");
@@ -213,7 +213,7 @@ public class RestaurantDBLayer implements DBMethods {
             int rate = resultSet.getInt("rate");
             int rateCount = resultSet.getInt("rate_count");
             int timeToPrepare = resultSet.getInt("time_to_prepare_in_minutes");
-            byte[] image = resultSet.getBytes("image");
+            String imagePath = resultSet.getString("image_path");
 
             Dish dishToAdd = Dish.builder()
                     .id(id)
@@ -223,7 +223,7 @@ public class RestaurantDBLayer implements DBMethods {
                     .rate(rate)
                     .rateCount(rateCount)
                     .timeToPrepare(timeToPrepare)
-                    .image(image)
+                    .imagePath(imagePath)
                     .build();
 
             dishes.add(dishToAdd);
