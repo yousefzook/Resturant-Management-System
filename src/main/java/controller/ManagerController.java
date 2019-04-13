@@ -1,6 +1,5 @@
 package controller;
 
-import com.sun.istack.internal.NotNull;
 import lombok.Setter;
 import model.Cook;
 import model.DBMethods;
@@ -34,7 +33,7 @@ public class ManagerController {
         return instance;
     }
 
-    public EmptyResponse addDish(@NotNull Dish dishToAdd) {
+    public EmptyResponse addDish(Dish dishToAdd) {
         EmptyResponse response = new EmptyResponse();
         response.setSuccess(false);
 
@@ -72,7 +71,7 @@ public class ManagerController {
     }
 
 
-    public EmptyResponse updateDish(int oldDishId, @NotNull Dish newDish) {
+    public EmptyResponse updateDish(int oldDishId, Dish newDish) {
         EmptyResponse response = new EmptyResponse();
         response.setSuccess(false);
 
@@ -125,7 +124,7 @@ public class ManagerController {
         return response;
     }
 
-    public EmptyResponse addCook(@NotNull Cook cook) {
+    public EmptyResponse addCook(Cook cook) {
         EmptyResponse response = new EmptyResponse();
         response.setSuccess(false);
 
@@ -181,7 +180,7 @@ public class ManagerController {
     }
 
 
-    private NumericResponse getTotalIncome(@NotNull Date startDate, @NotNull Date endDate) {
+    private NumericResponse getTotalIncome(Date startDate, Date endDate) {
         NumericResponse response = new NumericResponse();
         response.setSuccess(false);
 

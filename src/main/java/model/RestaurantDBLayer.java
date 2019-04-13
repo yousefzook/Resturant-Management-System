@@ -127,7 +127,7 @@ public class RestaurantDBLayer implements DBMethods {
     public void addCook(Cook cook) throws Exception {
         db.connectToDB(dbName);
         String values = "";
-        values += cook.getId() + "," + cook.getFirstName() + "," + cook.getLastName() + ", 'TRUE'";
+        values += cook.getId() + ",'" + cook.getFirstName() + "','" + cook.getLastName() + "', 'TRUE'";
         db.execute("insert into cook values(" + values + ");");
         db.closeConnection();
     }
@@ -195,7 +195,7 @@ public class RestaurantDBLayer implements DBMethods {
     }
     
     @Override
-    public List<Cook> getTopCooks(int limit) throws Exception {
+	public List<Cook> getTopCooks(int limit) throws Exception {
         //TODO implement this function
         return null;
     }
