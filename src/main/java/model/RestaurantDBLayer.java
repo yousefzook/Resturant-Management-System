@@ -228,6 +228,7 @@ public class RestaurantDBLayer implements DBMethods {
 
             dishes.add(dishToAdd);
         }
+        db.closeConnection();
         return dishes;
     }
 

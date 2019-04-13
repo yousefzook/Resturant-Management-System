@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -20,10 +21,11 @@ import static org.mockito.MockitoAnnotations.initMocks;
 //@RunWith(MockitoJUnitRunner.class)
 class TestManagerController {
 
-    private static ManagerController controller;
-
     @Mock
-    private static RestaurantDBLayer db;
+    private static RestaurantDBLayer db = mock(RestaurantDBLayer.class);
+
+    @InjectMocks
+    private static ManagerController controller;
 
     private Dish testDish;
 
