@@ -36,7 +36,7 @@ public class RestaurantDBLayer implements DBMethods {
     }
 
     private List<Dish> parseDishSet(ResultSet resultSet) {
-        List<Dish> dishes = new ArrayList<>();
+        List<Dish> dishes = new ArrayList<Dish>();
         try {
             while (resultSet.next()) {
                 int id = resultSet.getInt("did");
@@ -185,7 +185,7 @@ public class RestaurantDBLayer implements DBMethods {
 
     public List<Cook> getCooks() throws Exception {
         ResultSet resultSet = executeCustomQuery("select * from cook;");
-        List<Cook> cooks = new ArrayList<>();
+        List<Cook> cooks = new ArrayList<Cook>();
         while (resultSet.next()) {
             cooks.add(new Cook(resultSet.getInt("cid"), resultSet.getString("first_name"),
                     resultSet.getString("last_name")));
@@ -194,11 +194,10 @@ public class RestaurantDBLayer implements DBMethods {
         return cooks;
     }
 
-    @Override
     public List<Dish> getTopDishes(int limit) throws Exception {
         db.connectToDB(dbName);
         ResultSet resultSet = executeCustomQuery(String.format("SELECT * FROM dish ORDERED BY rate DESC LIMIT %d", limit));
-        List<Dish> dishes = new ArrayList<>();
+        List<Dish> dishes = new ArrayList<Dish>();
         while (resultSet.next()) {
             int id = resultSet.getInt("did");
             String name = resultSet.getString("name");
