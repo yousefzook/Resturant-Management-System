@@ -42,15 +42,16 @@ public class ManagerController {
         } else if (dishToAdd.getPrice() < 0 ||
                 dishToAdd.getTimeToPrepare() < 0) {
             response.setMessage("Dish price, rate, time to prepare cannot be less than zero");
-        }
+        } else {
 
 //        if (checkImage(dishToAdd, response)) {
-        try {
-            db.addDish(dishToAdd);
-            response.setSuccess(true);
-        } catch (Exception e) {
-            response.setMessage(e.getMessage());
+            try {
+                db.addDish(dishToAdd);
+                response.setSuccess(true);
+            } catch (Exception e) {
+                response.setMessage(e.getMessage());
 //            }
+            }
         }
 
         return response;

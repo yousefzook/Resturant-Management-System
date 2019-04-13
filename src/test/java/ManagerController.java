@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-//@RunWith(MockitoJUnitRunner.class)
 class TestManagerController {
 
     @Mock
@@ -142,20 +142,20 @@ class TestManagerController {
 
     @Test
     void getDishesShouldFailWhenGetDishesThrowsException() throws Exception {
-        doThrow(new Exception()).when(db).getDishes(null);
+        doThrow(new Exception()).when(db).getAvailableDishes();
         DishResponse response = controller.getDishes();
 
         assertFalse(response.isSuccess());
-        verify(db, times(1)).getDishes(null);
+        verify(db, times(1)).getAvailableDishes();
     }
 
     @Test
     void getDishesShouldReturnListOfDishes() throws Exception {
-        when(db.getDishes(null)).thenReturn(new Dish[]{testDish});
+        when(db.getAvailableDishes()).thenReturn(Collections.singletonList(testDish));
         DishResponse response = controller.getDishes();
 
         assertTrue(response.isSuccess());
-        verify(db, times(1)).getDishes(null);
+        verify(db, times(1)).getAvailableDishes();
         assertThat(response.getDishes(), Matchers.hasSize(1));
         assertThat(response.getDishes().get(0), Matchers.equalTo(testDish));
     }
@@ -246,5 +246,23 @@ class TestManagerController {
 
         assertFalse(response.isSuccess());
         assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
+    }
+
+    @Test
+    void fireCookWithInvalidIdShouldFail() {
+        EmptyResponse response = controller.fireCook(-1);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
+    }
+
+    @Test
+    void fireCookShouldSucceed() throws Exception {
+        doNothing().when(db).fireCook(0);
+        EmptyResponse response = controller.fireCook(0);
+
+        assertTrue(response.isSuccess());
+        assertThat(response.getMessage(), Matchers.blankOrNullString());
+        verify(db, times(1)).fireCook(0);
     }
 }
