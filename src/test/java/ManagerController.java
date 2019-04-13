@@ -1,16 +1,18 @@
 import controller.ManagerController;
+import model.Cook;
 import model.Dish;
 import model.RestaurantDBLayer;
+import model.actionresults.CookResponse;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -28,16 +30,21 @@ class TestManagerController {
     private static ManagerController controller;
 
     private Dish testDish;
+    private Cook testCook;
 
     @BeforeAll
-    public static void setupAll() throws Exception {
+    static void setupAll() {
         controller = ManagerController.getInstance();
         controller.setDb(db);
     }
 
     @BeforeEach
-    public void setupEach() throws Exception {
+    void setupEach() {
         initMocks(this);
+        resetTestDish();
+    }
+
+    private void resetTestDish() {
         testDish = Dish.builder()
                 .id(1)
                 .name("TestDish")
@@ -49,10 +56,12 @@ class TestManagerController {
                 .imagePath("Path/To/Image.png")
                 .image(new byte[]{})
                 .build();
+
+        testCook = new Cook(0, "F_NAME", "L_NAME");
     }
 
     @Test
-    public void addDishShouldFailWhenNameIsEmpty() {
+    void addDishShouldFailWhenNameIsEmpty() {
         testDish.setName("");
         EmptyResponse response = controller.addDish(testDish);
 
@@ -61,7 +70,7 @@ class TestManagerController {
     }
 
     @Test
-    public void addDishShouldFailWhenNameIsNull() {
+    void addDishShouldFailWhenNameIsNull() {
         testDish.setName(null);
         EmptyResponse response = controller.addDish(testDish);
 
@@ -70,7 +79,7 @@ class TestManagerController {
     }
 
     @Test
-    public void addDishShouldFailWhenDescriptionIsEmpty() {
+    void addDishShouldFailWhenDescriptionIsEmpty() {
         testDish.setDescription("");
         EmptyResponse response = controller.addDish(testDish);
 
@@ -79,7 +88,7 @@ class TestManagerController {
     }
 
     @Test
-    public void addDishShouldFailWhenDescriptionIsNull() {
+    void addDishShouldFailWhenDescriptionIsNull() {
         testDish.setDescription("");
         EmptyResponse response = controller.addDish(testDish);
 
@@ -88,7 +97,7 @@ class TestManagerController {
     }
 
     @Test
-    public void addDishShouldReturnNotSuccessWhenImageIsNull() {
+    void addDishShouldReturnNotSuccessWhenImageIsNull() {
         testDish.setImage(null);
         EmptyResponse response = controller.addDish(testDish);
 
@@ -97,7 +106,7 @@ class TestManagerController {
     }
 
     @Test
-    public void addDishShouldFailWhenTimeToPrepareLessThanZero() {
+    void addDishShouldFailWhenTimeToPrepareLessThanZero() {
         testDish.setTimeToPrepare(-1);
         EmptyResponse response = controller.addDish(testDish);
 
@@ -106,7 +115,7 @@ class TestManagerController {
     }
 
     @Test
-    public void addDishShouldFailWhenPriceLessThanZero() {
+    void addDishShouldFailWhenPriceLessThanZero() {
         testDish.setPrice(-1);
         EmptyResponse response = controller.addDish(testDish);
 
@@ -115,7 +124,7 @@ class TestManagerController {
     }
 
     @Test
-    public void addDishShouldSucceed() throws Exception {
+    void addDishShouldSucceed() throws Exception {
         doNothing().when(db).addDish(testDish);
         EmptyResponse response = controller.addDish(testDish);
 
@@ -124,7 +133,7 @@ class TestManagerController {
     }
 
     @Test
-    public void addDishShouldFailWhenAddDishThrowsException() throws Exception {
+    void addDishShouldFailWhenAddDishThrowsException() throws Exception {
         doThrow(new Exception()).when(db).addDish(testDish);
         EmptyResponse response = controller.addDish(testDish);
 
@@ -133,7 +142,7 @@ class TestManagerController {
     }
 
     @Test
-    public void getDishesShouldFailWhenGetDishesThrowsException() throws Exception {
+    void getDishesShouldFailWhenGetDishesThrowsException() throws Exception {
         doThrow(new Exception()).when(db).getDishes(null);
         DishResponse response = controller.getDishes();
 
@@ -142,7 +151,7 @@ class TestManagerController {
     }
 
     @Test
-    public void getDishesShouldReturnListOfDishes() throws Exception {
+    void getDishesShouldReturnListOfDishes() throws Exception {
         when(db.getDishes(null)).thenReturn(new Dish[]{testDish});
         DishResponse response = controller.getDishes();
 
@@ -152,5 +161,73 @@ class TestManagerController {
         assertThat(response.getDishes().get(0), Matchers.equalTo(testDish));
     }
 
+    @Test
+    void updateDishWithNegativeIdShouldFail() throws Exception {
+        EmptyResponse response = controller.updateDish(-1, testDish);
 
+        assertFalse(response.isSuccess());
+        verify(db, times(0)).updateDish(-1, testDish);
+        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
+    }
+
+    @Test
+    void updateDishWithInvalidNewDishData() throws Exception {
+        testDish.setName("");
+        EmptyResponse response = controller.updateDish(0, testDish);
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
+
+        resetTestDish();
+
+        testDish.setDescription("");
+        response = controller.updateDish(0, testDish);
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
+
+        resetTestDish();
+
+        testDish.setTimeToPrepare(-1);
+        response = controller.updateDish(0, testDish);
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
+    }
+
+    @Test
+    void updateDishShouldSucceed() throws Exception {
+        doNothing().when(db).updateDish(0, testDish);
+        EmptyResponse response = controller.updateDish(0, testDish);
+
+        assertTrue(response.isSuccess());
+        verify(db, times(1)).updateDish(0, testDish);
+        assertThat(response.getMessage(), Matchers.blankOrNullString());
+    }
+
+    @Test
+    void removeDishWithInvalidIdShouldFail() throws Exception {
+        EmptyResponse response = controller.removeDish(-1);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
+        verify(db, times(0)).removeDish(-1);
+    }
+
+    @Test
+    void removeDishShouldSucceed() throws Exception {
+        EmptyResponse response = controller.removeDish(0);
+
+        assertTrue(response.isSuccess());
+        assertThat(response.getMessage(), Matchers.blankOrNullString());
+        verify(db, times(1)).removeDish(0);
+
+    }
+
+    @Test
+    void getCooksShouldSucceed() throws Exception {
+        when(db.getCooks()).thenReturn(Collections.singletonList(testCook));
+        CookResponse response = controller.getCooks();
+
+        assertTrue(response.isSuccess());
+        assertThat(response.getMessage(), Matchers.blankOrNullString());
+        verify(db, times(1)).getCooks();
+    }
 }

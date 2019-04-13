@@ -1,11 +1,11 @@
 .button {
     -fx-padding: 5 90 10 0;
-    -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;
+    -fx-background-insets: 0, 0 0 5 0, 0 0 6 0, 0 0 7 0;
     -fx-background-radius: 8;
     -fx-background-size: 100 120;
     -fx-background-color: #FFFFE0;
-     -fx-border-color:#8B4513;
-     -fx-border-radius: 10;
+    -fx-border-color: #8B4513;
+    -fx-border-radius: 10;
     -fx-font-weight: bold;
     -fx-font-size: 1.1em;
     -fx-text-alignment: center;
@@ -13,41 +13,40 @@
 }
 
 #settingsBtn {
-     -fx-background-image: url("photos/settings.png");
+    -fx-background-image: url("photos/settings.png");
     -fx-background-size: 30 30;
     -fx-padding: 5 50 10 0;
-  -fx-background-position:center ;
-      -fx-background-repeat: no-repeat;
-      -fx-background-image-repeat: stretch;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-image-repeat: stretch;
 }
 
 #saveBtn {
 
-     -fx-background-image: url("photos/save.jpg");
-      -fx-background-position:center ;
-      -fx-background-repeat: no-repeat;
-      -fx-background-image-repeat: stretch;
+    -fx-background-image: url("photos/save.jpg");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-image-repeat: stretch;
 }
 
 #rateLable {
 
 
-
 }
 
 #delBtn {
-     -fx-background-image: url("photos/delete.png");
- -fx-background-size: 30 30;
+    -fx-background-image: url("photos/delete.png");
+    -fx-background-size: 30 30;
     -fx-padding: 5 50 10 0;
-  -fx-background-position:center ;
-      -fx-background-repeat: no-repeat;
-      -fx-background-image-repeat: stretch;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-image-repeat: stretch;
 }
 
 #menuBox {
     -fx-spacing: 10;
     -fx-border-style: solid inside;
-    -fx-border-width: 2
+    -fx-border-width: 2;
     -fx-border-insets: 5;
     -fx-border-radius: 5;
     -fx-border-color: #8B4513;
