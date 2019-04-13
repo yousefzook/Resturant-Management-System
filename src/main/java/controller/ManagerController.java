@@ -202,7 +202,7 @@ public class ManagerController {
     }
 
 
-    private NumericResponse getTotalIncome(Date startDate, Date endDate) {
+    public NumericResponse getTotalIncome(Date startDate, Date endDate) {
         NumericResponse response = new NumericResponse();
         response.setSuccess(false);
 

@@ -5,6 +5,7 @@ import model.RestaurantDBLayer;
 import model.actionresults.CookResponse;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
+import model.actionresults.NumericResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -170,7 +171,7 @@ class TestManagerController {
     }
 
     @Test
-    void updateDishWithInvalidNewDishData() throws Exception {
+    void updateDishWithInvalidNewDishData() {
         testDish.setName("");
         EmptyResponse response = controller.updateDish(0, testDish);
         assertFalse(response.isSuccess());
@@ -264,5 +265,28 @@ class TestManagerController {
         assertTrue(response.isSuccess());
         assertThat(response.getMessage(), Matchers.blankOrNullString());
         verify(db, times(1)).fireCook(0);
+    }
+
+    @Test
+    void getTotalIncomeWithReversedDateShouldFail() {
+        Date startDate = new Date(1318386508009L);
+        Date endDate = new Date(1318386508000L);
+        NumericResponse response = controller.getTotalIncome(startDate, endDate);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
+    }
+
+    @Test
+    void getTotalIncomeShouldSucceed() throws Exception {
+        Date startDate = new Date(1318386508000L);
+        Date endDate = new Date(1318386508009L);
+        when(db.getTotalIncome(startDate, endDate)).thenReturn(500D);
+
+        NumericResponse response = controller.getTotalIncome(startDate, endDate);
+
+        assertTrue(response.isSuccess());
+        assertThat(response.getMessage(), Matchers.blankOrNullString());
+        verify(db, times(1)).getTotalIncome(startDate, endDate);
     }
 }
