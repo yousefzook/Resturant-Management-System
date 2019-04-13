@@ -1,9 +1,10 @@
 import controller.ManagerController;
-import model.DBMethods;
 import model.Dish;
+import model.RestaurantDBLayer;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -19,18 +20,22 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(MockitoJUnitRunner.class)
 class TestManagerController {
 
-    private ManagerController controller;
-    private Dish testDish;
+    private static ManagerController controller;
 
     @Mock
-    private DBMethods db;
+    private static RestaurantDBLayer db;
 
-    @BeforeEach
-    public void setup() {
-        initMocks(DBMethods.class);
+    private Dish testDish;
+
+    @BeforeAll
+    public static void setupAll() throws Exception {
         controller = ManagerController.getInstance();
         controller.setDb(db);
+    }
 
+    @BeforeEach
+    public void setupEach() throws Exception {
+        initMocks(this);
         testDish = Dish.builder()
                 .id(1)
                 .name("TestDish")
@@ -109,8 +114,8 @@ class TestManagerController {
 
     @Test
     public void addDishShouldSucceed() throws Exception {
-        EmptyResponse response = controller.addDish(testDish);
         doNothing().when(db).addDish(testDish);
+        EmptyResponse response = controller.addDish(testDish);
 
         assertTrue(response.isSuccess());
         verify(db, times(1)).addDish(testDish);
@@ -118,8 +123,8 @@ class TestManagerController {
 
     @Test
     public void addDishShouldFailWhenAddDishThrowsException() throws Exception {
-        EmptyResponse response = controller.addDish(testDish);
         doThrow(new Exception()).when(db).addDish(testDish);
+        EmptyResponse response = controller.addDish(testDish);
 
         assertFalse(response.isSuccess());
         verify(db, times(1)).addDish(testDish);
@@ -127,8 +132,8 @@ class TestManagerController {
 
     @Test
     public void getDishesShouldFailWhenGetDishesThrowsException() throws Exception {
-        DishResponse response = controller.getDishes();
         doThrow(new Exception()).when(db).getDishes(null);
+        DishResponse response = controller.getDishes();
 
         assertFalse(response.isSuccess());
         verify(db, times(1)).getDishes(null);
@@ -136,11 +141,11 @@ class TestManagerController {
 
     @Test
     public void getDishesShouldReturnListOfDishes() throws Exception {
+        when(db.getDishes(null)).thenReturn(new Dish[]{testDish});
         DishResponse response = controller.getDishes();
-        doReturn(new Dish[]{testDish}).when(db).getDishes(new int[]{1});
 
         assertTrue(response.isSuccess());
-        verify(db, times(1)).getDishes(new int[]{1});
+        verify(db, times(1)).getDishes(null);
         assertThat(response.getDishes(), Matchers.hasSize(1));
         assertThat(response.getDishes().get(0), Matchers.equalTo(testDish));
     }

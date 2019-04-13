@@ -115,7 +115,13 @@ public class ManagerController {
 
     public CookResponse getCooks() {
         CookResponse response = new CookResponse();
-        //TODO implement this after adding the functionality to the db interface.
+        response.setSuccess(false);
+        try {
+            response.setCooks(db.getCooks());
+            response.setSuccess(true);
+        } catch (Exception e) {
+            response.setMessage(e.getMessage());
+        }
         return response;
     }
 
@@ -218,7 +224,7 @@ public class ManagerController {
             response.setMessage("Limit must be a positive integer");
         } else {
             try {
-//                response.setCooks(Arrays.asList(db.getTopCooks(limit)));
+                response.setCooks(db.getTopCooks(limit));
                 response.setSuccess(true);
             } catch (Exception e) {
                 response.setMessage(e.getMessage());

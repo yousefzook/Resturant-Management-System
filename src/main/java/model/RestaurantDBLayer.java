@@ -195,6 +195,12 @@ public class RestaurantDBLayer implements DBMethods {
     }
 
     @Override
+    public List<Cook> getTopCooks(int limit) throws Exception {
+        //TODO implement this function
+        return null;
+    }
+
+    @Override
     public List<Dish> getTopDishes(int limit) throws Exception {
         db.connectToDB(dbName);
         ResultSet resultSet = executeCustomQuery(String.format("SELECT * FROM dish ORDERED BY rate DESC LIMIT %d", limit));
