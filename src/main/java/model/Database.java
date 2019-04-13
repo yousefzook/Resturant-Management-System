@@ -47,7 +47,7 @@ public class Database {
 		commands[0] = "CREATE TABLE IF NOT EXISTS dish (did INTEGER AUTO_INCREMENT PRIMARY KEY,"
 				+ " name VARCHAR NOT NULL, description VARCHAR, price DOUBLE, rate INTEGER,"
 				+ " rate_count INTEGER, time_to_prepare_in_minutes integer," + " is_available BOOLEAN, image BLOB);";
-		commands[1] = "CREATE TABLE IF NOT EXISTS cook (cid INTEGER AUTO_INCREMENT PRIMARY KEY,"
+		commands[1] = "CREATE TABLE IF NOT EXISTS cook (cid INTEGER PRIMARY KEY,"
 				+ " first_name VARCHAR NOT NULL, last_name VARCHAR NOT NULL,  is_active BOOLEAN);";
 		commands[2] = "CREATE TABLE IF NOT EXISTS tables (tid INTEGER PRIMARY KEY);";
 		commands[3] = "CREATE TABLE IF NOT EXISTS orders (oid INTEGER AUTO_INCREMENT PRIMARY KEY ,"

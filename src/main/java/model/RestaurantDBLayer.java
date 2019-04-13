@@ -134,7 +134,7 @@ public class RestaurantDBLayer implements DBMethods {
 
     public void fireCook(int cookId) throws Exception {
         db.connectToDB(dbName);
-        ResultSet resultSet = db.executeQuery("select * from cook where cid=" + cookId + ";");
+        ResultSet resultSet = db.executeQuery("select * from cook where cid = " + cookId + ";");
         if (!resultSet.next())
             throw new Exception("The cook is not exist");
         db.execute("update cook set is_active='FALSE' where cid=" + cookId + ";");
@@ -184,7 +184,7 @@ public class RestaurantDBLayer implements DBMethods {
     }
 
     public List<Cook> getCooks() throws Exception {
-        ResultSet resultSet = executeCustomQuery("select * from cook;");
+        ResultSet resultSet = executeCustomQuery("select * from cook WHERE is_active='TRUE';");
         List<Cook> cooks = new ArrayList<Cook>();
         while (resultSet.next()) {
             cooks.add(new Cook(resultSet.getInt("cid"), resultSet.getString("first_name"),
@@ -193,9 +193,9 @@ public class RestaurantDBLayer implements DBMethods {
         db.closeConnection();
         return cooks;
     }
-    
+
     @Override
-	public List<Cook> getTopCooks(int limit) throws Exception {
+    public List<Cook> getTopCooks(int limit) throws Exception {
         //TODO implement this function
         return null;
     }

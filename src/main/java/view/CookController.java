@@ -62,16 +62,18 @@ public class CookController implements Initializable {
         VBox vBox = new VBox();
         vBox.setSpacing(10);
 
-        CookResponse r =  ManagerController.getInstance().getCooks();
-        if(!r.isSuccess())
+        CookResponse r = ManagerController.getInstance().getCooks();
+        if (!r.isSuccess())
             showError(r.getMessage());
         else {
-           List<Cook> list = r.getCooks();
-           for(Cook c : list) {
+            List<Cook> list = r.getCooks();
+            for (Cook c : list) {
                 HBox crnt = getItem(c);
                 map.put(crnt, c.getId());
                 vBox.getChildren().add(crnt);
             }
+            addBackAction();
+            addHireAction();
             scPane.setContent(vBox);
         }
     }
@@ -93,16 +95,10 @@ public class CookController implements Initializable {
         HBox employee = new HBox(vBox, delete);
         employee.setSpacing(150);
         employee.setPadding(new Insets(20, 20, 20, 20));
-        actionListener( delete);
+        addDeleteAction(delete);
         employee.setId("menuBox");
 
         return employee;
-    }
-
-    private void actionListener(final Button delete){
-        addDeleteAction(delete);
-        addBackAction();
-        addHireAction();
     }
 
     private void addHireAction() {
@@ -120,7 +116,7 @@ public class CookController implements Initializable {
         });
     }
 
-    private void addBackAction()  {
+    private void addBackAction() {
         backBtn.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent actionEvent) {
                 Node node = (Node) actionEvent.getSource();
@@ -138,10 +134,10 @@ public class CookController implements Initializable {
     private void addDeleteAction(final Button delete) {
         delete.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent actionEvent) {
-                for(Node n : delete.getParent().getParent().getChildrenUnmodifiable()){
-                    if(n.equals(delete.getParent())){
+                for (Node n : delete.getParent().getParent().getChildrenUnmodifiable()) {
+                    if (n.equals(delete.getParent())) {
                         EmptyResponse r = ManagerController.getInstance().fireCook(map.get((HBox) delete.getParent()));
-                        if(r.isSuccess()) {
+                        if (r.isSuccess()) {
                             ((VBox) delete.getParent().getParent()).getChildren().remove(n);
                         } else {
                             showError(r.getMessage());
