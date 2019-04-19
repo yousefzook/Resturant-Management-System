@@ -13,7 +13,7 @@ public class DatabaseTest {
         Exception ex = null;
         Database db = new Database();
         try {
-            db.connectToDB("test1");
+            db.connectToDB("test1.db");
         } catch (Exception e) {
             // TODO Auto-generated catch block
             ex = e;
@@ -21,7 +21,7 @@ public class DatabaseTest {
         assertNull(ex);
 
         try {
-            db.connectToDB("test1");
+            db.connectToDB("test1.db");
         } catch (Exception e) {
             ex = e;
         }
@@ -35,7 +35,7 @@ public class DatabaseTest {
         Database db = new Database();
         try {
             db.closeConnection(); // close any opened connection before testing
-            db.connectToDB("Test1"); // shouldn't give exception
+            db.connectToDB("Test1.db"); // shouldn't give exception
         } catch (Exception e) {
             // TODO Auto-generated catch block
             System.out.println(e.getMessage());
@@ -50,7 +50,7 @@ public class DatabaseTest {
         Exception ex = null;
         Database db = new Database();
         db.closeConnection();
-        db.connectToDB("Test1");
+        db.connectToDB("Test1.db");
         try {
             db.createRestaurantTables();
         } catch (Exception e) {
@@ -100,7 +100,7 @@ public class DatabaseTest {
         assertNotNull(ex);
 
         ex = null;
-        db.connectToDB("Test1");
+        db.connectToDB("Test1.db");
         db.createRestaurantTables();
         try {
             db.execute("insert into tables values(4);");
@@ -147,7 +147,7 @@ public class DatabaseTest {
         assertNotNull(ex);
 
         ex = null;
-        db.connectToDB("Test1");
+        db.connectToDB("Test1.db");
         db.createRestaurantTables();
 
         try {
