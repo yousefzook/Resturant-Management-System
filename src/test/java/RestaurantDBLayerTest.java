@@ -18,7 +18,7 @@ public class RestaurantDBLayerTest {
                 .name("dish1")
                 .description("desc1")
                 .price(15.2F)
-                .rate(5)
+                .rate(5F)
                 .rateCount(2)
                 .timeToPrepare(10)
                 .imagePath("photos/chicken1.jpg")
@@ -71,7 +71,7 @@ public class RestaurantDBLayerTest {
                 .name("dish1")
                 .description("desc1")
                 .price(15.2F)
-                .rate(5)
+                .rate(5F)
                 .rateCount(2)
                 .timeToPrepare(10)
                 .imagePath("photos/chicken1.jpg")
@@ -110,8 +110,8 @@ public class RestaurantDBLayerTest {
         }
         assertNull(ex);
         assertEquals(2, dishes.length);
-        assertEquals(1, dishes[0].getId());
-        assertEquals(2, dishes[1].getId());
+        assertEquals(1, (int) dishes[0].getId());
+        assertEquals(2, (int) dishes[1].getId());
 
         //////////// update test
 
@@ -121,8 +121,8 @@ public class RestaurantDBLayerTest {
                 .id(6)
                 .name("dishNew")
                 .description("desc1")
-                .price(3)
-                .rate(5)
+                .price(3F)
+                .rate(5F)
                 .rateCount(2)
                 .timeToPrepare(10)
                 .imagePath("photos/chicken1.jpg")

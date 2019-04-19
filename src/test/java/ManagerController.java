@@ -116,7 +116,7 @@ class TestManagerController {
 
     @Test
     void addDishShouldFailWhenPriceLessThanZero() {
-        testDish.setPrice(-1);
+        testDish.setPrice(-1F);
         EmptyResponse response = controller.addDish(testDish);
 
         assertFalse(response.isSuccess());

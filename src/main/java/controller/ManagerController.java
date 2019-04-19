@@ -97,13 +97,13 @@ public class ManagerController {
     public EmptyResponse updateDish(int oldDishId, Dish newDish) {
         EmptyResponse response = new EmptyResponse();
         response.setSuccess(false);
-        
+
         if (oldDishId < 0) {
             response.setMessage("Dish id cannot be less than zero");
         } else if (StringUtils.isBlank(newDish.getName()) ||
                 StringUtils.isBlank(newDish.getDescription())) {
             response.setMessage("Dish name and description can not be empty, null nor a whitespace");
-        } 
+        }
 //        else if (newDish.getPrice() < 0 ||
 //                newDish.getRateCount() < 0 ||
 //                newDish.getTimeToPrepare() < 0) {
