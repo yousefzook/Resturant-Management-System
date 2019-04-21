@@ -4,25 +4,31 @@ import controller.ManagerController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Setter;
-import model.actionresults.DishResponse;
-import model.actionresults.NumericResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@Component
 public class AnalysisController implements Initializable {
 
     @Setter
     private Stage primaryStage;
+
+    @Autowired
+    private ConfigurableApplicationContext appContext;
+
+    @Autowired
+    private ManagerController managerController;
 
     @FXML
     private Text incomeToday, incomeMonth, dishTop;
@@ -35,7 +41,7 @@ public class AnalysisController implements Initializable {
     }
 
     public void showUp() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/ManagerAnalysis.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/ManagerAnalysis.fxml"));
 
 //        NumericResponse r1 = ManagerController.getInstance().getIncomeToday();
 //        NumericResponse r2 = ManagerController.getInstance().getIncomeThisMonth();
@@ -57,22 +63,21 @@ public class AnalysisController implements Initializable {
 //                dishTop.setText("NO Dishes Yet");
 //            else
 //                dishTop.setText(r3.getDishes().get(0).getName());
-            primaryStage.setScene(new Scene(root));
-            primaryStage.show();
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
 //        }
 
 
     }
 
-    public void goBack(MouseEvent mouseEvent) throws IOException {
-        Node node = (Node) mouseEvent.getSource();
-        final Stage stage = (Stage) node.getScene().getWindow();
-        ViewController c = new ViewController(stage);
-        c.showUp();
+    public void goBack() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ManagerView.fxml"));
+        System.out.println(appContext);
+        fxmlLoader.setControllerFactory(appContext::getBean);
+        primaryStage.setScene(new Scene(fxmlLoader.load()));
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         incomeToday.setText("TEXT");
         incomeMonth.setText("TEXT");
         dishTop.setText("NO Dishes Yet");

@@ -13,7 +13,7 @@
 }
 
 #settingsBtn {
-    -fx-background-image: url("photos/settings.png");
+    -fx-background-image: url("../photos/settings.png");
     -fx-background-size: 30 30;
     -fx-padding: 5 50 10 0;
     -fx-background-position: center;
@@ -23,7 +23,7 @@
 
 #saveBtn {
 
-    -fx-background-image: url("photos/save.jpg");
+    -fx-background-image: url("../photos/save.jpg");
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
     -fx-background-image-repeat: stretch;
@@ -35,7 +35,7 @@
 }
 
 #delBtn {
-    -fx-background-image: url("photos/delete.png");
+    -fx-background-image: url("../photos/delete.png");
     -fx-background-size: 30 30;
     -fx-padding: 5 50 10 0;
     -fx-background-position: center;

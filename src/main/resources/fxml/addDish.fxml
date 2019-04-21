@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AddDishController">
+    <TextField id="nameText" fx:id="nameText" layoutX="168.0" layoutY="49.0"/>
+    <TextArea id="descText" fx:id="descText" layoutX="168.0" layoutY="94.0" prefHeight="111.0" prefWidth="352.0"/>
+    <Text layoutX="44.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name"/>
+    <Text layoutX="44.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description"/>
+    <Button id="addBtn" onAction="#addPhoto" layoutX="423.0" layoutY="332.0" mnemonicParsing="false" prefHeight="32.0"
+            prefWidth="97.0" text="Add Photo"/>
+    <Text layoutX="51.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price"/>
+    <Text layoutX="51.0" layoutY="276.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time to prepare"/>
+    <TextField layoutX="173.0" layoutY="266.0" fx:id="timeText" id="timeText"/>
+    <TextField id="priceText" fx:id="priceText" layoutX="173.0" layoutY="228.0"/>
+    <Button id="saveBtn" fx:id="save" layoutX="242.0" layoutY="332.0" mnemonicParsing="false" onMouseClicked="#save"
+            prefHeight="32.0" prefWidth="97.0" text="Save"/>
+    <Button id="back" onAction="#backToMenu" layoutX="489.0" layoutY="14.0" mnemonicParsing="false" prefHeight="32.0"
+            prefWidth="97.0" text="Back"/>
+    <ImageView id="imageView" fx:id="imageView" fitHeight="88.0" fitWidth="97.0" layoutX="423.0" layoutY="222.0"
+               pickOnBounds="true" preserveRatio="true"/>
+</AnchorPane>

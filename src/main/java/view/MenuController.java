@@ -2,8 +2,6 @@ package view;
 
 import controller.ManagerController;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,58 +16,55 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
-import model.Dish;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
+import model.entity.Dish;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.stereotype.Component;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-
+@Component
 public class MenuController implements Initializable {
 
     @Setter
     private Stage primaryStage;
 
-    private Map<HBox, Integer> map = new HashMap<HBox, Integer>();
+    @Autowired
+    private ConfigurableApplicationContext appContext;
+
+    @Autowired
+    private ManagerController managerController;
+
+    private Map<HBox, Integer> map = new HashMap<>();
 
     @FXML
     ScrollPane scPane;
 
-    @FXML
-    Button addBtn, backBtn;
-
-
-    public MenuController(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
     public MenuController() {
     }
 
-    public void showUp() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/ManagerMenu.fxml"));
+    void showUp() throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/ManagerMenu.fxml"));
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("menu.css");
+        scene.getStylesheets().add("css/menu.css");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        map = new HashMap<HBox, Integer>();
+        map = new HashMap<>();
         VBox vBox = new VBox();
         vBox.setSpacing(10);
 
-        DishResponse r = ManagerController.getInstance().getDishes();
+        DishResponse r = managerController.getDishes();
         if (!r.isSuccess())
             showError(r.getMessage());
         else {
@@ -79,8 +74,6 @@ public class MenuController implements Initializable {
                 map.put(crnt, d.getId());
                 vBox.getChildren().add(crnt);
             }
-            addBackAction();
-            addDishAction();
             scPane.setContent(vBox);
         }
     }
@@ -155,101 +148,75 @@ public class MenuController implements Initializable {
     }
 
     private void addSettingsAction(final Button settings) {
-        settings.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent actionEvent) {
-                editRoutine(true, settings);
-            }
-        });
+        settings.setOnAction(actionEvent -> editRoutine(true, settings));
     }
 
     private void addSaveAction(final Button save) {
         final HBox hbox = (HBox) save.getParent().getParent();
         final Dish d = Dish.builder().build();
-        ;
-        save.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent actionEvent) {
-                editRoutine(false, save);
-                for (Node n : hbox.getChildrenUnmodifiable()) {
+        save.setOnAction(actionEvent -> {
+            editRoutine(false, save);
+            for (Node n : hbox.getChildrenUnmodifiable()) {
 
-                    String className = n.getClass().getName().split("\\.")[3];
-                    if (className.equals("VBox")) {
-                        VBox b = (VBox) n;
+                String className = n.getClass().getName().split("\\.")[3];
+                if (className.equals("VBox")) {
+                    VBox b = (VBox) n;
 
-                        for (Node n2 : b.getChildren()) {
-                            String className2 = n2.getClass().getName().split("\\.")[3];
-                            if (className2.equals("TextArea")) {
-                                TextArea t = (TextArea) n2;
-                                d.setDescription(t.getText());
-                            }
-                            if (className2.equals("TextField")) {
-                                TextField t = (TextField) n2;
-                                d.setName((t.getText()));
-                            }
+                    for (Node n2 : b.getChildren()) {
+                        String className2 = n2.getClass().getName().split("\\.")[3];
+                        if (className2.equals("TextArea")) {
+                            TextArea t = (TextArea) n2;
+                            d.setDescription(t.getText());
                         }
-                        break;
+                        if (className2.equals("TextField")) {
+                            TextField t = (TextField) n2;
+                            d.setName((t.getText()));
+                        }
                     }
+                    break;
                 }
-                EmptyResponse r = ManagerController.getInstance().updateDish(map.get(hbox), d);
-                if (!r.isSuccess()) {
-                    showError(r.getMessage());
-                }
+            }
+            EmptyResponse r = managerController.updateDish(map.get(hbox), d);
+            if (!r.isSuccess()) {
+                showError(r.getMessage());
             }
         });
     }
 
     private void addDeleteAction(final Button delete) {
-        delete.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent actionEvent) {
+        delete.setOnAction(actionEvent -> {
 
-                for (Node n : delete.getParent().getParent().getParent().getParent().getChildrenUnmodifiable()) {
-                    if (n.equals(delete.getParent().getParent().getParent())) {
+            for (Node n : delete.getParent().getParent().getParent().getParent().getChildrenUnmodifiable()) {
+                if (n.equals(delete.getParent().getParent().getParent())) {
 
-                        EmptyResponse r = ManagerController.getInstance().removeDish(map.get(n));
-                        if (r.isSuccess()) {
-                            ((VBox) delete.getParent().getParent().getParent().getParent()).getChildren().remove(n);
-                        } else {
-                            showError(r.getMessage());
-                        }
-                        break;
+                    EmptyResponse r = managerController.removeDish(map.get(n));
+                    if (r.isSuccess()) {
+                        ((VBox) delete.getParent().getParent().getParent().getParent()).getChildren().remove(n);
+                    } else {
+                        showError(r.getMessage());
                     }
+                    break;
                 }
             }
         });
     }
 
-    private void addBackAction() {
-        backBtn.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent actionEvent) {
-                Node node = (Node) actionEvent.getSource();
-                final Stage stage = (Stage) node.getScene().getWindow();
-                ViewController c = new ViewController(stage);
-                try {
-                    c.showUp();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    public void goBack() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ManagerView.fxml"));
+        fxmlLoader.setControllerFactory(appContext::getBean);
+        primaryStage.setScene(new Scene(fxmlLoader.load()));
     }
 
-    private void addDishAction() {
-        addBtn.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent actionEvent) {
-                Node node = (Node) actionEvent.getSource();
-                final Stage stage = (Stage) node.getScene().getWindow();
-                AddDishController c = new AddDishController(stage);
-                try {
-                    c.showUp();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    public void addDish() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/addDish.fxml"));
+        fxmlLoader.setControllerFactory(appContext::getBean);
+        primaryStage.setScene(new Scene(fxmlLoader.load()));
+        ((AddDishController) fxmlLoader.getController()).setPrimaryStage(primaryStage);
     }
 
     private void editRoutine(Boolean bool, final Button button) {
         ObservableList<Node> ol;
-        if (bool == true)
+        if (bool)
             ol = button.getParent().getParent().getChildrenUnmodifiable();
         else
             ol = button.getParent().getChildrenUnmodifiable();
@@ -262,7 +229,7 @@ public class MenuController implements Initializable {
             }
         }
 
-        if (bool == true)
+        if (bool)
             ol = button.getParent().getParent().getParent().getChildrenUnmodifiable();
         else
             ol = button.getParent().getParent().getChildrenUnmodifiable();
@@ -272,14 +239,11 @@ public class MenuController implements Initializable {
 
             String className = n.getClass().getName().split("\\.")[3];
             if (className.equals("VBox")) {
-                VBox b = (VBox) n;
-
                 for (Node n2 : ((VBox) n).getChildren()) {
 
                     String className2 = n2.getClass().getName().split("\\.")[3];
 
                     if (className2.equals("TextArea")) {
-                        TextArea t = (TextArea) n2;
                         System.out.println(bool + className2);
                         ((TextArea) n2).setEditable(bool);
                         if (!bool) {
@@ -290,7 +254,7 @@ public class MenuController implements Initializable {
                         TextField t = (TextField) n2;
                         ((TextField) n2).setEditable(bool);
                         if (!bool) {
-                            ((TextField) t).setText(((TextField) t).getText());
+                            t.setText(t.getText());
                         }
                     }
 

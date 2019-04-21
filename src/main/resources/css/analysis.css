@@ -31,7 +31,7 @@
 }
 
 #backBtn {
-    -fx-background-image: url("photos/back.png");
+    -fx-background-image: url("../photos/back.png");
     -fx-background-position:center ;
     -fx-background-repeat: no-repeat;
     -fx-background-image-repeat: stretch;

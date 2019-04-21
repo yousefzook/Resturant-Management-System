@@ -4,7 +4,6 @@ import controller.ManagerController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -12,13 +11,15 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import model.Dish;
+import lombok.Setter;
 import model.actionresults.EmptyResponse;
+import model.entity.Dish;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.stereotype.Component;
 
-import javax.sound.midi.Soundbank;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -26,9 +27,17 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class AddDishController implements Initializable {
 
+    @Setter
     private Stage primaryStage;
+
+    @Autowired
+    private ConfigurableApplicationContext appContext;
+
+    @Autowired
+    private ManagerController managerController;
 
     @FXML
     private ImageView imageView;
@@ -39,43 +48,36 @@ public class AddDishController implements Initializable {
     @FXML
     private TextField nameText, priceText, timeText;
 
-    private Dish dish;
     private String photoPath;
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
 
-    public AddDishController(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
     public AddDishController() {
     }
 
-    public void showUp() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/addDish.fxml"));
+    void showUp() throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/addDish.fxml"));
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("addDish.css");
+        scene.getStylesheets().add("css/addDish.css");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    @FXML
-    public void save(MouseEvent mouseEvent) throws IOException {
+    public void save() {
         if (isValid()) {
-            dish = Dish.builder()
+            Dish dish = Dish.builder()
                     .name(nameText.getText())
                     .description(descText.getText())
                     .price(Float.valueOf(priceText.getText()))
                     .timeToPrepare(Integer.valueOf(timeText.getText()))
                     .imagePath(photoPath)
                     .build();
-            EmptyResponse r = ManagerController.getInstance().addDish(dish);
+            EmptyResponse r = managerController.addDish(dish);
             if (!r.isSuccess()) {
                 showError(r.getMessage());
             }
-            backToMenu(mouseEvent);
         } else {
             showError("Check input");
         }
@@ -92,39 +94,36 @@ public class AddDishController implements Initializable {
 
     private boolean isValid() {
         // name and description
-        Pattern pattern = Pattern.compile(new String("^[a-zA-Z\\s]+$"));
+        Pattern pattern = Pattern.compile("^[a-zA-Z\\s]+$");
         Matcher matcherF = pattern.matcher(nameText.getText().trim());
         Matcher matcherL = pattern.matcher(descText.getText().trim());
         if (!matcherF.matches() || !matcherL.matches()) {
             return false;
         }
         try {
-            double p = Double.parseDouble(priceText.getText().trim());
-            int t = Integer.parseInt(timeText.getText().trim());
+            Double.parseDouble(priceText.getText().trim());
+            Integer.parseInt(timeText.getText().trim());
         } catch (Exception e) {
             return false;
         }
         return true;
     }
 
-    private void backToMenu(MouseEvent mouseEvent) throws IOException {
-        Node node = (Node) mouseEvent.getSource();
-        final Stage stage = (Stage) node.getScene().getWindow();
-        MenuController c = new MenuController(stage);
-        c.showUp();
+    public void backToMenu() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ManagerMenu.fxml"));
+        fxmlLoader.setControllerFactory(appContext::getBean);
+        primaryStage.setScene(new Scene(fxmlLoader.load()));
+        ((MenuController) fxmlLoader.getController()).setPrimaryStage(primaryStage);
     }
 
-    @FXML
-    public void addPhoto(MouseEvent mouseEvent) throws IOException {
+    public void addPhoto() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("JPEG", "*.jpg"),
                 new FileChooser.ExtensionFilter("PNG", "*.png")
         );
-        Node node = (Node) mouseEvent.getSource();
-        File selectedFile = fileChooser.showOpenDialog(node.getScene().getWindow());
+        File selectedFile = fileChooser.showOpenDialog(primaryStage);
         photoPath = selectedFile.toPath().toString();
-
 
 
         File file = new File(photoPath);
@@ -132,10 +131,5 @@ public class AddDishController implements Initializable {
         imageView.setImage(image);
         imageView.setFitHeight(100);
         imageView.setFitWidth(100);
-    }
-
-    @FXML
-    public void back(MouseEvent mouseEvent) throws IOException {
-        backToMenu(mouseEvent);
     }
 }

@@ -50,7 +50,7 @@
 }
 
 #bossBtn{
-    -fx-background-image: url("photos/boss.jpg");
+    -fx-background-image: url("../photos/boss.jpg");
    -fx-background-position:center ;
       -fx-background-repeat: no-repeat;
        -fx-background-image-repeat: stretch;
@@ -60,14 +60,14 @@
  }
 
 #menuBtn {
-    -fx-background-image: url("photos/menu3.jpg");
+    -fx-background-image: url("../photos/menu3.jpg");
     -fx-background-position:center ;
     -fx-background-repeat: no-repeat;
     -fx-background-image-repeat: stretch;
 }
 
 #empBtn {
-    -fx-background-image: url("photos/cook2.jpg");
+    -fx-background-image: url("../photos/cook2.jpg");
     -fx-background-position:center ;
     -fx-background-repeat: no-repeat;
      -fx-background-image-repeat: stretch;
@@ -77,7 +77,7 @@
 }
 
 #analysisBtn {
-    -fx-background-image: url("photos/statistics.jpg");
+    -fx-background-image: url("../photos/statistics.jpg");
     -fx-background-position:center ;
     -fx-background-repeat: no-repeat;
      -fx-background-image-repeat: stretch;
