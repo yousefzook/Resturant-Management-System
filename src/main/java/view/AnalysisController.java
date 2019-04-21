@@ -10,6 +10,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Setter;
+import model.actionresults.DishResponse;
+import model.actionresults.NumericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
@@ -40,36 +42,6 @@ public class AnalysisController implements Initializable {
     public AnalysisController() {
     }
 
-    public void showUp() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/ManagerAnalysis.fxml"));
-
-//        NumericResponse r1 = ManagerController.getInstance().getIncomeToday();
-//        NumericResponse r2 = ManagerController.getInstance().getIncomeThisMonth();
-//        DishResponse r3 = ManagerController.getInstance().getTopDishes(1);
-//
-//        if (!r1.isSuccess() || !r2.isSuccess() || !r3.isSuccess()) {
-//            showError("unable to fetch data from database");
-//
-//            ViewController c = new ViewController(primaryStage);
-//            c.showUp();
-//
-//        }
-//        else {
-//            incomeToday.setText(String.valueOf(r1.getNumber()));
-//            incomeMonth.setText(String.valueOf(r2.getNumber()));
-//            incomeToday.setText("TEXT");
-//            incomeMonth.setText("TEXT");
-//            if (r3.getDishes().size() == 0)
-//                dishTop.setText("NO Dishes Yet");
-//            else
-//                dishTop.setText(r3.getDishes().get(0).getName());
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
-//        }
-
-
-    }
-
     public void goBack() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ManagerView.fxml"));
         System.out.println(appContext);
@@ -78,9 +50,31 @@ public class AnalysisController implements Initializable {
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        incomeToday.setText("TEXT");
-        incomeMonth.setText("TEXT");
-        dishTop.setText("NO Dishes Yet");
+        incomeToday.setText("-");
+        incomeMonth.setText("-");
+        dishTop.setText("-");
+
+        NumericResponse r1 = managerController.getIncomeToday();
+        NumericResponse r2 = managerController.getIncomeThisMonth();
+        DishResponse r3 = managerController.getTopDishes(1);
+
+        if (!r1.isSuccess() || !r2.isSuccess() || !r3.isSuccess()) {
+            showError("unable to fetch data from database");
+        }
+        if (r1.isSuccess()) {
+            incomeToday.setText(String.valueOf(r1.getNumber()));
+        }
+
+        if (r2.isSuccess()) {
+            incomeMonth.setText(String.valueOf(r2.getNumber()));
+        }
+
+        if (r3.isSuccess()) {
+            if (r3.getDishes().size() == 0)
+                dishTop.setText("NO Dishes Yet");
+            else
+                dishTop.setText(r3.getDishes().get(0).getName());
+        }
     }
 
     private void showError(String s) {
