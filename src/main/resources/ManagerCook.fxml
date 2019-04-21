@@ -4,10 +4,10 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CookController">
+<AnchorPane id="anchor" prefHeight="600.0" prefWidth="800.0" stylesheets="@menu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CookController">
    <children>
-      <ScrollPane id="scPane" fx:id="scPane" layoutX="16.0" layoutY="40.0" prefHeight="303.0" prefWidth="560.0" />
-      <Button id="backBtn" fx:id="backBtn" layoutX="83.0" layoutY="351.0" mnemonicParsing="false" text="Back" />
-      <Button id="hireBtn" fx:id="hireBtn" layoutX="394.0" layoutY="351.0" mnemonicParsing="false" text="Hire" />
+      <ScrollPane id="scPane" fx:id="scPane" layoutX="10.0" layoutY="21.0" prefHeight="483.0" prefWidth="780.0" />
+      <Button id="backBtn" fx:id="backBtn" layoutX="129.0" layoutY="531.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="119.0" text="Back" />
+      <Button id="hireBtn" fx:id="hireBtn" ellipsisString="" layoutX="548.0" layoutY="531.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="119.0" text="Hire" wrapText="true" />
    </children>
 </AnchorPane>

@@ -1,15 +1,23 @@
 .button {
-    -fx-padding: 5 90 10 0;
     -fx-background-insets: 0, 0 0 5 0, 0 0 6 0, 0 0 7 0;
-    -fx-background-radius: 8;
+    -fx-background-radius: 20;
     -fx-background-size: 100 120;
-    -fx-background-color: #FFFFE0;
+    -fx-background-color: #FFFFF0;
     -fx-border-color: #8B4513;
-    -fx-border-radius: 10;
+    -fx-border-radius: 20;
     -fx-font-weight: bold;
-    -fx-font-size: 1.1em;
+    -fx-font-size: 2em;
+    -fx-border-width: 2;
     -fx-text-alignment: center;
 
+}
+
+#anchor {
+    -fx-background: #DEB887;
+}
+
+#scPane {
+    -fx-background: #FFFFF0;
 }
 
 #settingsBtn {

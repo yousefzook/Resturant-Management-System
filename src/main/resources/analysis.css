@@ -2,36 +2,31 @@
     -fx-background-color: #DEB887;
     -fx-padding: 100 15 0 15;
     -fx-spacing: 15;
-    -fx-pref-width: 666;
-    -fx-pref-height: 350;
+     fx-border-color: #8B4513;
+    -fx-border-width: 20;
 }
 
 #gridPane {
     -fx-background-color: #DEB887;
     -fx-padding: 100 15 0 15;
     -fx-spacing: 15;
-    -fx-pref-width: 666;
-    -fx-pref-height: 350;
+
 }
 
 .button {
-    -fx-padding: 8 15 15 15;
-    -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;
-    -fx-background-radius: 8;
-    -fx-background-size: 50 50;
-    -fx-background-color:
-        linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),
-        #9d4024,
-        #d86e3a,
-        radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-background-insets: 0, 0 0 5 0, 0 0 6 0, 0 0 7 0;
+    -fx-background-radius: 20;
+    -fx-background-size: 100 120;
+    -fx-background-color: #FFFFF0;
+    -fx-border-color: #8B4513;
+    -fx-border-radius: 20;
     -fx-font-weight: bold;
-    -fx-font-size: 1.1em;
-
+    -fx-font-size: 2em;
+    -fx-border-width: 2;
+    -fx-text-alignment: center;
 }
 
 #backBtn {
-    -fx-background-image: url("photos/back.png");
     -fx-background-position:center ;
     -fx-background-repeat: no-repeat;
     -fx-background-image-repeat: stretch;

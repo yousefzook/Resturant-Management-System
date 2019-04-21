@@ -5,21 +5,39 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AddDishController">
+<AnchorPane id="anchor" prefHeight="600.0" prefWidth="800.0" stylesheets="@addDish.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AddDishController">
    <children>
-      <TextField id="nameText" fx:id="nameText" layoutX="168.0" layoutY="49.0" />
-      <TextArea id="descText" fx:id="descText" layoutX="168.0" layoutY="94.0" prefHeight="111.0" prefWidth="352.0" />
-      <Text layoutX="44.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" />
-      <Text layoutX="44.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description" />
-      <Button id="addBtn" fx:id="addBtn" onMouseClicked="#addPhoto" layoutX="423.0" layoutY="332.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="97.0" text="Add Photo" />
-      <Text layoutX="51.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price" />
-      <Text layoutX="51.0" layoutY="276.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time to prepare" />
-      <TextField layoutX="173.0" layoutY="266.0" fx:id="timeText" id="timeText" />
-      <TextField id="priceText" fx:id="priceText" layoutX="173.0" layoutY="228.0" />
-      <Button id="saveBtn" fx:id="save" layoutX="242.0" layoutY="332.0" mnemonicParsing="false" onMouseClicked="#save" prefHeight="32.0" prefWidth="97.0" text="Save" />
-      <Button id="back" fx:id="back" layoutX="489.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#back" prefHeight="32.0" prefWidth="97.0" text="Back" />
-      <ImageView id="imageView" fx:id="imageView" fitHeight="88.0" fitWidth="97.0" layoutX="423.0" layoutY="222.0" pickOnBounds="true" preserveRatio="true" />
+      <TextField id="nameText" fx:id="nameText" layoutX="245.0" layoutY="104.0" prefHeight="26.0" prefWidth="252.0" />
+      <TextArea id="descText" fx:id="descText" layoutX="245.0" layoutY="197.0" prefHeight="111.0" prefWidth="352.0" />
+      <Text layoutX="52.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name">
+         <font>
+            <Font size="20.0" />
+         </font></Text>
+      <Text layoutX="52.0" layoutY="248.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font></Text>
+      <Button id="addBtn" fx:id="addBtn" ellipsisString="" layoutX="600.0" layoutY="469.0" mnemonicParsing="false" onMouseClicked="#addPhoto" prefHeight="43.0" prefWidth="167.0" stylesheets="@addDish.css" text="Add Photo" wrapText="true" />
+      <Text layoutX="52.0" layoutY="399.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price">
+         <font>
+            <Font size="20.0" />
+         </font></Text>
+      <Text layoutX="52.0" layoutY="463.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time to prepare" wrappingWidth="193.00000512599945">
+         <font>
+            <Font size="20.0" />
+         </font></Text>
+      <TextField id="timeText" fx:id="timeText" layoutX="245.0" layoutY="443.0" prefHeight="26.0" prefWidth="252.0" />
+      <TextField id="priceText" fx:id="priceText" layoutX="245.0" layoutY="379.0" prefHeight="26.0" prefWidth="252.0" />
+      <Button id="saveBtn" fx:id="save" ellipsisString="" layoutX="340.0" layoutY="521.0" mnemonicParsing="false" onMouseClicked="#save" prefHeight="32.0" prefWidth="97.0" stylesheets="@addDish.css" text="Save" />
+      <Button id="back" fx:id="back" alignment="CENTER" ellipsisString="" layoutX="635.0" layoutY="36.0" mnemonicParsing="false" onMouseClicked="#back" prefHeight="32.0" prefWidth="97.0" stylesheets="@addDish.css" text="Back" textAlignment="CENTER" textOverrun="WORD_ELLIPSIS" />
+      <HBox id="image" layoutX="603.0" layoutY="308.0">
+         <children>
+            <ImageView id="image" fx:id="imageView" fitHeight="141.0" fitWidth="159.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

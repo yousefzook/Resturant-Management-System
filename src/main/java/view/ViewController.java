@@ -33,7 +33,7 @@ public class ViewController implements Initializable {
         Parent root = FXMLLoader.load(getClass().getResource("/ManagerView.fxml"));
 
         primaryStage.setScene(new Scene(root));
-        System.out.println(primaryStage.toString());
+
         primaryStage.show();
     }
 
