@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Setter;
+import model.actionresults.CookResponse;
 import model.actionresults.DishResponse;
 import model.actionresults.NumericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class AnalysisController implements Initializable {
     private ManagerController managerController;
 
     @FXML
-    private Text incomeToday, incomeMonth, dishTop;
+    private Text incomeToday, incomeMonth, dishTop, cookTop;
 
     public AnalysisController(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -53,12 +54,14 @@ public class AnalysisController implements Initializable {
         incomeToday.setText("-");
         incomeMonth.setText("-");
         dishTop.setText("-");
+        cookTop.setText("-");
 
         NumericResponse r1 = managerController.getIncomeToday();
         NumericResponse r2 = managerController.getIncomeThisMonth();
         DishResponse r3 = managerController.getTopDishes(1);
+        CookResponse r4 = managerController.getTopCooks(1);
 
-        if (!r1.isSuccess() || !r2.isSuccess() || !r3.isSuccess()) {
+        if (!r1.isSuccess() || !r2.isSuccess() || !r3.isSuccess() || !r4.isSuccess()) {
             showError("unable to fetch data from database");
         }
         if (r1.isSuccess()) {
@@ -74,6 +77,10 @@ public class AnalysisController implements Initializable {
                 dishTop.setText("NO Dishes Yet");
             else
                 dishTop.setText(r3.getDishes().get(0).getName());
+        }
+
+        if (r4.isSuccess() && r4.getCooks().size() != 0) {
+            cookTop.setText(r4.getCooks().get(0).getFirstName() + " " + r4.getCooks().get(0).getLastName());
         }
     }
 
