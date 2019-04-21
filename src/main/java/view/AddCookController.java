@@ -48,17 +48,8 @@ public class AddCookController implements Initializable {
     public AddCookController() {
     }
 
-    void showUp() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/hire.fxml"));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("css/addDish.css");
-        System.out.println(primaryStage);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
 
-    @FXML
-    public void save(MouseEvent mouseEvent) throws IOException {
+    public void save() throws IOException {
         if (!isValid()) {
             showError("Name should only contain letters and spaces");
         } else {

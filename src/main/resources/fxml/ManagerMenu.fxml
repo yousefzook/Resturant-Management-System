@@ -4,7 +4,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MenuController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MenuController" stylesheets="@../css/menu.css">
     <ScrollPane id="scPane" fx:id="scPane" layoutX="8.0" layoutY="15.0" prefHeight="342.0" prefWidth="580.0"/>
     <Button id="addBtn" onAction="#addDish" alignment="CENTER" contentDisplay="CENTER" layoutX="382.0" layoutY="357.0"
             mnemonicParsing="false" stylesheets="@../css/menu.css" text="Add Dish" textAlignment="RIGHT"/>

@@ -1,5 +1,9 @@
 package controller;
 
+import com.uploadcare.api.Client;
+import com.uploadcare.upload.FileUploader;
+import com.uploadcare.upload.UploadFailureException;
+import com.uploadcare.upload.Uploader;
 import model.actionresults.CookResponse;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
@@ -10,11 +14,16 @@ import model.repository.CookRepository;
 import model.repository.DishRepository;
 import model.repository.OrderRepository;
 import model.repository.TransactionsRepository;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -23,6 +32,10 @@ import java.util.Optional;
 
 @Component
 public class ManagerController {
+    private static String PUBLIC_KEY = "3f9f04a238122a220a22";
+    private static String PRIVATE_KEY = "9ffb406949a0b7d4ad7f";
+
+    private Client uploadCareClient = new Client(PUBLIC_KEY, PRIVATE_KEY);
 
     @Autowired
     private DishRepository dishRepo;
@@ -48,18 +61,29 @@ public class ManagerController {
                 dishToAdd.getTimeToPrepare() == null || dishToAdd.getTimeToPrepare() < 0) {
             response.setMessage("Dish price and time to prepare cannot be less than zero");
         } else {
-            dishToAdd.setImagePath(saveImageToCloud(dishToAdd.getImagePath()));
-            dishRepo.save(dishToAdd);
-            response.setSuccess(true);
+            try {
+                dishToAdd.setImagePath(saveImageToCloud(dishToAdd.getImagePath()));
+                dishRepo.save(dishToAdd);
+                response.setSuccess(true);
+            } catch (UploadFailureException e) {
+                response.setMessage(e.getMessage());
+            }
         }
-
         return response;
     }
 
     public DishResponse getDishes() {
         DishResponse response = new DishResponse();
-        response.setDishes(dishRepo.findAll());
-        response.setSuccess(true);
+        response.setSuccess(false);
+        try {
+            response.setDishes(dishRepo.findAll());
+            for (Dish d : response.getDishes()) {
+                d.setImagePath(downloadImageFromCloud(d.getImagePath()));
+            }
+            response.setSuccess(true);
+        } catch (Exception e) {
+            response.setMessage(e.getMessage());
+        }
         return response;
     }
 
@@ -82,11 +106,15 @@ public class ManagerController {
                 if (newDish.getName() != null) oldDish.setName(newDish.getName());
                 if (newDish.getDescription() != null) oldDish.setDescription(newDish.getDescription());
                 if (newDish.getImagePath() != null) {
-                    String imageUrl = saveImageToCloud(newDish.getImagePath());
-                    oldDish.setImagePath(imageUrl);
+                    try {
+                        String imageUrl = saveImageToCloud(newDish.getImagePath());
+                        oldDish.setImagePath(imageUrl);
+                        dishRepo.save(oldDish);
+                        response.setSuccess(true);
+                    } catch (UploadFailureException e) {
+                        response.setMessage(e.getMessage());
+                    }
                 }
-                dishRepo.save(oldDish);
-                response.setSuccess(true);
             }
         }
         return response;
@@ -230,8 +258,33 @@ public class ManagerController {
         return response;
     }
 
-    private String saveImageToCloud(String imagePath) {
-        //TODO implement this
-        return null;
+    private String saveImageToCloud(String imagePath) throws UploadFailureException {
+        File localFile = new File(imagePath);
+        Uploader uploader = new FileUploader(uploadCareClient, localFile);
+        com.uploadcare.api.File uploadedFile = uploader.upload();
+        return uploadedFile.getFileId();
+    }
+
+    private String downloadImageFromCloud(String imageId) throws IOException {
+        com.uploadcare.api.File requestedByIdFile = uploadCareClient.getFile(imageId);
+        File directory = new File(
+                Paths.get(System.getProperty("user.home"),
+                        "Restaurant-images"
+                ).toString());
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        String fileName = requestedByIdFile.getOriginalFilename();
+        String imagePath =
+                Paths.get(System.getProperty("user.home"),
+                        "Restaurant-images",
+                        requestedByIdFile.getFileId() + fileName.substring(fileName.lastIndexOf("."))
+                ).toString();
+        File image = new File(imagePath);
+        URL imageUrl = new URL("https://ucarecdn.com/" + requestedByIdFile.getFileId() + "/" + requestedByIdFile.getOriginalFilename());
+        System.out.println(imageUrl.toString());
+        FileUtils.copyURLToFile(imageUrl, image);
+        return imagePath;
     }
 }

@@ -57,14 +57,6 @@ public class AddDishController implements Initializable {
     public AddDishController() {
     }
 
-    void showUp() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/addDish.fxml"));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("css/addDish.css");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
     public void save() {
         if (isValid()) {
             Dish dish = Dish.builder()
@@ -77,6 +69,12 @@ public class AddDishController implements Initializable {
             EmptyResponse r = managerController.addDish(dish);
             if (!r.isSuccess()) {
                 showError(r.getMessage());
+            }
+            try {
+                System.out.println("Leaving AddDishController");
+                backToMenu();
+            } catch (IOException e) {
+                showError(e.getMessage());
             }
         } else {
             showError("Check input");

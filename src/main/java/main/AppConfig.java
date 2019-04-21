@@ -1,9 +1,7 @@
 package main;
 
+import com.uploadcare.api.Client;
 import controller.ManagerController;
-import javafx.stage.Stage;
-import lombok.Setter;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import view.*;
