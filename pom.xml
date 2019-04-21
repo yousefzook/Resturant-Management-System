@@ -44,6 +44,7 @@
 	</properties>
 
 	<dependencies>
+		<!-- SQLite JDBC library -->
 		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
@@ -101,5 +102,15 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-agroal</artifactId>
+			<version>5.4.2.Final</version>
+			<type>pom</type>
+		</dependency>
+
+
 	</dependencies>
 </project>
