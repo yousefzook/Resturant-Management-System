@@ -219,12 +219,12 @@
 //
 //    @Test
 //    void getCooksShouldSucceed() throws Exception {
-//        when(db.getCooks()).thenReturn(Collections.singletonList(testCook));
-//        CookResponse response = controller.getCooks();
+//        when(db.getHiredCooks()).thenReturn(Collections.singletonList(testCook));
+//        CookResponse response = controller.getHiredCooks();
 //
 //        assertTrue(response.isSuccess());
 //        assertThat(response.getMessage(), Matchers.blankOrNullString());
-//        verify(db, times(1)).getCooks();
+//        verify(db, times(1)).getHiredCooks();
 //    }
 //
 //    @Test

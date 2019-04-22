@@ -58,7 +58,7 @@ public class CookController implements Initializable {
         VBox vBox = new VBox();
         vBox.setSpacing(10);
 
-        CookResponse r = managerController.getCooks();
+        CookResponse r = managerController.getHiredCooks();
         if (!r.isSuccess())
             showError(r.getMessage());
         else {

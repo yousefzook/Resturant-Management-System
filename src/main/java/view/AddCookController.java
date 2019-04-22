@@ -53,7 +53,7 @@ public class AddCookController implements Initializable {
         if (!isValid()) {
             showError("Name should only contain letters and spaces");
         } else {
-            Cook cook = new Cook(null, firstText.getText(), lastText.getText());
+            Cook cook = new Cook(null, firstText.getText(), lastText.getText(), true);
             EmptyResponse r = managerController.addCook(cook);
             if (!r.isSuccess()) {
                 showError(r.getMessage());

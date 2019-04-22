@@ -20,6 +20,9 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -48,6 +51,9 @@ public class ManagerController {
 
     @Autowired
     private TransactionsRepository transactionsRepo;
+
+    @PersistenceContext
+    private EntityManager em;
 
     public EmptyResponse addDish(Dish dishToAdd) {
         EmptyResponse response = new EmptyResponse();
@@ -141,7 +147,7 @@ public class ManagerController {
         return response;
     }
 
-    public CookResponse getCooks() {
+    public CookResponse getHiredCooks() {
         CookResponse response = new CookResponse();
         response.setSuccess(false);
         response.setCooks(cookRepo.getAllWithoutOrders());
@@ -178,7 +184,7 @@ public class ManagerController {
             Optional<Cook> cookOptional = cookRepo.findById(cookId);
             if (!cookOptional.isPresent()) {
                 response.setMessage("Cannot find a cook with id = " + cookId);
-            } else if (!cookOptional.get().isHired()) {
+            } else if (!cookOptional.get().getHired()) {
                 response.setMessage("Cook with id = " + cookId + " was already fired");
             } else {
                 cookOptional.get().setHired(false);
@@ -251,7 +257,14 @@ public class ManagerController {
         } else if (cookRepo.count() == 0) {
             response.setMessage("No cooks are hired yet");
         } else {
-            response.setCooks(cookRepo.getTopCooks(limit));
+            String st = "SELECT c.cook_id, c.f_name, c.l_name, c.is_hired, COUNT(ao.assigned_orders_order_id) " +
+                    "FROM cook c JOIN  (SELECT ao.cook_cook_id, ao.assigned_orders_order_id FROM cook_assigned_orders ao) ao " +
+                    "ON c.cook_id = ao.cook_cook_id " +
+                    "GROUP BY c.cook_id " +
+                    "ORDER BY COUNT(ao.assigned_orders_order_id) DESC LIMIT ?";
+            Query statement = em.createNativeQuery(st);
+            statement.setParameter(1, limit);
+            response.setCooks(statement.getResultList());
             response.setSuccess(true);
         }
 
@@ -282,9 +295,11 @@ public class ManagerController {
                         requestedByIdFile.getFileId() + fileName.substring(fileName.lastIndexOf("."))
                 ).toString();
         File image = new File(imagePath);
-        URL imageUrl = new URL("https://ucarecdn.com/" + requestedByIdFile.getFileId() + "/" + requestedByIdFile.getOriginalFilename());
-        System.out.println(imageUrl.toString());
-        FileUtils.copyURLToFile(imageUrl, image);
+        if (!image.exists()) {
+            URL imageUrl = new URL("https://ucarecdn.com/" + requestedByIdFile.getFileId() + "/" + requestedByIdFile.getOriginalFilename());
+            System.out.println(imageUrl.toString());
+            FileUtils.copyURLToFile(imageUrl, image);
+        }
         return imagePath;
     }
 }
