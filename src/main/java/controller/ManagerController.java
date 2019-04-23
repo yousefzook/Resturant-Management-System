@@ -59,6 +59,7 @@ public class ManagerController {
             response.setMessage("Dish price and time to prepare cannot be null or less than zero");
         } else {
             try {
+                System.out.println(dishToAdd);
                 dishToAdd.setImagePath(uploadCareService.saveImageToCloud(dishToAdd.getImagePath()));
                 dishRepo.save(dishToAdd);
                 response.setSuccess(true);
@@ -73,7 +74,7 @@ public class ManagerController {
         DishResponse response = new DishResponse();
         response.setSuccess(false);
         try {
-            response.setDishes(dishRepo.findAll());
+            response.setDishes(dishRepo.findAllByActive(true));
             for (Dish d : response.getDishes()) {
                 d.setImagePath(uploadCareService.downloadImageFromCloud(d.getImagePath()));
             }
@@ -98,19 +99,27 @@ public class ManagerController {
             Optional<Dish> oldDishOptional = dishRepo.findById(oldDishId);
             if (oldDishOptional.isPresent()) {
                 Dish oldDish = oldDishOptional.get();
-                if (newDish.getTimeToPrepare() != null) oldDish.setTimeToPrepare(newDish.getTimeToPrepare());
-                if (newDish.getPrice() != null) oldDish.setPrice(newDish.getPrice());
-                if (newDish.getName() != null) oldDish.setName(newDish.getName());
-                if (newDish.getDescription() != null) oldDish.setDescription(newDish.getDescription());
-                if (newDish.getImagePath() != null) {
+                if (newDish.getTimeToPrepare() == null) newDish.setTimeToPrepare(oldDish.getTimeToPrepare());
+                if (newDish.getPrice() == null) newDish.setPrice(oldDish.getPrice());
+                if (newDish.getName() == null) newDish.setName(oldDish.getName());
+                if (newDish.getDescription() == null) newDish.setDescription(oldDish.getDescription());
+                if (newDish.getImagePath() == null) {
+                    newDish.setImagePath(oldDish.getImagePath());
+                } else {
                     try {
-                        String imageUrl = uploadCareService.saveImageToCloud(newDish.getImagePath());
-                        oldDish.setImagePath(imageUrl);
+                        newDish.setImagePath(uploadCareService.saveImageToCloud(newDish.getImagePath()));
                     } catch (UploadFailureException e) {
                         response.setMessage(e.getMessage());
                     }
                 }
+
+                newDish.setRate(oldDish.getRate());
+                newDish.setRateCount(oldDish.getRateCount());
+
+                oldDish.setActive(false);
                 dishRepo.save(oldDish);
+                newDish.setActive(true);
+                dishRepo.save(newDish);
                 response.setSuccess(true);
             }
         }
