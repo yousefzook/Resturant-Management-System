@@ -57,6 +57,7 @@ public class CookController implements Initializable {
         map = new HashMap<>();
         VBox vBox = new VBox();
         vBox.setSpacing(10);
+        vBox.setPadding(new Insets(10, 0, 0, 80));
 
         CookResponse r = managerController.getHiredCooks();
         if (!r.isSuccess())
@@ -79,7 +80,7 @@ public class CookController implements Initializable {
         Label lName = new Label("Last Name: " + cook.getLastName());
         vBox.getChildren().addAll(fName, lName);
         vBox.setSpacing(10);
-        vBox.setPadding(new Insets(15, 320, 15, 10));
+        vBox.setPadding(new Insets(15, 350, 15, 10));
 
         //buttons
         Button delete = new Button();
@@ -87,8 +88,9 @@ public class CookController implements Initializable {
         delete.setPadding(new Insets(150, 150, 150, 150));
 
         HBox employee = new HBox(vBox, delete);
-        employee.setSpacing(150);
+        employee.setSpacing(200);
         employee.setPadding(new Insets(20, 20, 20, 20));
+
         addDeleteAction(delete);
         employee.setId("menuBox");
 

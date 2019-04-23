@@ -63,6 +63,7 @@ public class MenuController implements Initializable {
         map = new HashMap<>();
         VBox vBox = new VBox();
         vBox.setSpacing(10);
+        vBox.setPadding(new Insets(10, 0, 0, 25));
 
         DishResponse r = managerController.getDishes();
         if (!r.isSuccess())
@@ -72,6 +73,7 @@ public class MenuController implements Initializable {
             for (Dish d : list) {
                 HBox crnt = getItem(d);
                 map.put(crnt, d.getId());
+
                 vBox.getChildren().add(crnt);
             }
             scPane.setContent(vBox);
@@ -100,7 +102,8 @@ public class MenuController implements Initializable {
         name.setEditable(false);
         TextArea desc = new TextArea(d.getDescription());
         vBox.getChildren().addAll(name, desc);
-        vBox.setSpacing(10);
+        vBox.setSpacing(30);
+        vBox.setPadding(new Insets(0, 20, 0, 30));
         desc.setMaxHeight(70);
         desc.setMaxWidth(300);
         desc.setWrapText(true);
@@ -114,7 +117,7 @@ public class MenuController implements Initializable {
         delete.setId("delBtn");
 
         HBox deleteAndSettings = new HBox(settings, delete);
-        deleteAndSettings.setSpacing(10);
+        deleteAndSettings.setSpacing(50);
 
         Label rating = new Label("Rate: " + d.getRate());
         rating.setId("rateLable");
@@ -126,16 +129,19 @@ public class MenuController implements Initializable {
         rating.setId("priceLabel");
 
         Button save = new Button();
+        save.setText("Save");
+        save.setWrapText(true);
         save.setId("saveBtn");
         save.setVisible(false);
 
         VBox vBox2 = new VBox(deleteAndSettings, rating, time, price, save);
         vBox2.setSpacing(10);
+        vBox2.setPadding(new Insets(0, 10, 0, 20));
 
         HBox crnt = new HBox(imageView, vBox, vBox2);
         crnt.setId("menuBox");
-        crnt.setSpacing(10);
-        crnt.setPadding(new Insets(10, 10, 10, 10));
+        crnt.setSpacing(20);
+        crnt.setPadding(new Insets(20, 10, 10, 30));
         actionListener(settings, save, delete);
 
         return crnt;

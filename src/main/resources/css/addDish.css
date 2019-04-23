@@ -15,8 +15,6 @@
     -fx-background: #DEB887;
 }
 
-#image {
+#imageborder {
     -fx-border-color: #8B4513;
-    -fx-border-radius: 20;
-
 }
