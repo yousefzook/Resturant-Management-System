@@ -12,6 +12,10 @@
 
 }
 
+.button:hover{
+    -fx-background-color: #FFA07A
+}
+
 .label
 {
     -fx-text-fill: black;

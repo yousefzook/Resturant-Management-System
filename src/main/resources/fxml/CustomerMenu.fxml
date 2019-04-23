@@ -11,7 +11,7 @@
         <URL value="@../css/menu.css" />
     </stylesheets>
     <ScrollPane id="scPane" fx:id="scPane" layoutX="10.0" layoutY="14.0" prefHeight="496.0" prefWidth="781.0"/>
-    <Button id="payAndOrderBtn" fx:id="payAndOrderBtn" alignment="CENTER" contentDisplay="CENTER" layoutX="556.0"
-            layoutY="525.0" mnemonicParsing="false" stylesheets="../css/menu.css" text="Pay and Order"
+    <Button id="orderBtn" fx:id="payAndOrderBtn" alignment="CENTER" contentDisplay="CENTER" layoutX="556.0"
+            layoutY="525.0" onAction="#orderAction" mnemonicParsing="false" stylesheets="../css/menu.css" text="Order"
             textAlignment="RIGHT"/>
 </AnchorPane>

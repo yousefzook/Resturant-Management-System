@@ -5,9 +5,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -40,14 +45,16 @@ public class CustomerMenuController implements Initializable {
     @Autowired
     private ManagerController managerController;
 
-    private Map<HBox, Integer> map = new HashMap<>();
+    private Map<HBox, Dish> map = new HashMap<>();
+
+    private Map<Dish, Integer> order = new HashMap<>();
+
 
     @FXML
     ScrollPane scPane;
 
     @FXML
-    Button payAndOrderBtn;
-
+    Button orderBtn;
 
     public CustomerMenuController(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -69,7 +76,7 @@ public class CustomerMenuController implements Initializable {
         map = new HashMap<>();
         VBox vBox = new VBox();
         vBox.setSpacing(10);
-        vBox.setPadding(new Insets(10, 0, 0, 25));
+        vBox.setPadding(new Insets(10, 0, 0, 20));
 
         DishResponse r = managerController.getDishes();
         if (!r.isSuccess())
@@ -78,7 +85,7 @@ public class CustomerMenuController implements Initializable {
             List<Dish> list = r.getDishes();
             for (Dish d : list) {
                 HBox crnt = getItem(d);
-                map.put(crnt, d.getId());
+                map.put(crnt, d);
 
                 vBox.getChildren().add(crnt);
             }
@@ -94,8 +101,11 @@ public class CustomerMenuController implements Initializable {
         errorAlert.showAndWait();
     }
 
-    private void addPayAndOrderAction() {
-
+    public void orderAction() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/order.fxml"));
+        fxmlLoader.setControllerFactory(appContext::getBean);
+        primaryStage.setScene(new Scene(fxmlLoader.load()));
+        ((OrderController) fxmlLoader.getController()).setPrimaryStage(primaryStage);
     }
 
     private HBox getItem(Dish d) {
@@ -110,20 +120,23 @@ public class CustomerMenuController implements Initializable {
         VBox vBox = new VBox();
         Label name = new Label(d.getName());
         Label desc = new Label(d.getDescription());
-        vBox.getChildren().addAll(name, desc);
         vBox.setSpacing(10);
+        desc.setMinHeight(70);
+        desc.setMinWidth(300);
         desc.setMaxHeight(70);
         desc.setMaxWidth(300);
         desc.setWrapText(true);
+        vBox.getChildren().addAll(name, desc);
+        vBox.setPadding(new Insets(0, 10, 0, 15));
 
 
         Label rating = new Label("Rate: " + d.getRate() + " / 5");
         rating.setId("rateLable");
 
-        Label time = new Label("Time: " + d.getTimeToPrepare());
+        Label time = new Label("Time: " + d.getTimeToPrepare() + " mins");
         rating.setId("timeLabel");
 
-        Label price = new Label("Price: " + d.getPrice());
+        Label price = new Label("Price: " + d.getPrice() + " $ ");
         rating.setId("priceLabel");
 
 
@@ -142,16 +155,17 @@ public class CustomerMenuController implements Initializable {
         amount.setId("amountLable");
 
         HBox quantity = new HBox(decrease, amount, increase);
-        quantity.setSpacing(10);
+        quantity.setAlignment(Pos.CENTER);
+        quantity.setSpacing(30);
 
         VBox vBox2 = new VBox(price, rating, time, quantity);
         vBox2.setSpacing(20);
-        vBox2.setPadding(new Insets(0, 10, 0, 20));
+        vBox2.setPadding(new Insets(0, 15, 0, 15));
 
 
         HBox crnt = new HBox(imageView, vBox, vBox2);
         crnt.setId("menuBox");
-        crnt.setSpacing(20);
+        crnt.setSpacing(40);
         crnt.setPadding(new Insets(20, 10, 10, 30));
         actionListener(decrease, increase);
 
@@ -159,13 +173,52 @@ public class CustomerMenuController implements Initializable {
     }
 
     private void actionListener(Button decrease, Button increase) {
-        addIncreaseAction(decrease);
-        addDecreaseAction(increase);
+        addIncreaseAction(increase);
+        addDecreaseAction(decrease);
     }
 
     private void addIncreaseAction(Button increase) {
+        increase.setOnAction(actionEvent -> {
+
+            for (Node n : increase.getParent().getChildrenUnmodifiable()) {
+                String className = n.getClass().getName().split("\\.")[3];
+                if (className.equals("Label")) {
+                    Label amount = (Label) n;
+                    int currentAmount = Integer.valueOf(amount.getText());
+                    if (currentAmount == 10)
+                        return;
+                    ((Label) n).setText(String.valueOf(currentAmount + 1));
+                }
+            }
+
+            HBox hbox = (HBox) increase.getParent().getParent().getParent();
+
+            Dish dish = map.get(hbox);
+
+            order.put(dish, order.getOrDefault(dish, 0) + 1);
+        });
     }
 
     private void addDecreaseAction(Button decrease) {
+        decrease.setOnAction(actionEvent -> {
+
+            for (Node n : decrease.getParent().getChildrenUnmodifiable()) {
+                String className = n.getClass().getName().split("\\.")[3];
+                if (className.equals("Label")) {
+                    Label amount = (Label) n;
+                    int currentAmount = Integer.valueOf(amount.getText());
+                    if (currentAmount == 0)
+                        return;
+
+                    ((Label) n).setText(String.valueOf(currentAmount - 1));
+                }
+            }
+
+            HBox hbox = (HBox) decrease.getParent().getParent().getParent();
+
+            Dish dish = map.get(hbox);
+
+            order.put(dish, order.get(dish) - 1);
+        });
     }
 }

@@ -122,10 +122,10 @@ public class MenuController implements Initializable {
         Label rating = new Label("Rate: " + d.getRate() + " / 5");
         rating.setId("rateLable");
 
-        Label time = new Label("Time: " + d.getTimeToPrepare());
+        Label time = new Label("Time: " + d.getTimeToPrepare() + " mins");
         rating.setId("timeLabel");
 
-        Label price = new Label("Price: " + d.getPrice());
+        Label price = new Label("Price: " + d.getPrice() + " $ ");
         rating.setId("priceLabel");
 
         Button save = new Button();
@@ -214,7 +214,7 @@ public class MenuController implements Initializable {
     }
 
     public void addDish() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/addDish.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/AddDish.fxml"));
         fxmlLoader.setControllerFactory(appContext::getBean);
         primaryStage.setScene(new Scene(fxmlLoader.load()));
         ((AddDishController) fxmlLoader.getController()).setPrimaryStage(primaryStage);

@@ -98,7 +98,7 @@ public class CookController implements Initializable {
     }
 
     public void hireAction() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/hire.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Hire.fxml"));
         fxmlLoader.setControllerFactory(appContext::getBean);
         primaryStage.setScene(new Scene(fxmlLoader.load()));
         ((AddCookController) fxmlLoader.getController()).setPrimaryStage(primaryStage);
