@@ -1,9 +1,6 @@
 package controller;
 
-import com.uploadcare.api.Client;
-import com.uploadcare.upload.FileUploader;
 import com.uploadcare.upload.UploadFailureException;
-import com.uploadcare.upload.Uploader;
 import model.actionresults.CookResponse;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
@@ -14,7 +11,6 @@ import model.repository.CookRepository;
 import model.repository.DishRepository;
 import model.repository.OrderRepository;
 import model.repository.TransactionsRepository;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +19,6 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -35,10 +27,6 @@ import java.util.Optional;
 
 @Component
 public class ManagerController {
-    private static String PUBLIC_KEY = "3f9f04a238122a220a22";
-    private static String PRIVATE_KEY = "9ffb406949a0b7d4ad7f";
-
-    private Client uploadCareClient = new Client(PUBLIC_KEY, PRIVATE_KEY);
 
     @Autowired
     private DishRepository dishRepo;
@@ -51,6 +39,9 @@ public class ManagerController {
 
     @Autowired
     private TransactionsRepository transactionsRepo;
+
+    @Autowired
+    private UploadCareService uploadCareService;
 
     @PersistenceContext
     private EntityManager em;
@@ -65,10 +56,10 @@ public class ManagerController {
             response.setMessage("Dish name, description and imagePath can't be empty, null nor a whitespace");
         } else if (dishToAdd.getPrice() == null || dishToAdd.getPrice() < 0 ||
                 dishToAdd.getTimeToPrepare() == null || dishToAdd.getTimeToPrepare() < 0) {
-            response.setMessage("Dish price and time to prepare cannot be less than zero");
+            response.setMessage("Dish price and time to prepare cannot be null or less than zero");
         } else {
             try {
-                dishToAdd.setImagePath(saveImageToCloud(dishToAdd.getImagePath()));
+                dishToAdd.setImagePath(uploadCareService.saveImageToCloud(dishToAdd.getImagePath()));
                 dishRepo.save(dishToAdd);
                 response.setSuccess(true);
             } catch (UploadFailureException e) {
@@ -84,7 +75,7 @@ public class ManagerController {
         try {
             response.setDishes(dishRepo.findAll());
             for (Dish d : response.getDishes()) {
-                d.setImagePath(downloadImageFromCloud(d.getImagePath()));
+                d.setImagePath(uploadCareService.downloadImageFromCloud(d.getImagePath()));
             }
             response.setSuccess(true);
         } catch (Exception e) {
@@ -113,14 +104,14 @@ public class ManagerController {
                 if (newDish.getDescription() != null) oldDish.setDescription(newDish.getDescription());
                 if (newDish.getImagePath() != null) {
                     try {
-                        String imageUrl = saveImageToCloud(newDish.getImagePath());
+                        String imageUrl = uploadCareService.saveImageToCloud(newDish.getImagePath());
                         oldDish.setImagePath(imageUrl);
-                        dishRepo.save(oldDish);
-                        response.setSuccess(true);
                     } catch (UploadFailureException e) {
                         response.setMessage(e.getMessage());
                     }
                 }
+                dishRepo.save(oldDish);
+                response.setSuccess(true);
             }
         }
         return response;
@@ -136,10 +127,10 @@ public class ManagerController {
             Optional<Dish> dishToRemove = dishRepo.findById(dishId);
             if (!dishToRemove.isPresent()) {
                 response.setMessage("No such a dish with the given id");
-            } else if (dishToRemove.get().isActive()) {
+            } else if (!dishToRemove.get().isActive()) {
                 response.setMessage("Dish is already not active");
             } else {
-                dishToRemove.get().setActive(true);
+                dishToRemove.get().setActive(false);
                 dishRepo.save(dishToRemove.get());
                 response.setSuccess(true);
             }
@@ -150,7 +141,7 @@ public class ManagerController {
     public CookResponse getHiredCooks() {
         CookResponse response = new CookResponse();
         response.setSuccess(false);
-        response.setCooks(cookRepo.getAllWithoutOrders());
+        response.setCooks(cookRepo.getAllHiredWithoutOrders());
         response.setSuccess(true);
         return response;
     }
@@ -188,6 +179,7 @@ public class ManagerController {
                 response.setMessage("Cook with id = " + cookId + " was already fired");
             } else {
                 cookOptional.get().setHired(false);
+                cookRepo.save(cookOptional.get());
                 response.setSuccess(true);
             }
         }
@@ -269,37 +261,5 @@ public class ManagerController {
         }
 
         return response;
-    }
-
-    private String saveImageToCloud(String imagePath) throws UploadFailureException {
-        File localFile = new File(imagePath);
-        Uploader uploader = new FileUploader(uploadCareClient, localFile);
-        com.uploadcare.api.File uploadedFile = uploader.upload();
-        return uploadedFile.getFileId();
-    }
-
-    private String downloadImageFromCloud(String imageId) throws IOException {
-        com.uploadcare.api.File requestedByIdFile = uploadCareClient.getFile(imageId);
-        File directory = new File(
-                Paths.get(System.getProperty("user.home"),
-                        "Restaurant-images"
-                ).toString());
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-
-        String fileName = requestedByIdFile.getOriginalFilename();
-        String imagePath =
-                Paths.get(System.getProperty("user.home"),
-                        "Restaurant-images",
-                        requestedByIdFile.getFileId() + fileName.substring(fileName.lastIndexOf("."))
-                ).toString();
-        File image = new File(imagePath);
-        if (!image.exists()) {
-            URL imageUrl = new URL("https://ucarecdn.com/" + requestedByIdFile.getFileId() + "/" + requestedByIdFile.getOriginalFilename());
-            System.out.println(imageUrl.toString());
-            FileUtils.copyURLToFile(imageUrl, image);
-        }
-        return imagePath;
     }
 }

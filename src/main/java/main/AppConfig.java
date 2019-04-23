@@ -1,7 +1,7 @@
 package main;
 
-import com.uploadcare.api.Client;
 import controller.ManagerController;
+import controller.UploadCareService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import view.*;
@@ -42,5 +42,10 @@ public class AppConfig {
     @Bean
     public ManagerController managerController() {
         return new ManagerController();
+    }
+
+    @Bean
+    public UploadCareService uploadCareService() {
+        return new UploadCareService();
     }
 }

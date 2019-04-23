@@ -9,6 +9,9 @@ import java.util.List;
 
 @Repository
 public interface CookRepository extends JpaRepository<Cook, Integer> {
-    @Query(value = "SELECT new Cook(id, firstName, lastName, hired) FROM Cook WHERE hired = true")
+    @Query(value = "SELECT new Cook(id, firstName, lastName, hired) FROM Cook")
     List<Cook> getAllWithoutOrders();
+
+    @Query(value = "SELECT new Cook(id, firstName, lastName, hired) FROM Cook WHERE hired = true")
+    List<Cook> getAllHiredWithoutOrders();
 }
