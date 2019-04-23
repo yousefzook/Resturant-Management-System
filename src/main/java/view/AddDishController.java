@@ -4,7 +4,6 @@ import controller.ManagerController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
@@ -64,6 +63,7 @@ public class AddDishController implements Initializable {
                     .description(descText.getText())
                     .price(Float.valueOf(priceText.getText()))
                     .timeToPrepare(Integer.valueOf(timeText.getText()))
+                    .active(true)
                     .imagePath(photoPath)
                     .build();
             EmptyResponse r = managerController.addDish(dish);

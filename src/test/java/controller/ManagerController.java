@@ -1,7 +1,7 @@
 package controller;
 
 import com.uploadcare.upload.UploadFailureException;
-import main.RestaurantManagementSystem;
+import main.ManagerApp;
 import model.actionresults.CookResponse;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = RestaurantManagementSystem.class)
+@SpringBootTest(classes = ManagerApp.class)
 class TestManagerController {
 
     @Mock

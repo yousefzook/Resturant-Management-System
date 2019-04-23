@@ -119,7 +119,7 @@ public class MenuController implements Initializable {
         HBox deleteAndSettings = new HBox(settings, delete);
         deleteAndSettings.setSpacing(50);
 
-        Label rating = new Label("Rate: " + d.getRate());
+        Label rating = new Label("Rate: " + d.getRate() + " / 5");
         rating.setId("rateLable");
 
         Label time = new Label("Time: " + d.getTimeToPrepare());
