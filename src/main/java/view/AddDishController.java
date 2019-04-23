@@ -64,6 +64,7 @@ public class AddDishController implements Initializable {
                     .description(descText.getText())
                     .price(Float.valueOf(priceText.getText()))
                     .timeToPrepare(Integer.valueOf(timeText.getText()))
+                    .active(true)
                     .imagePath(photoPath)
                     .build();
             EmptyResponse r = managerController.addDish(dish);

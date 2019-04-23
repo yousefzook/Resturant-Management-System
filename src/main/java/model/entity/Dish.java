@@ -41,8 +41,8 @@ public class Dish {
     @Column(name = "image_path")
     private String imagePath;
 
-    @Column(name = "is_active", columnDefinition = "tinyint(1) default 1")
-    private boolean active;
+    @Column(name = "is_active")
+    private boolean active = true;
 
     public Dish() {
     }

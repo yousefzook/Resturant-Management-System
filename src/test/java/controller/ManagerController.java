@@ -161,11 +161,11 @@ class TestManagerController {
     @DisplayName("Test getDishes. Should trigger the mock")
     @Test
     void getDishesNormalCase() {
-        when(dishRepo.findAll()).thenReturn(Collections.singletonList(testDish));
+        when(dishRepo.findAllByActive(true)).thenReturn(Collections.singletonList(testDish));
         DishResponse response = managerController.getDishes();
 
         assertTrue(response.isSuccess());
-        verify(dishRepo, times(1)).findAll();
+        verify(dishRepo, times(1)).findAllByActive(true);
         assertThat(response.getDishes(), Matchers.hasSize(1));
         assertThat(response.getDishes().get(0), Matchers.equalTo(testDish));
     }
@@ -222,6 +222,7 @@ class TestManagerController {
         verify(dishRepo, times(1)).findById(oldDish.getId());
         oldDish.setName("New NAME");
         verify(dishRepo, times(1)).save(oldDish);
+        verify(dishRepo, times(1)).save(newDish);
     }
 
     @DisplayName("Test removeDish with invalid ID")
