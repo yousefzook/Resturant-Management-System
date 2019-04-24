@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane id="anchor" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/pay.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.PayController">
+   <children>
+      <Label layoutX="268.0" layoutY="54.0" text="Payment Details" />
+      <Label layoutX="93.0" layoutY="314.0" text="CSV" />
+      <Label layoutX="93.0" layoutY="215.0" text="Card No." />
+      <Button layoutX="159.0" layoutY="469.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="134.0" text="Back" />
+      <Button layoutX="525.0" layoutY="469.0" mnemonicParsing="false" text="Confirm" />
+      <TextField layoutX="268.0" layoutY="220.0" prefHeight="26.0" prefWidth="422.0" />
+      <TextField layoutX="268.0" layoutY="319.0" prefHeight="26.0" prefWidth="76.0" />
+   </children>
+</AnchorPane>

@@ -54,21 +54,13 @@ public class CustomerMenuController implements Initializable {
     ScrollPane scPane;
 
     @FXML
-    Button orderBtn;
+    Button payAndOrderBtn;
 
     public CustomerMenuController(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
     public CustomerMenuController() {
-    }
-
-    public void showUp() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/CustomerMenu.fxml"));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("css/menu.css");
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
     @Override
@@ -91,6 +83,11 @@ public class CustomerMenuController implements Initializable {
             }
             scPane.setContent(vBox);
         }
+        if (order.size() == 0)
+            payAndOrderBtn.setDisable(true);
+        else
+            payAndOrderBtn.setDisable(false);
+
     }
 
     private void showError(String message) {
@@ -102,10 +99,23 @@ public class CustomerMenuController implements Initializable {
     }
 
     public void orderAction() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/order.fxml"));
-        fxmlLoader.setControllerFactory(appContext::getBean);
-        primaryStage.setScene(new Scene(fxmlLoader.load()));
-        ((OrderController) fxmlLoader.getController()).setPrimaryStage(primaryStage);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/fxml/Order.fxml"));
+        loader.setControllerFactory(appContext::getBean);
+
+        Parent p = loader.load();
+
+        Scene scene = new Scene(p);
+        scene.getStylesheets().add("css/order.css");
+
+
+        OrderController controller = loader.getController();
+        controller.setView(order, primaryStage);
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+
     }
 
     private HBox getItem(Dish d) {
@@ -136,9 +146,9 @@ public class CustomerMenuController implements Initializable {
         Label time = new Label("Time: " + d.getTimeToPrepare() + " mins");
         rating.setId("timeLabel");
 
+
         Label price = new Label("Price: " + d.getPrice() + " $ ");
         rating.setId("priceLabel");
-
 
         //buttons
         Button decrease = new Button();
@@ -153,6 +163,10 @@ public class CustomerMenuController implements Initializable {
 
         Label amount = new Label("0");
         amount.setId("amountLable");
+
+        if (order != null && order.containsKey(d))
+            amount.setText(String.valueOf(order.get(d)));
+
 
         HBox quantity = new HBox(decrease, amount, increase);
         quantity.setAlignment(Pos.CENTER);
@@ -179,7 +193,7 @@ public class CustomerMenuController implements Initializable {
 
     private void addIncreaseAction(Button increase) {
         increase.setOnAction(actionEvent -> {
-
+            payAndOrderBtn.setDisable(false);
             for (Node n : increase.getParent().getChildrenUnmodifiable()) {
                 String className = n.getClass().getName().split("\\.")[3];
                 if (className.equals("Label")) {
@@ -219,6 +233,16 @@ public class CustomerMenuController implements Initializable {
             Dish dish = map.get(hbox);
 
             order.put(dish, order.get(dish) - 1);
+
+            if (order.get(dish) == 0)
+                order.remove(dish);
+            if (order.size() == 0)
+                payAndOrderBtn.setDisable(true);
+
         });
+    }
+
+    public void setMap(Map<Dish, Integer> order) {
+        this.order = order;
     }
 }

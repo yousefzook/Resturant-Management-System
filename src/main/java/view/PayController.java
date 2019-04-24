@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Component
-public class ReceiptController implements Initializable {
+public class PayController implements Initializable {
 
     @Setter
     private Stage primaryStage;
@@ -39,17 +39,17 @@ public class ReceiptController implements Initializable {
     ScrollPane scPane;
 
 
-    public ReceiptController(Stage primaryStage) {
+    public PayController(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
-    public ReceiptController() {
+    public PayController() {
     }
 
     public void showUp() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Receipt.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Pay.fxml"));
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("css/receipt.css");
+        scene.getStylesheets().add("css/pay.css");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
