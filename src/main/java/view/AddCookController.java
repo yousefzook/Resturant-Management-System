@@ -4,11 +4,9 @@ import controller.ManagerController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import lombok.Setter;
 import model.actionresults.EmptyResponse;
@@ -53,7 +51,7 @@ public class AddCookController implements Initializable {
         if (!isValid()) {
             showError("Name should only contain letters and spaces");
         } else {
-            Cook cook = new Cook(null, firstText.getText(), lastText.getText());
+            Cook cook = new Cook(null, firstText.getText(), lastText.getText(), true);
             EmptyResponse r = managerController.addCook(cook);
             if (!r.isSuccess()) {
                 showError(r.getMessage());
@@ -77,7 +75,7 @@ public class AddCookController implements Initializable {
     }
 
     public void goBack() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ManagerView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ManagerCook.fxml"));
         fxmlLoader.setControllerFactory(appContext::getBean);
         primaryStage.setScene(new Scene(fxmlLoader.load()));
     }

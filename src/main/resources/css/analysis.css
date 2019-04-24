@@ -26,6 +26,10 @@
     -fx-text-alignment: center;
 }
 
+.button:hover{
+    -fx-background-color: #FFA07A
+}
+
 #backBtn {
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;

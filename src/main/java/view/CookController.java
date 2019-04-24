@@ -57,8 +57,9 @@ public class CookController implements Initializable {
         map = new HashMap<>();
         VBox vBox = new VBox();
         vBox.setSpacing(10);
+        vBox.setPadding(new Insets(10, 0, 0, 80));
 
-        CookResponse r = managerController.getCooks();
+        CookResponse r = managerController.getHiredCooks();
         if (!r.isSuccess())
             showError(r.getMessage());
         else {
@@ -79,7 +80,7 @@ public class CookController implements Initializable {
         Label lName = new Label("Last Name: " + cook.getLastName());
         vBox.getChildren().addAll(fName, lName);
         vBox.setSpacing(10);
-        vBox.setPadding(new Insets(15, 320, 15, 10));
+        vBox.setPadding(new Insets(15, 350, 15, 10));
 
         //buttons
         Button delete = new Button();
@@ -87,8 +88,9 @@ public class CookController implements Initializable {
         delete.setPadding(new Insets(150, 150, 150, 150));
 
         HBox employee = new HBox(vBox, delete);
-        employee.setSpacing(150);
+        employee.setSpacing(200);
         employee.setPadding(new Insets(20, 20, 20, 20));
+
         addDeleteAction(delete);
         employee.setId("menuBox");
 
@@ -96,7 +98,7 @@ public class CookController implements Initializable {
     }
 
     public void hireAction() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/hire.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Hire.fxml"));
         fxmlLoader.setControllerFactory(appContext::getBean);
         primaryStage.setScene(new Scene(fxmlLoader.load()));
         ((AddCookController) fxmlLoader.getController()).setPrimaryStage(primaryStage);

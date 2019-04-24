@@ -11,4 +11,6 @@ import java.util.List;
 public interface DishRepository extends JpaRepository<Dish, Integer> {
     @Query(value = "SELECT * FROM dish_details ORDER BY rate DESC LIMIT ?", nativeQuery = true)
     List<Dish> getTopDishes(int limit);
+
+    List<Dish> findAllByActive(Boolean isActive);
 }

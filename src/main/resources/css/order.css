@@ -4,21 +4,29 @@
     -fx-background-size: 100 120;
     -fx-background-color: #FFFFF0;
     -fx-border-color: #8B4513;
-    -fx-border-width: 2;
     -fx-border-radius: 20;
     -fx-font-weight: bold;
     -fx-font-size: 2em;
+    -fx-border-width: 2;
     -fx-text-alignment: center;
+
 }
 
 .button:hover{
     -fx-background-color: #FFA07A
 }
 
+.label
+{
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.8em;
+}
+
 #anchor {
     -fx-background: #DEB887;
 }
 
-#imageborder {
-    -fx-border-color: #8B4513;
+#scPane {
+    -fx-background: #FFFFF0;
 }

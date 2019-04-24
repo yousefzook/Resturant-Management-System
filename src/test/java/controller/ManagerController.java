@@ -1,288 +1,331 @@
-//package controller;
-//
-//import controller.ManagerController;
-//import model.actionresults.CookResponse;
-//import model.actionresults.DishResponse;
-//import model.actionresults.EmptyResponse;
-//import model.actionresults.NumericResponse;
-//import org.hamcrest.Matchers;
-//import org.junit.jupiter.api.BeforeAll;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//
-//import java.util.Collections;
-//import java.util.Date;
-//
-//import static org.hamcrest.MatcherAssert.assertThat;
-//import static org.junit.jupiter.api.Assertions.assertFalse;
-//import static org.junit.jupiter.api.Assertions.assertTrue;
-//import static org.mockito.Mockito.*;
-//import static org.mockito.MockitoAnnotations.initMocks;
-//
-//class TestManagerController {
-//
-//    @InjectMocks
-//    private static ManagerController controller;
-//
-//    private Dish testDish;
-//    private Cook testCook;
-//
-//    @BeforeAll
-//    static void setupAll() {
-//        controller = ManagerController.getInstance();
-//        controller.setDb(db);
-//    }
-//
-//    @BeforeEach
-//    void setupEach() {
-//        initMocks(this);
-//        resetTestDish();
-//    }
-//
-//    private void resetTestDish() {
-//        testDish = Dish.builder()
-//                .id(1)
-//                .name("TestDish")
-//                .description("Desc")
-//                .price(55.5F)
-//                .timeToPrepare(5)
-//                .rate(4.2F)
-//                .rateCount(5)
-//                .imagePath("Path/To/Image.png")
-//                .build();
-//
-//        testCook = new Cook(0, "F_NAME", "L_NAME");
-//    }
-//
-//    @Test
-//    void addDishShouldFailWhenNameIsEmpty() {
-//        testDish.setName("");
-//        EmptyResponse response = controller.addDish(testDish);
-//
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void addDishShouldFailWhenNameIsNull() {
-//        testDish.setName(null);
-//        EmptyResponse response = controller.addDish(testDish);
-//
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void addDishShouldFailWhenDescriptionIsEmpty() {
-//        testDish.setDescription("");
-//        EmptyResponse response = controller.addDish(testDish);
-//
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void addDishShouldFailWhenDescriptionIsNull() {
-//        testDish.setDescription("");
-//        EmptyResponse response = controller.addDish(testDish);
-//
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void addDishShouldReturnNotSuccessWhenImageIsNull() {
-//        testDish.setImagePath(null);
-//        EmptyResponse response = controller.addDish(testDish);
-//
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void addDishShouldFailWhenTimeToPrepareLessThanZero() {
-//        testDish.setTimeToPrepare(-1);
-//        EmptyResponse response = controller.addDish(testDish);
-//
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void addDishShouldFailWhenPriceLessThanZero() {
-//        testDish.setPrice(-1);
-//        EmptyResponse response = controller.addDish(testDish);
-//
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void addDishShouldSucceed() throws Exception {
-//        doNothing().when(db).addDish(testDish);
-//        EmptyResponse response = controller.addDish(testDish);
-//
-//        assertTrue(response.isSuccess());
-//        verify(db, times(1)).addDish(testDish);
-//    }
-//
-//    @Test
-//    void addDishShouldFailWhenAddDishThrowsException() throws Exception {
-//        doThrow(new Exception()).when(db).addDish(testDish);
-//        EmptyResponse response = controller.addDish(testDish);
-//
-//        assertFalse(response.isSuccess());
-//        verify(db, times(1)).addDish(testDish);
-//    }
-//
-//    @Test
-//    void getDishesShouldFailWhenGetDishesThrowsException() throws Exception {
-//        doThrow(new Exception()).when(db).getAvailableDishes();
-//        DishResponse response = controller.getDishes();
-//
-//        assertFalse(response.isSuccess());
-//        verify(db, times(1)).getAvailableDishes();
-//    }
-//
-//    @Test
-//    void getDishesShouldReturnListOfDishes() throws Exception {
-//        when(db.getAvailableDishes()).thenReturn(Collections.singletonList(testDish));
-//        DishResponse response = controller.getDishes();
-//
-//        assertTrue(response.isSuccess());
-//        verify(db, times(1)).getAvailableDishes();
-//        assertThat(response.getDishes(), Matchers.hasSize(1));
-//        assertThat(response.getDishes().get(0), Matchers.equalTo(testDish));
-//    }
-//
-//    @Test
-//    void updateDishWithNegativeIdShouldFail() throws Exception {
-//        EmptyResponse response = controller.updateDish(-1, testDish);
-//
-//        assertFalse(response.isSuccess());
-//        verify(db, times(0)).updateDish(-1, testDish);
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void updateDishWithInvalidNewDishData() {
-//        testDish.setName("");
-//        EmptyResponse response = controller.updateDish(0, testDish);
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//
-//        resetTestDish();
-//
-//        testDish.setDescription("");
-//        response = controller.updateDish(0, testDish);
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//
-//        resetTestDish();
-//
-//        testDish.setTimeToPrepare(-1);
-//        response = controller.updateDish(0, testDish);
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void updateDishShouldSucceed() throws Exception {
-//        doNothing().when(db).updateDish(0, testDish);
-//        EmptyResponse response = controller.updateDish(0, testDish);
-//
-//        assertTrue(response.isSuccess());
-//        verify(db, times(1)).updateDish(0, testDish);
-//        assertThat(response.getMessage(), Matchers.blankOrNullString());
-//    }
-//
-//    @Test
-//    void removeDishWithInvalidIdShouldFail() throws Exception {
-//        EmptyResponse response = controller.removeDish(-1);
-//
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//        verify(db, times(0)).removeDish(-1);
-//    }
-//
-//    @Test
-//    void removeDishShouldSucceed() throws Exception {
-//        EmptyResponse response = controller.removeDish(0);
-//
-//        assertTrue(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.blankOrNullString());
-//        verify(db, times(1)).removeDish(0);
-//
-//    }
-//
-//    @Test
-//    void getCooksShouldSucceed() throws Exception {
-//        when(db.getCooks()).thenReturn(Collections.singletonList(testCook));
-//        CookResponse response = controller.getCooks();
-//
-//        assertTrue(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.blankOrNullString());
-//        verify(db, times(1)).getCooks();
-//    }
-//
-//    @Test
-//    void addCookWithInvalidFName() {
-//        testCook.setFirstName(null);
-//        EmptyResponse response = controller.addCook(testCook);
-//
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void addCookWithInvalidLName() {
-//        testCook.setLastName(null);
-//        EmptyResponse response = controller.addCook(testCook);
-//
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void fireCookWithInvalidIdShouldFail() {
-//        EmptyResponse response = controller.fireCook(-1);
-//
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void fireCookShouldSucceed() throws Exception {
-//        doNothing().when(db).fireCook(0);
-//        EmptyResponse response = controller.fireCook(0);
-//
-//        assertTrue(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.blankOrNullString());
-//        verify(db, times(1)).fireCook(0);
-//    }
-//
-//    @Test
-//    void getTotalIncomeWithReversedDateShouldFail() {
-//        Date startDate = new Date(1318386508009L);
-//        Date endDate = new Date(1318386508000L);
-//        NumericResponse response = controller.getTotalIncome(startDate, endDate);
-//
-//        assertFalse(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.not(Matchers.blankOrNullString()));
-//    }
-//
-//    @Test
-//    void getTotalIncomeShouldSucceed() throws Exception {
-//        Date startDate = new Date(1318386508000L);
-//        Date endDate = new Date(1318386508009L);
-//        when(db.getTotalIncome(startDate, endDate)).thenReturn(500D);
-//
-//        NumericResponse response = controller.getTotalIncome(startDate, endDate);
-//
-//        assertTrue(response.isSuccess());
-//        assertThat(response.getMessage(), Matchers.blankOrNullString());
-//        verify(db, times(1)).getTotalIncome(startDate, endDate);
-//    }
-//}
+package controller;
+
+import com.uploadcare.upload.UploadFailureException;
+import main.ManagerApp;
+import model.actionresults.CookResponse;
+import model.actionresults.DishResponse;
+import model.actionresults.EmptyResponse;
+import model.actionresults.NumericResponse;
+import model.entity.Cook;
+import model.entity.Dish;
+import model.repository.*;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.Optional;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
+
+@SpringBootTest(classes = ManagerApp.class)
+class TestManagerController {
+
+    @Mock
+    private CookRepository cookRepo;
+
+    @Mock
+    private DishRepository dishRepo;
+
+    @Mock
+    private OrderRepository orderRepo;
+
+    @Mock
+    private TableRepository tableRepo;
+
+    @Mock
+    private UploadCareService uploadCareService;
+
+    @Mock
+    private TransactionsRepository transactionsRepo;
+
+    @InjectMocks
+    private ManagerController managerController;
+
+    private Dish testDish;
+    private Cook testCook;
+
+    @BeforeEach
+    void setupEach() {
+        testDish = Dish.builder()
+                .id(1)
+                .name("TestDish")
+                .description("Desc")
+                .price(55.5F)
+                .timeToPrepare(5)
+                .rate(4.2F)
+                .rateCount(5)
+                .active(true)
+                .imagePath("Path/To/Image.png")
+                .build();
+
+        testCook = new Cook(0, "F_NAME", "L_NAME", true);
+    }
+
+
+    @DisplayName("Test addDish with empty name")
+    @Test
+    void addDishWithEmptyName() {
+        testDish.setName("");
+        EmptyResponse response = managerController.addDish(testDish);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+    @DisplayName("Test add dish with null name")
+    @Test
+    void addDishWithNullName() {
+        testDish.setName(null);
+        EmptyResponse response = managerController.addDish(testDish);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+    @DisplayName("Test addDish with empty description")
+    @Test
+    void addDishWithEmptyDescription() {
+        testDish.setDescription("");
+        EmptyResponse response = managerController.addDish(testDish);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+    @DisplayName("Test addDish with null description")
+    @Test
+    void addDishWithNullDescription() {
+        testDish.setDescription("");
+        EmptyResponse response = managerController.addDish(testDish);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+    @DisplayName("Test addDish with null imagePath")
+    @Test
+    void addDishWithNullImagePath() {
+        testDish.setImagePath(null);
+        EmptyResponse response = managerController.addDish(testDish);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+    @DisplayName("Test addDish with invalid time-to-prepare")
+    @Test
+    void addDishWithNegativeTimeToPrepare() {
+        testDish.setTimeToPrepare(-1);
+        EmptyResponse response = managerController.addDish(testDish);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+
+    @DisplayName("Test addDish with invalid price")
+    @Test
+    void addDishWithNegativePrice() {
+        testDish.setPrice(-1F);
+        EmptyResponse response = managerController.addDish(testDish);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+
+    @DisplayName("Test addDish. Should trigger the mock")
+    @Test
+    void addDishNormalCase() throws UploadFailureException {
+        String localImagePath = testDish.getImagePath();
+        when(uploadCareService.saveImageToCloud(testDish.getImagePath())).thenReturn("UUID");
+        when(dishRepo.save(testDish)).thenReturn(testDish);
+        EmptyResponse response = managerController.addDish(testDish);
+
+        assertTrue(response.isSuccess());
+        verify(dishRepo, times(1)).save(testDish);
+        verify(uploadCareService, times(1)).saveImageToCloud(localImagePath);
+    }
+
+    @DisplayName("Test getDishes. Should trigger the mock")
+    @Test
+    void getDishesNormalCase() {
+        when(dishRepo.findAllByActive(true)).thenReturn(Collections.singletonList(testDish));
+        DishResponse response = managerController.getDishes();
+
+        assertTrue(response.isSuccess());
+        verify(dishRepo, times(1)).findAllByActive(true);
+        assertThat(response.getDishes(), Matchers.hasSize(1));
+        assertThat(response.getDishes().get(0), Matchers.equalTo(testDish));
+    }
+
+    @DisplayName("Test updateDish with invalid id")
+    @Test
+    void updateDishWithNegativeId() {
+        EmptyResponse response = managerController.updateDish(-1, testDish);
+
+        assertFalse(response.isSuccess());
+        verify(dishRepo, times(0)).save(isA(Dish.class));
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+    @DisplayName("Test updateDish with invalid newDish")
+    @Test
+    void updateDishWithInvalidNewDishData() {
+        testDish.setPrice(-1F);
+        EmptyResponse response = managerController.updateDish(0, testDish);
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+
+        setupEach();
+
+        testDish.setTimeToPrepare(-1);
+        response = managerController.updateDish(0, testDish);
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+    @DisplayName("Test updateDish dish with wrong id. Should trigger findById")
+    @Test
+    void updateDishWithWrongId() {
+        Dish oldDish = testDish;
+        testDish = Dish.builder().name("New NAME").build();
+
+        when(dishRepo.findById(oldDish.getId())).thenReturn(Optional.empty());
+        EmptyResponse response = managerController.updateDish(oldDish.getId(), testDish);
+
+        assertFalse(response.isSuccess());
+        verify(dishRepo, times(1)).findById(oldDish.getId());
+    }
+
+    @DisplayName("Test updateDish. Should trigger save")
+    @Test
+    void updateDishNormalCase() {
+        Dish oldDish = testDish;
+        Dish newDish = Dish.builder().name("New NAME").build();
+
+        when(dishRepo.findById(oldDish.getId())).thenReturn(Optional.of(oldDish));
+        EmptyResponse response = managerController.updateDish(oldDish.getId(), newDish);
+
+        assertTrue(response.isSuccess());
+        verify(dishRepo, times(1)).findById(oldDish.getId());
+        oldDish.setName("New NAME");
+        verify(dishRepo, times(1)).save(oldDish);
+        verify(dishRepo, times(1)).save(newDish);
+    }
+
+    @DisplayName("Test removeDish with invalid ID")
+    @Test
+    void removeDishWithNegativeId() {
+        EmptyResponse response = managerController.removeDish(-1);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+        verify(dishRepo, times(0)).save(isA(Dish.class));
+    }
+
+    @DisplayName("Test removeDish. should trigger save")
+    @Test
+    void removeDishNormalCase() {
+        when(dishRepo.findById(testDish.getId())).thenReturn(Optional.of(testDish));
+        when(dishRepo.save(testDish)).thenReturn(testDish);
+        EmptyResponse response = managerController.removeDish(testDish.getId());
+
+        assertTrue(response.isSuccess());
+        verify(dishRepo, times(1)).findById(testDish.getId());
+        assertFalse(testDish.isActive());
+        verify(dishRepo, times(1)).save(testDish);
+
+    }
+
+    @DisplayName("Test getCooks. should trigger mock")
+    @Test
+    void getCooksNormalCase() {
+        when(cookRepo.getAllHiredWithoutOrders()).thenReturn(Collections.singletonList(testCook));
+        CookResponse response = managerController.getHiredCooks();
+
+        assertTrue(response.isSuccess());
+        assertThat(response.getMessage(), isEmptyOrNullString());
+        verify(cookRepo, times(1)).getAllHiredWithoutOrders();
+        verify(cookRepo, times(0)).getAllWithoutOrders();
+    }
+
+    @DisplayName("Test addCook with invalid first name")
+    @Test
+    void addCookWithInvalidFName() {
+        testCook.setFirstName(null);
+        EmptyResponse response = managerController.addCook(testCook);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+    @DisplayName("Test addCook with invalid last name")
+    @Test
+    void addCookWithInvalidLName() {
+        testCook.setLastName(null);
+        EmptyResponse response = managerController.addCook(testCook);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+    @DisplayName("Test fire cook with invalid Id")
+    @Test
+    void fireCookWithNegativeId() {
+        EmptyResponse response = managerController.fireCook(-1);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+    @DisplayName("Test fire. Should trigger mock")
+    @Test
+    void fireCookNormalCase() {
+        when(cookRepo.findById(testCook.getId())).thenReturn(Optional.of(testCook));
+        when(cookRepo.save(testCook)).thenReturn(testCook);
+        EmptyResponse response = managerController.fireCook(testCook.getId());
+
+        assertTrue(response.isSuccess());
+        assertThat(response.getMessage(), isEmptyOrNullString());
+        verify(cookRepo, times(1)).findById(testCook.getId());
+        verify(cookRepo, times(1)).save(testCook);
+    }
+
+    @DisplayName("Test getTotalIncome with reversed start and end dates")
+    @Test
+    void getTotalIncomeWithReversedDateShouldFail() {
+        Date startDate = new Date(1318386508009L);
+        Date endDate = new Date(1318386508000L);
+        NumericResponse response = managerController.getTotalIncome(startDate, endDate);
+
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+    @DisplayName("Test getTotalIncome. should trigger mock")
+    @Test
+    void getTotalIncomeShouldSucceed() {
+        Date startDate = new Date(1318386508000L);
+        Date endDate = new Date(1318386508009L);
+        when(transactionsRepo.getTotalIncome(startDate, endDate)).thenReturn(500F);
+
+        NumericResponse response = managerController.getTotalIncome(startDate, endDate);
+
+        assertTrue(response.isSuccess());
+        assertThat(response.getMessage(), isEmptyOrNullString());
+        assertThat("Invalid total income", response.getNumber().floatValue() == 500F);
+        verify(transactionsRepo, times(1)).getTotalIncome(startDate, endDate);
+    }
+}

@@ -24,17 +24,18 @@ public class Cook {
     @Column(name = "l_name")
     private String lastName;
 
-    @Column(name = "is_hired", columnDefinition = "tinyint(1) default 1")
-    private boolean hired;
+    @Column(name = "is_hired", columnDefinition = "boolean default true", nullable = false)
+    private Boolean hired;
 
     @ElementCollection(targetClass = Order.class)
     @MapKey(name = "order_id")
     private Set<Order> assignedOrders;
 
-    public Cook(Integer id, String firstName, String lastName) {
+    public Cook(Integer id, String firstName, String lastName, boolean hired) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = id;
+        this.hired = hired;
         assignedOrders = new HashSet<>();
     }
 

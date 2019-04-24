@@ -9,10 +9,9 @@ import java.util.List;
 
 @Repository
 public interface CookRepository extends JpaRepository<Cook, Integer> {
-    @Query(value = "SELECT cook_id, f_name, l_name, is_hired FROM cook", nativeQuery = true)
+    @Query(value = "SELECT new Cook(id, firstName, lastName, hired) FROM Cook")
     List<Cook> getAllWithoutOrders();
 
-    @Query(value =
-            "SELECT cook_id, f_name, l_name, is_hired FROM cook GROUP BY cook_id ORDER BY COUNT(*) LIMIT :limit", nativeQuery = true)
-    List<Cook> getTopCooks(int limit);
+    @Query(value = "SELECT new Cook(id, firstName, lastName, hired) FROM Cook WHERE hired = true")
+    List<Cook> getAllHiredWithoutOrders();
 }

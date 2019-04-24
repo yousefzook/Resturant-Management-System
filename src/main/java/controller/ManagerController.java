@@ -1,9 +1,6 @@
 package controller;
 
-import com.uploadcare.api.Client;
-import com.uploadcare.upload.FileUploader;
 import com.uploadcare.upload.UploadFailureException;
-import com.uploadcare.upload.Uploader;
 import model.actionresults.CookResponse;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
@@ -14,16 +11,14 @@ import model.repository.CookRepository;
 import model.repository.DishRepository;
 import model.repository.OrderRepository;
 import model.repository.TransactionsRepository;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Paths;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -32,10 +27,6 @@ import java.util.Optional;
 
 @Component
 public class ManagerController {
-    private static String PUBLIC_KEY = "3f9f04a238122a220a22";
-    private static String PRIVATE_KEY = "9ffb406949a0b7d4ad7f";
-
-    private Client uploadCareClient = new Client(PUBLIC_KEY, PRIVATE_KEY);
 
     @Autowired
     private DishRepository dishRepo;
@@ -49,6 +40,12 @@ public class ManagerController {
     @Autowired
     private TransactionsRepository transactionsRepo;
 
+    @Autowired
+    private UploadCareService uploadCareService;
+
+    @PersistenceContext
+    private EntityManager em;
+
     public EmptyResponse addDish(Dish dishToAdd) {
         EmptyResponse response = new EmptyResponse();
         response.setSuccess(false);
@@ -59,11 +56,11 @@ public class ManagerController {
             response.setMessage("Dish name, description and imagePath can't be empty, null nor a whitespace");
         } else if (dishToAdd.getPrice() == null || dishToAdd.getPrice() < 0 ||
                 dishToAdd.getTimeToPrepare() == null || dishToAdd.getTimeToPrepare() < 0) {
-            response.setMessage("Dish price and time to prepare cannot be less than zero");
+            response.setMessage("Dish price and time to prepare cannot be null or less than zero");
         } else {
             try {
-                dishToAdd.setImagePath(saveImageToCloud(dishToAdd.getImagePath()));
-//                System.out.println(dishToAdd.getPrice() + "-------------------------");
+                System.out.println(dishToAdd);
+                dishToAdd.setImagePath(uploadCareService.saveImageToCloud(dishToAdd.getImagePath()));
                 dishRepo.save(dishToAdd);
                 response.setSuccess(true);
             } catch (UploadFailureException e) {
@@ -77,9 +74,9 @@ public class ManagerController {
         DishResponse response = new DishResponse();
         response.setSuccess(false);
         try {
-            response.setDishes(dishRepo.findAll());
+            response.setDishes(dishRepo.findAllByActive(true));
             for (Dish d : response.getDishes()) {
-                d.setImagePath(downloadImageFromCloud(d.getImagePath()));
+                d.setImagePath(uploadCareService.downloadImageFromCloud(d.getImagePath()));
             }
             response.setSuccess(true);
         } catch (Exception e) {
@@ -103,20 +100,28 @@ public class ManagerController {
             Optional<Dish> oldDishOptional = dishRepo.findById(oldDishId);
             if (oldDishOptional.isPresent()) {
                 Dish oldDish = oldDishOptional.get();
-                if (newDish.getTimeToPrepare() != null) oldDish.setTimeToPrepare(newDish.getTimeToPrepare());
-                if (newDish.getPrice() != null) oldDish.setPrice(newDish.getPrice());
-                if (newDish.getName() != null) oldDish.setName(newDish.getName());
-                if (newDish.getDescription() != null) oldDish.setDescription(newDish.getDescription());
-                if (newDish.getImagePath() != null) {
+                if (newDish.getTimeToPrepare() == null) newDish.setTimeToPrepare(oldDish.getTimeToPrepare());
+                if (newDish.getPrice() == null) newDish.setPrice(oldDish.getPrice());
+                if (newDish.getName() == null) newDish.setName(oldDish.getName());
+                if (newDish.getDescription() == null) newDish.setDescription(oldDish.getDescription());
+                if (newDish.getImagePath() == null) {
+                    newDish.setImagePath(oldDish.getImagePath());
+                } else {
                     try {
-                        String imageUrl = saveImageToCloud(newDish.getImagePath());
-                        oldDish.setImagePath(imageUrl);
-                        dishRepo.save(oldDish);
-                        response.setSuccess(true);
+                        newDish.setImagePath(uploadCareService.saveImageToCloud(newDish.getImagePath()));
                     } catch (UploadFailureException e) {
                         response.setMessage(e.getMessage());
                     }
                 }
+
+                newDish.setRate(oldDish.getRate());
+                newDish.setRateCount(oldDish.getRateCount());
+
+                oldDish.setActive(false);
+                dishRepo.save(oldDish);
+                newDish.setActive(true);
+                dishRepo.save(newDish);
+                response.setSuccess(true);
             }
         }
         return response;
@@ -132,10 +137,10 @@ public class ManagerController {
             Optional<Dish> dishToRemove = dishRepo.findById(dishId);
             if (!dishToRemove.isPresent()) {
                 response.setMessage("No such a dish with the given id");
-            } else if (dishToRemove.get().isActive()) {
+            } else if (!dishToRemove.get().isActive()) {
                 response.setMessage("Dish is already not active");
             } else {
-                dishToRemove.get().setActive(true);
+                dishToRemove.get().setActive(false);
                 dishRepo.save(dishToRemove.get());
                 response.setSuccess(true);
             }
@@ -143,10 +148,10 @@ public class ManagerController {
         return response;
     }
 
-    public CookResponse getCooks() {
+    public CookResponse getHiredCooks() {
         CookResponse response = new CookResponse();
         response.setSuccess(false);
-        response.setCooks(cookRepo.getAllWithoutOrders());
+        response.setCooks(cookRepo.getAllHiredWithoutOrders());
         response.setSuccess(true);
         return response;
     }
@@ -180,10 +185,11 @@ public class ManagerController {
             Optional<Cook> cookOptional = cookRepo.findById(cookId);
             if (!cookOptional.isPresent()) {
                 response.setMessage("Cannot find a cook with id = " + cookId);
-            } else if (!cookOptional.get().isHired()) {
+            } else if (!cookOptional.get().getHired()) {
                 response.setMessage("Cook with id = " + cookId + " was already fired");
             } else {
                 cookOptional.get().setHired(false);
+                cookRepo.save(cookOptional.get());
                 response.setSuccess(true);
             }
         }
@@ -253,40 +259,17 @@ public class ManagerController {
         } else if (cookRepo.count() == 0) {
             response.setMessage("No cooks are hired yet");
         } else {
-            response.setCooks(cookRepo.getTopCooks(limit));
+            String st = "SELECT c.cook_id, c.f_name, c.l_name, c.is_hired, COUNT(ao.assigned_orders_order_id) " +
+                    "FROM cook c JOIN  (SELECT ao.cook_cook_id, ao.assigned_orders_order_id FROM cook_assigned_orders ao) ao " +
+                    "ON c.cook_id = ao.cook_cook_id " +
+                    "GROUP BY c.cook_id " +
+                    "ORDER BY COUNT(ao.assigned_orders_order_id) DESC LIMIT ?";
+            Query statement = em.createNativeQuery(st);
+            statement.setParameter(1, limit);
+            response.setCooks(statement.getResultList());
             response.setSuccess(true);
         }
 
         return response;
-    }
-
-    private String saveImageToCloud(String imagePath) throws UploadFailureException {
-        File localFile = new File(imagePath);
-        Uploader uploader = new FileUploader(uploadCareClient, localFile);
-        com.uploadcare.api.File uploadedFile = uploader.upload();
-        return uploadedFile.getFileId();
-    }
-
-    private String downloadImageFromCloud(String imageId) throws IOException {
-        com.uploadcare.api.File requestedByIdFile = uploadCareClient.getFile(imageId);
-        File directory = new File(
-                Paths.get(System.getProperty("user.home"),
-                        "Restaurant-images"
-                ).toString());
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-
-        String fileName = requestedByIdFile.getOriginalFilename();
-        String imagePath =
-                Paths.get(System.getProperty("user.home"),
-                        "Restaurant-images",
-                        requestedByIdFile.getFileId() + fileName.substring(fileName.lastIndexOf("."))
-                ).toString();
-        File image = new File(imagePath);
-        URL imageUrl = new URL("https://ucarecdn.com/" + requestedByIdFile.getFileId() + "/" + requestedByIdFile.getOriginalFilename());
-        System.out.println(imageUrl.toString());
-        FileUtils.copyURLToFile(imageUrl, image);
-        return imagePath;
     }
 }
