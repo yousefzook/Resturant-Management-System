@@ -1,7 +1,6 @@
+//package controller;
+//
 //import controller.ManagerController;
-//import model.Cook;
-//import model.Dish;
-//import model.RestaurantDBLayer;
 //import model.actionresults.CookResponse;
 //import model.actionresults.DishResponse;
 //import model.actionresults.EmptyResponse;
@@ -23,9 +22,6 @@
 //import static org.mockito.MockitoAnnotations.initMocks;
 //
 //class TestManagerController {
-//
-//    @Mock
-//    private static RestaurantDBLayer db = mock(RestaurantDBLayer.class);
 //
 //    @InjectMocks
 //    private static ManagerController controller;
@@ -116,7 +112,7 @@
 //
 //    @Test
 //    void addDishShouldFailWhenPriceLessThanZero() {
-//        testDish.setPrice(-1F);
+//        testDish.setPrice(-1);
 //        EmptyResponse response = controller.addDish(testDish);
 //
 //        assertFalse(response.isSuccess());

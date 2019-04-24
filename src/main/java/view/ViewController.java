@@ -1,67 +1,45 @@
 package view;
 
-import controller.ManagerController;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
-
-public class ViewController implements Initializable {
+@Component
+public class ViewController {
 
     @Setter
-    private ManagerController managerController;
     private Stage primaryStage;
 
-    public ViewController(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
+    @Autowired
+    private ConfigurableApplicationContext appContext;
 
     public ViewController() {
     }
 
-    public void showUp() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/ManagerView.fxml"));
-
-        primaryStage.setScene(new Scene(root));
-        System.out.println(primaryStage.toString());
-        primaryStage.show();
+    public void showAnalysis() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ManagerAnalysis.fxml"));
+        fxmlLoader.setControllerFactory(appContext::getBean);
+        primaryStage.setScene(new Scene(fxmlLoader.load()));
+        ((AnalysisController) fxmlLoader.getController()).setPrimaryStage(primaryStage);
     }
 
-    @FXML
-    public void showAnalysis(MouseEvent mouseEvent) throws IOException {
-        Node node = (Node) mouseEvent.getSource();
-        final Stage stage = (Stage) node.getScene().getWindow();
-        AnalysisController c = new AnalysisController(stage);
-        c.showUp();
+    public void showEmployees() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ManagerCook.fxml"));
+        fxmlLoader.setControllerFactory(appContext::getBean);
+        primaryStage.setScene(new Scene(fxmlLoader.load()));
+        ((CookController) fxmlLoader.getController()).setPrimaryStage(primaryStage);
     }
 
-    @FXML
-    public void showEmployees(MouseEvent mouseEvent) throws IOException {
-        Node node = (Node) mouseEvent.getSource();
-        final Stage stage = (Stage) node.getScene().getWindow();
-        CookController c = new CookController(stage);
-        c.showUp();
-    }
-
-    @FXML
-    public void showMenu(MouseEvent mouseEvent) throws IOException {
-        Node node = (Node) mouseEvent.getSource();
-        final Stage stage = (Stage) node.getScene().getWindow();
-        MenuController c = new MenuController(stage);
-        c.showUp();
-    }
-
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
+    public void showMenu() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ManagerMenu.fxml"));
+        fxmlLoader.setControllerFactory(appContext::getBean);
+        primaryStage.setScene(new Scene(fxmlLoader.load()));
+        ((MenuController) fxmlLoader.getController()).setPrimaryStage(primaryStage);
     }
 }

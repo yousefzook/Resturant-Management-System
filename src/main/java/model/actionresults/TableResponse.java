@@ -1,7 +1,7 @@
 package model.actionresults;
 
 import lombok.Data;
-import model.Table;
+import model.entity.Table;
 
 import java.util.List;
 

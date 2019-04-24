@@ -1,23 +1,26 @@
 package view;
 
 import controller.ManagerController;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
-import model.Cook;
 import model.actionresults.CookResponse;
 import model.actionresults.EmptyResponse;
+import model.entity.Cook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,43 +29,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+@Component
 public class CookController implements Initializable {
 
     @Setter
     private Stage primaryStage;
 
+    @Autowired
+    private ConfigurableApplicationContext appContext;
+
+    @Autowired
+    private ManagerController managerController;
+
     @FXML
     ScrollPane scPane;
 
-    @FXML
-    Button hireBtn, backBtn;
-
-    @FXML
-    TextField firstText, lastName;
-
     private Map<HBox, Integer> map;
 
-    public CookController(Stage primaryStage) {
+    CookController(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
     public CookController() {
     }
 
-    public void showUp() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/ManagerCook.fxml"));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("menu.css");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        map = new HashMap<HBox, Integer>();
+        map = new HashMap<>();
         VBox vBox = new VBox();
         vBox.setSpacing(10);
 
-        CookResponse r = ManagerController.getInstance().getCooks();
+        CookResponse r = managerController.getCooks();
         if (!r.isSuccess())
             showError(r.getMessage());
         else {
@@ -72,8 +68,6 @@ public class CookController implements Initializable {
                 map.put(crnt, c.getId());
                 vBox.getChildren().add(crnt);
             }
-            addBackAction();
-            addHireAction();
             scPane.setContent(vBox);
         }
     }
@@ -101,49 +95,30 @@ public class CookController implements Initializable {
         return employee;
     }
 
-    private void addHireAction() {
-        hireBtn.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent actionEvent) {
-                Node node = (Node) actionEvent.getSource();
-                final Stage stage = (Stage) node.getScene().getWindow();
-                AddCookController c = new AddCookController(stage);
-                try {
-                    c.showUp();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    public void hireAction() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/hire.fxml"));
+        fxmlLoader.setControllerFactory(appContext::getBean);
+        primaryStage.setScene(new Scene(fxmlLoader.load()));
+        ((AddCookController) fxmlLoader.getController()).setPrimaryStage(primaryStage);
     }
 
-    private void addBackAction() {
-        backBtn.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent actionEvent) {
-                Node node = (Node) actionEvent.getSource();
-                final Stage stage = (Stage) node.getScene().getWindow();
-                ViewController c = new ViewController(stage);
-                try {
-                    c.showUp();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    public void backAction() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ManagerView.fxml"));
+        fxmlLoader.setControllerFactory(appContext::getBean);
+        primaryStage.setScene(new Scene(fxmlLoader.load()));
     }
 
     private void addDeleteAction(final Button delete) {
-        delete.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent actionEvent) {
-                for (Node n : delete.getParent().getParent().getChildrenUnmodifiable()) {
-                    if (n.equals(delete.getParent())) {
-                        EmptyResponse r = ManagerController.getInstance().fireCook(map.get((HBox) delete.getParent()));
-                        if (r.isSuccess()) {
-                            ((VBox) delete.getParent().getParent()).getChildren().remove(n);
-                        } else {
-                            showError(r.getMessage());
-                        }
-                        break;
+        delete.setOnAction(actionEvent -> {
+            for (Node n : delete.getParent().getParent().getChildrenUnmodifiable()) {
+                if (n.equals(delete.getParent())) {
+                    EmptyResponse r = managerController.fireCook(map.get(delete.getParent()));
+                    if (r.isSuccess()) {
+                        ((VBox) delete.getParent().getParent()).getChildren().remove(n);
+                    } else {
+                        showError(r.getMessage());
                     }
+                    break;
                 }
             }
         });

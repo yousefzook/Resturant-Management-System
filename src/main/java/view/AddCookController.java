@@ -4,15 +4,18 @@ import controller.ManagerController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import model.Cook;
+import lombok.Setter;
 import model.actionresults.EmptyResponse;
+import model.entity.Cook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,10 +23,17 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class AddCookController implements Initializable {
 
-    private ManagerController managerController;
+    @Setter
     private Stage primaryStage;
+
+    @Autowired
+    private ConfigurableApplicationContext appContext;
+
+    @Autowired
+    private ManagerController managerController;
 
     @FXML
     private TextField firstText, lastText;
@@ -38,25 +48,17 @@ public class AddCookController implements Initializable {
     public AddCookController() {
     }
 
-    public void showUp() throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/hire.fxml"));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("addDish.css");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
 
-    @FXML
-    public void save(MouseEvent mouseEvent) throws IOException {
-        if(!isValid()) {
-           showError("Name should only contain letters and spaces");
+    public void save() throws IOException {
+        if (!isValid()) {
+            showError("Name should only contain letters and spaces");
         } else {
             Cook cook = new Cook(null, firstText.getText(), lastText.getText());
-            EmptyResponse r = ManagerController.getInstance().addCook(cook);
-            if(!r.isSuccess()) {
+            EmptyResponse r = managerController.addCook(cook);
+            if (!r.isSuccess()) {
                 showError(r.getMessage());
             }
-            backToMenu(mouseEvent);
+            goBack();
         }
     }
 
@@ -68,24 +70,15 @@ public class AddCookController implements Initializable {
     }
 
     private boolean isValid() {
-        Pattern pattern = Pattern.compile(new String ("^[a-zA-Z\\s]+$"));
+        Pattern pattern = Pattern.compile("^[a-zA-Z\\s]+$");
         Matcher matcherF = pattern.matcher(firstText.getText().trim());
         Matcher matcherL = pattern.matcher(lastText.getText().trim());
-        if(! matcherF.matches() || !matcherL.matches()) {
-            return false;
-        }
-        return true;
+        return matcherF.matches() && matcherL.matches();
     }
 
-    private void backToMenu(MouseEvent mouseEvent) throws IOException {
-        Node node = (Node) mouseEvent.getSource();
-        final Stage stage = (Stage) node.getScene().getWindow();
-        CookController c = new CookController(stage);
-        c.showUp();
-    }
-
-    @FXML
-    public void back(MouseEvent mouseEvent) throws IOException {
-        backToMenu(mouseEvent);
+    public void goBack() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ManagerView.fxml"));
+        fxmlLoader.setControllerFactory(appContext::getBean);
+        primaryStage.setScene(new Scene(fxmlLoader.load()));
     }
 }
