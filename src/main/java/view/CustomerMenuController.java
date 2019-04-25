@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -36,6 +37,9 @@ import java.util.ResourceBundle;
 @Component
 public class CustomerMenuController implements Initializable {
 
+    @FXML
+    public AnchorPane anchor;
+
     @Setter
     private Stage primaryStage;
 
@@ -56,9 +60,22 @@ public class CustomerMenuController implements Initializable {
     @FXML
     Button payAndOrderBtn;
 
+    @FXML
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         map = new HashMap<>();
+    }
+
+    private void buildScene() {
+
+        ScrollPane scPane = new ScrollPane();
+        scPane.setId("scPane");
+        scPane.setLayoutX(10.0);
+        scPane.setLayoutY(14.0);
+        scPane.setPrefHeight(496.0);
+        scPane.setPrefWidth(781.0);
         VBox vBox = new VBox();
         vBox.setSpacing(10);
         vBox.setPadding(new Insets(10, 0, 0, 20));
@@ -81,6 +98,7 @@ public class CustomerMenuController implements Initializable {
         else
             payAndOrderBtn.setDisable(false);
 
+        anchor.getChildren().add(scPane);
     }
 
     private void showError(String message) {
@@ -235,7 +253,9 @@ public class CustomerMenuController implements Initializable {
         });
     }
 
-    public void setMap(Map<Dish, Integer> order) {
+    public void setMap(Map<Dish, Integer> order, Stage s) {
+        this.primaryStage = s;
         this.order = order;
+        buildScene();
     }
 }

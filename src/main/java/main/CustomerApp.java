@@ -12,6 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import view.CustomerMenuController;
 
+import java.util.HashMap;
+
 @SpringBootApplication
 @ComponentScan(value = {"controller", "view"})
 @EnableJpaRepositories(value = "model.repository")
@@ -27,8 +29,11 @@ public class CustomerApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         fxmlLoader.setLocation(getClass().getResource("/fxml/CustomerMenu.fxml"));
-        primaryStage.setScene(new Scene(fxmlLoader.load()));
-        ((CustomerMenuController) fxmlLoader.getController()).setPrimaryStage(primaryStage);
+        Scene scene = new Scene(fxmlLoader.load());
+        scene.getStylesheets().add("css/menu.css");
+        CustomerMenuController controller = fxmlLoader.getController();
+        controller.setMap(new HashMap<>(), primaryStage);
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 

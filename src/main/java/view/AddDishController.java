@@ -73,6 +73,7 @@ public class AddDishController implements Initializable {
             try {
                 System.out.println("Leaving AddDishController");
                 backToMenu();
+                photoPath = null;
             } catch (IOException e) {
                 showError(e.getMessage());
             }
@@ -105,6 +106,8 @@ public class AddDishController implements Initializable {
         } catch (Exception e) {
             return false;
         }
+        if(photoPath == null)
+            return false;
         return true;
     }
 
@@ -122,6 +125,8 @@ public class AddDishController implements Initializable {
                 new FileChooser.ExtensionFilter("PNG", "*.png")
         );
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        if(selectedFile == null)
+            return;
         photoPath = selectedFile.toPath().toString();
 
 

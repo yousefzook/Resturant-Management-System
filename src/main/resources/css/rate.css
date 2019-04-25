@@ -26,3 +26,7 @@
 #anchor {
     -fx-background: #DEB887;
 }
+
+.polygon:hover {
+    -fx-fill: #FFA07A
+}

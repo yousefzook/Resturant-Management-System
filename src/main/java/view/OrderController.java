@@ -83,17 +83,18 @@ public class OrderController implements Initializable {
 
         primaryStage.setScene(scene);
         primaryStage.show();
-
-
     }
 
     public void backToMenu() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/CustomerMenu.fxml"));
-        fxmlLoader.setControllerFactory(appContext::getBean);
-        primaryStage.setScene(new Scene(fxmlLoader.load()));
-        CustomerMenuController controller = ((CustomerMenuController) fxmlLoader.getController());
-        controller.setMap(order);
-        controller.setPrimaryStage(primaryStage);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/fxml/CustomerMenu.fxml"));
+        loader.setControllerFactory(appContext::getBean);
+        Scene scene = new Scene(loader.load());
+        scene.getStylesheets().add("css/menu.css");
+        CustomerMenuController controller = loader.getController();
+        controller.setMap(order, primaryStage);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     public void setView(Map<Dish, Integer> order, Stage stage) {
