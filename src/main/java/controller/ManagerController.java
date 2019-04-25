@@ -256,8 +256,6 @@ public class ManagerController {
 
         if (limit < 1) {
             response.setMessage("Limit must be a positive integer");
-        } else if (cookRepo.count() == 0) {
-            response.setMessage("No cooks are hired yet");
         } else {
             String st = "SELECT c.cook_id, c.f_name, c.l_name, c.is_hired, COUNT(ao.assigned_orders_order_id) " +
                     "FROM cook c JOIN  (SELECT ao.cook_cook_id, ao.assigned_orders_order_id FROM cook_assigned_orders ao) ao " +

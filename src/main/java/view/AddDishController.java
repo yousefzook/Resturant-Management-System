@@ -92,10 +92,11 @@ public class AddDishController implements Initializable {
 
     private boolean isValid() {
         // name and description
-        Pattern pattern = Pattern.compile("^[a-zA-Z\\s]+$");
-        Matcher matcherF = pattern.matcher(nameText.getText().trim());
-        Matcher matcherL = pattern.matcher(descText.getText().trim());
-        if (!matcherF.matches() || !matcherL.matches()) {
+        Pattern namPattern = Pattern.compile("^[a-zA-Z\\s()0-9]+$");
+        Matcher nameMatcher = namPattern.matcher(nameText.getText().trim());
+        Pattern descPattern = Pattern.compile("^[a-zA-Z\\s().,0-9]+$");
+        Matcher descMatcher = descPattern.matcher(descText.getText().trim());
+        if (!nameMatcher.matches() || !descMatcher.matches()) {
             return false;
         }
         try {
