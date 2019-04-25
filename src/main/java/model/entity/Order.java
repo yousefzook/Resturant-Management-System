@@ -1,6 +1,7 @@
 package model.entity;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import model.OrderState;
 
@@ -21,6 +22,7 @@ public class Order {
     @JoinColumn(name = "cook_id")
     private Cook cook;
 
+    @Getter
     @Column(name = "order_state")
     private OrderState state;
 

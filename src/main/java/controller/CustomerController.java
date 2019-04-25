@@ -89,9 +89,7 @@ public class CustomerController {
     }
 
     public OrderState getOrderState(int orderId) {
-        OrderState state = OrderState.inQueue;
-
-        return state;
+        return orderRepo.findById(orderId).get().getState();
     }
 
 
