@@ -49,7 +49,8 @@ public class UploadCareService {
                 ).toString();
         File image = new File(imagePath);
         if (!image.exists()) {
-            URL imageUrl = new URL("https://ucarecdn.com/" + requestedByIdFile.getFileId() + "/" + requestedByIdFile.getOriginalFilename());
+            // replace any space with standard '%20' for standard http request
+            URL imageUrl = new URL("https://ucarecdn.com/" + requestedByIdFile.getFileId() + "/" + requestedByIdFile.getOriginalFilename().replaceAll(" ", "%20"));
             System.out.println(imageUrl.toString());
             FileUtils.copyURLToFile(imageUrl, image);
         }

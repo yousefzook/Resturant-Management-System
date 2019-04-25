@@ -328,4 +328,17 @@ class TestManagerController {
         assertThat("Invalid total income", response.getNumber().floatValue() == 500F);
         verify(transactionsRepo, times(1)).getTotalIncome(startDate, endDate);
     }
+
+
+    @DisplayName("Test getIncomeToday. should return 0")
+    @Test
+    void getIncomeToday() {
+
+        NumericResponse response = managerController.getIncomeToday();
+
+        assertTrue(response.isSuccess());
+        assertThat(response.getMessage(), isEmptyOrNullString());
+        assertThat("Invalid total income", response.getNumber().floatValue() == 0F);
+
+    }
 }
