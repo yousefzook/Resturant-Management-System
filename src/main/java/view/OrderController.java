@@ -7,7 +7,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
@@ -40,9 +39,6 @@ public class OrderController implements Initializable {
     ScrollPane scPane;
 
     @FXML
-    Button payBtn;
-
-    @FXML
     Label price;
 
     @FXML
@@ -52,30 +48,9 @@ public class OrderController implements Initializable {
     private float totalPrice = 0;
     private int totalTime = Integer.MIN_VALUE;
 
-    public OrderController(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
-    public OrderController() {
-    }
-
-    void showUp() throws IOException {
-        System.out.println("in showup");
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Order.fxml"));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("css/order.css");
-
-
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println(" in initialize");
-
-
-
 
     }
 
@@ -92,6 +67,26 @@ public class OrderController implements Initializable {
         return hBox;
     }
 
+    public void payAction() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/fxml/Pay.fxml"));
+        loader.setControllerFactory(appContext::getBean);
+
+        Parent p = loader.load();
+
+        Scene scene = new Scene(p);
+        scene.getStylesheets().add("css/pay.css");
+
+
+        PayController controller = loader.getController();
+        controller.setView(order, primaryStage);
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+
+    }
+
     public void backToMenu() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/CustomerMenu.fxml"));
         fxmlLoader.setControllerFactory(appContext::getBean);
@@ -101,21 +96,19 @@ public class OrderController implements Initializable {
         controller.setPrimaryStage(primaryStage);
     }
 
-    public void setView(Map<Dish, Integer> order , Stage stage) {
+    public void setView(Map<Dish, Integer> order, Stage stage) {
         this.primaryStage = stage;
 
-        System.out.println("settong order " + order);
         this.order = order;
 
         VBox vBox = new VBox();
         vBox.setSpacing(10);
         vBox.setPadding(new Insets(10, 0, 0, 80));
 
-        for(Dish d : order.keySet()) {
+        for (Dish d : order.keySet()) {
             HBox crnt = getItem(d);
             vBox.getChildren().add(crnt);
         }
-        System.out.println("show pane");
 
         scPane.setContent(vBox);
 

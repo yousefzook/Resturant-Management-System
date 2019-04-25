@@ -56,13 +56,6 @@ public class CustomerMenuController implements Initializable {
     @FXML
     Button payAndOrderBtn;
 
-    public CustomerMenuController(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
-    public CustomerMenuController() {
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         map = new HashMap<>();
