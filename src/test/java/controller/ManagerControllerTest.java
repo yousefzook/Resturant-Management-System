@@ -47,7 +47,7 @@ class ManagerControllerTest {
     private UploadCareService uploadCareService;
 
     @Mock
-    private TransactionsRepository transactionsRepo;
+    private TransactionRepository transactionsRepo;
 
     @InjectMocks
     private ManagerController managerController;

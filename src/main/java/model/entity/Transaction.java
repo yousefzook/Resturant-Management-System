@@ -1,5 +1,6 @@
 package model.entity;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,8 +9,9 @@ import java.util.Date;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
-public class Transactions {
+public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "trans_id")

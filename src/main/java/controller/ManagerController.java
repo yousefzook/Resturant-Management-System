@@ -10,7 +10,7 @@ import model.entity.Dish;
 import model.repository.CookRepository;
 import model.repository.DishRepository;
 import model.repository.OrderRepository;
-import model.repository.TransactionsRepository;
+import model.repository.TransactionRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class ManagerController {
     private OrderRepository orderRepo;
 
     @Autowired
-    private TransactionsRepository transactionsRepo;
+    private TransactionRepository transactionsRepo;
 
     @Autowired
     private UploadCareService uploadCareService;
