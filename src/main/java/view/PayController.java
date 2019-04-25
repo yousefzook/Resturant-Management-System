@@ -50,7 +50,10 @@ public class PayController implements Initializable {
 
     private final int csvLimit = 3;
 
-    private final int cardNoLimit = 19;
+    private final int minCardNoLimit = 16;
+
+    private final int maxCardNoLimit = 19;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -76,8 +79,8 @@ public class PayController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if (newValue.intValue() > oldValue.intValue()) {
-                    if (cardNo.getText().length() >= cardNoLimit) {
-                        cardNo.setText(cardNo.getText().substring(0, cardNoLimit));
+                    if (cardNo.getText().length() >= maxCardNoLimit) {
+                        cardNo.setText(cardNo.getText().substring(0, maxCardNoLimit));
                     }
                 }
             }
@@ -114,7 +117,7 @@ public class PayController implements Initializable {
     public void confirmPayment() throws IOException {
 
 
-        if (csv.getText().trim().length() < csvLimit|| cardNo.getText().trim().length() < cardNoLimit) {
+        if (csv.getText().trim().length() < csvLimit|| cardNo.getText().trim().length() < minCardNoLimit) {
             showError("You Must Enter valid Payment Details !");
             return;
         }
