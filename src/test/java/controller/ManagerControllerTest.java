@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = ManagerApp.class)
-class TestManagerController {
+class ManagerControllerTest {
 
     @Mock
     private CookRepository cookRepo;
