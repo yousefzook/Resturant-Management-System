@@ -1,6 +1,6 @@
-package view;
+package view.customer;
 
-import controller.ManagerController;
+import controller.CustomerController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -33,7 +33,7 @@ public class OrderController implements Initializable {
     private ConfigurableApplicationContext appContext;
 
     @Autowired
-    private ManagerController managerController;
+    private CustomerController customerController;
 
     @FXML
     ScrollPane scPane;
@@ -82,7 +82,6 @@ public class OrderController implements Initializable {
         controller.setView(order, primaryStage);
 
         primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
     public void backToMenu() throws IOException {
@@ -90,14 +89,13 @@ public class OrderController implements Initializable {
         loader.setLocation(getClass().getResource("/fxml/CustomerMenu.fxml"));
         loader.setControllerFactory(appContext::getBean);
         Scene scene = new Scene(loader.load());
-        scene.getStylesheets().add("css/menu.css");
-        CustomerMenuController controller = loader.getController();
+        scene.getStylesheets().add("/css/menu.css");
+        MenuController controller = loader.getController();
         controller.setMap(order, primaryStage);
         primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
-    public void setView(Map<Dish, Integer> order, Stage stage) {
+    void setView(Map<Dish, Integer> order, Stage stage) {
         this.primaryStage = stage;
 
         this.order = order;

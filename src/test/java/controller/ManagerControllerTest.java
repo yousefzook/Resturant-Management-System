@@ -1,7 +1,7 @@
 package controller;
 
 import com.uploadcare.upload.UploadFailureException;
-import main.ManagerApp;
+import main.manager.ManagerApp;
 import model.actionresults.CookResponse;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;

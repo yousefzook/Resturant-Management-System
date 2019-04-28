@@ -1,6 +1,6 @@
-package view;
+package view.customer;
 
-import controller.ManagerController;
+import controller.CustomerController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Component
-public class CustomerMenuController implements Initializable {
+public class MenuController implements Initializable {
 
     @FXML
     public AnchorPane anchor;
@@ -47,7 +47,7 @@ public class CustomerMenuController implements Initializable {
     private ConfigurableApplicationContext appContext;
 
     @Autowired
-    private ManagerController managerController;
+    private CustomerController customerController;
 
     private Map<HBox, Dish> map = new HashMap<>();
 
@@ -80,7 +80,7 @@ public class CustomerMenuController implements Initializable {
         vBox.setSpacing(10);
         vBox.setPadding(new Insets(10, 0, 0, 20));
 
-        DishResponse r = managerController.getDishes();
+        DishResponse r = customerController.getDishes();
         if (!r.isSuccess())
             showError(r.getMessage());
         else {
@@ -117,16 +117,11 @@ public class CustomerMenuController implements Initializable {
         Parent p = loader.load();
 
         Scene scene = new Scene(p);
-        scene.getStylesheets().add("css/order.css");
-
 
         OrderController controller = loader.getController();
         controller.setView(order, primaryStage);
 
         primaryStage.setScene(scene);
-        primaryStage.show();
-
-
     }
 
     private HBox getItem(Dish d) {

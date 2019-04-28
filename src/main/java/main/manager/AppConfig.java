@@ -1,10 +1,10 @@
-package main;
+package main.manager;
 
 import controller.ManagerController;
 import controller.UploadCareService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import view.*;
+import view.manager.*;
 
 @Configuration
 public class AppConfig {

@@ -1,4 +1,4 @@
-package view;
+package view.manager;
 
 import controller.ManagerController;
 import javafx.collections.ObservableList;
@@ -54,7 +54,7 @@ public class MenuController implements Initializable {
     void showUp() throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/ManagerMenu.fxml"));
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("css/menu.css");
+        scene.getStylesheets().add("/css/menu.css");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

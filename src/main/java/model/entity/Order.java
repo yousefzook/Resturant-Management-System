@@ -1,7 +1,6 @@
 package model.entity;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import model.OrderState;
 
@@ -22,29 +21,23 @@ public class Order {
     @JoinColumn(name = "cook_id")
     private Cook cook;
 
-    @Getter
-    @Column(name = "order_state")
-    private OrderState state;
+    @ManyToOne
+    @JoinColumn(name = "table_id", nullable = false)
+    private Table table;
+
+    @Column(name = "order_state", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderState state = OrderState.inQueue;
 
     @ElementCollection
-    @MapKeyColumn(name = "dish_id")
-    @MapKeyClass(value = Dish.class)
-    @Column(name = "amount")
     @CollectionTable(name = "order_contents")
+    @MapKeyClass(Dish.class)
+    @Column(name = "amount")
+    @MapKeyJoinColumn(name = "dish_id")
     private Map<Dish, Integer> details;
 
 
     public Order(Map<Dish, Integer> details) {
         this.details = details;
-    }
-
-    public boolean AssignCook(Cook cook) {
-        this.cook = cook;
-        return true;
-    }
-
-    public boolean setOrderState(OrderState s) {
-        this.state = s;
-        return true;
     }
 }

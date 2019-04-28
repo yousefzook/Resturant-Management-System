@@ -93,7 +93,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>main.ManagerApp</mainClass>
+                    <mainClass>main.manager.ManagerApp</mainClass>
                 </configuration>
             </plugin>
 

@@ -1,9 +1,7 @@
-package view;
+package view.customer;
 
 
-import controller.ManagerController;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import controller.CustomerController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,7 +12,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.Setter;
+import model.actionresults.EmptyResponse;
 import model.entity.Dish;
+import model.entity.Order;
+import model.entity.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,7 @@ import java.util.regex.Pattern;
 @Component
 public class PayController implements Initializable {
 
+    private static final int TABLE_NUMBER = 5;
     @Setter
     private Stage primaryStage;
 
@@ -35,7 +37,7 @@ public class PayController implements Initializable {
     private ConfigurableApplicationContext appContext;
 
     @Autowired
-    private ManagerController managerController;
+    private CustomerController customerController;
 
     private Map<Dish, Integer> order;
 
@@ -64,24 +66,18 @@ public class PayController implements Initializable {
         this.primaryStage = stage;
         this.order = order;
 
-        csv.lengthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if (newValue.intValue() > oldValue.intValue()) {
-                    if (csv.getText().length() >= csvLimit) {
-                        csv.setText(csv.getText().substring(0, csvLimit));
-                    }
+        csv.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() > oldValue.intValue()) {
+                if (csv.getText().length() >= csvLimit) {
+                    csv.setText(csv.getText().substring(0, csvLimit));
                 }
             }
         });
 
-        cardNo.lengthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if (newValue.intValue() > oldValue.intValue()) {
-                    if (cardNo.getText().length() >= maxCardNoLimit) {
-                        cardNo.setText(cardNo.getText().substring(0, maxCardNoLimit));
-                    }
+        cardNo.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() > oldValue.intValue()) {
+                if (cardNo.getText().length() >= maxCardNoLimit) {
+                    cardNo.setText(cardNo.getText().substring(0, maxCardNoLimit));
                 }
             }
         });
@@ -110,27 +106,36 @@ public class PayController implements Initializable {
         controller.setView(order, primaryStage);
 
         primaryStage.setScene(scene);
-        primaryStage.show();
-
     }
 
     public void confirmPayment() throws IOException {
 
 
-        if (csv.getText().trim().length() < csvLimit|| cardNo.getText().trim().length() < minCardNoLimit) {
+        if (csv.getText().trim().length() < csvLimit || cardNo.getText().trim().length() < minCardNoLimit) {
             showError("You Must Enter valid Payment Details !");
             return;
         }
 
         Pattern pattern = Pattern.compile("[0-9]*");
-        Boolean matches = pattern.matcher(csv.getText().trim()).matches();
-        Boolean matches2 = pattern.matcher(cardNo.getText().trim()).matches();
+        boolean matches = pattern.matcher(csv.getText().trim()).matches();
+        boolean matches2 = pattern.matcher(cardNo.getText().trim()).matches();
 
         if (!matches || !matches2) {
             showError("Invalid Payment Details !");
             return;
         }
+        Order orderObj = new Order(order);
+        orderObj.setTable(new Table(TABLE_NUMBER));
+        EmptyResponse response = customerController.confirmOrder(orderObj);
 
+        if (!response.isSuccess()) {
+            showError(response.getMessage());
+        } else {
+            loadRateController();
+        }
+    }
+
+    private void loadRateController() throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/fxml/Rate.fxml"));
         loader.setControllerFactory(appContext::getBean);
@@ -145,8 +150,6 @@ public class PayController implements Initializable {
         controller.setView(order, primaryStage);
 
         primaryStage.setScene(scene);
-        primaryStage.show();
-
     }
 }
 

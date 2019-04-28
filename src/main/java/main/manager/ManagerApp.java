@@ -1,4 +1,4 @@
-package main;
+package main.manager;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,10 +10,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import view.ViewController;
+import view.manager.ViewController;
 
 @SpringBootApplication
-@ComponentScan(value = {"controller", "view"})
+@ComponentScan(value = {"controller", "view.manager"})
 @EnableJpaRepositories(value = "model.repository")
 @EntityScan(value = "model.entity")
 public class ManagerApp extends Application {

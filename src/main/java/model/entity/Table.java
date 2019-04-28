@@ -18,14 +18,11 @@ public class Table {
     private int id;
 
     @OneToMany
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "table_id")
     private List<Order> orders;
 
     public Table(int id) {
-        orders = new ArrayList<Order>();
-    }
-
-    public void addOrder(Order o) {
-        orders.add(o);
+        orders = new ArrayList<>();
+        this.id = id;
     }
 }

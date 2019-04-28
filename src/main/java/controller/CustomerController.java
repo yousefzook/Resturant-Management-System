@@ -3,18 +3,25 @@ package controller;
 import model.OrderState;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
-import model.entity.*;
-import model.repository.CookRepository;
+import model.entity.Dish;
+import model.entity.Order;
+import model.entity.Table;
+import model.entity.Transaction;
 import model.repository.DishRepository;
 import model.repository.OrderRepository;
+import model.repository.TableRepository;
 import model.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-
+@Component
 public class CustomerController {
 
     @Autowired
@@ -24,7 +31,7 @@ public class CustomerController {
     private OrderRepository orderRepo;
 
     @Autowired
-    private CookRepository cookRepo;
+    private TableRepository tableRepo;
 
     @Autowired
     private TransactionRepository transRepo;
@@ -35,7 +42,7 @@ public class CustomerController {
     /**
      * get all available dishes
      *
-     * @return
+     * @return dishResponse containing all the dishes or the exception message if error.
      */
     public DishResponse getDishes() {
         DishResponse response = new DishResponse();
@@ -43,12 +50,11 @@ public class CustomerController {
 
         try {
             response.setDishes(dishRepo.findAllByActive(true));
-            response.setDishes(dishRepo.findAllByActive(true));
             for (Dish d : response.getDishes())
                 d.setImagePath(uploadCareService.downloadImageFromCloud(d.getImagePath()));
             response.setSuccess(true);
         } catch (IOException e) {
-            e.printStackTrace();
+            response.setMessage(e.getMessage());
         }
         return response;
     }
@@ -57,40 +63,65 @@ public class CustomerController {
     /**
      * when customer confirms the order, store this order into the database and save the transactions
      *
-     * @param order
-     * @return
+     * @param order the order the customer made
+     * @return EmptyResponse to confirm the success or failure of the invocation.
      */
-    public EmptyResponse confirmOrder(Order order, Table table) {
+    public EmptyResponse confirmOrder(Order order) {
         EmptyResponse response = new EmptyResponse();
         response.setSuccess(false);
-        Cook cook = cookRepo.findById((int) order.getCook().getId()).get();
-        if (order.getDetails().isEmpty())
-            response.setMessage("Empty order is not allowed!");
-        else if (cook == null || !cook.getHired())
-            response.setMessage("Cook is not exist or he's no longer active!");
-        else {
-            // for each dish, save it in the transaction
-            for (Map.Entry<Dish, Integer> entry : order.getDetails().entrySet()) {
-                Transaction t = Transaction.builder()
-                        .dish(entry.getKey())
-                        .amountPhy(entry.getValue())
-                        .amountFin(entry.getValue() * entry.getKey().getPrice())
-                        .order(order)
-                        .date(new Date())
-                        .table(table)
-                        .build();
-                transRepo.save(t);
+        Optional<Table> tableOptional = tableRepo.findById(order.getTable().getId());
+        if (!tableOptional.isPresent()) {
+            response.setMessage("Table does not exist");
+        } else {
+            Table table = tableOptional.get();
+            if (order.getDetails().isEmpty())
+                response.setMessage("Empty order is not allowed!");
+            else {
+                System.out.println(order);
+                orderRepo.save(order);
+                // for each dish, save it in the transaction
+                for (Map.Entry<Dish, Integer> entry : order.getDetails().entrySet()) {
+                    Transaction t = Transaction.builder()
+                            .dish(entry.getKey())
+                            .amountPhy(entry.getValue())
+                            .amountFin(entry.getValue() * entry.getKey().getPrice())
+                            .date(new Date(System.currentTimeMillis()))
+                            .order(order)
+                            .table(table)
+                            .build();
+                    transRepo.save(t);
+                }
+                response.setSuccess(true);
             }
-            orderRepo.save(order);
-            response.setSuccess(true);
         }
+        return response;
+    }
 
+    public EmptyResponse rateOrder(Order order, int rate) {
+        EmptyResponse response = new EmptyResponse();
+        response.setSuccess(false);
+
+        List<Dish> inOrderDishes = dishRepo.findAllById(
+                order.getDetails().keySet().stream()
+                        .map(Dish::getId).collect(Collectors.toList())
+        );
+
+        if (inOrderDishes.size() != order.getDetails().size()) {
+            response.setMessage("One of the dishes in the order is not valid");
+        } else {
+            inOrderDishes.forEach(d -> {
+                float newRate = (d.getRate() * d.getRateCount() + rate) / (d.getRateCount() + 1);
+                d.setRateCount(d.getRateCount() + 1);
+                d.setRate(newRate);
+                dishRepo.save(d);
+            });
+            dishRepo.saveAll(inOrderDishes);
+        }
         return response;
     }
 
     public OrderState getOrderState(int orderId) {
         return orderRepo.findById(orderId).get().getState();
     }
-
 
 }

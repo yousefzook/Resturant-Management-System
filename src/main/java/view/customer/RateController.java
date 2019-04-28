@@ -1,6 +1,6 @@
-package view;
+package view.customer;
 
-import controller.ManagerController;
+import controller.CustomerController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -8,10 +8,10 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import lombok.Setter;
 import model.entity.Dish;
+import model.entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public class RateController implements Initializable {
     private ConfigurableApplicationContext appContext;
 
     @Autowired
-    private ManagerController managerController;
+    private CustomerController customerController;
 
 
     private Map<Dish, Integer> order;
@@ -42,8 +42,6 @@ public class RateController implements Initializable {
 
     @FXML
     public Label request;
-
-    private int rate;
 
     @FXML
     public Group G1, G2, G3, G4, G5;
@@ -58,7 +56,7 @@ public class RateController implements Initializable {
         thanks.setVisible(false);
     }
 
-    public void setView(Map<Dish, Integer> order, Stage stage) {
+    void setView(Map<Dish, Integer> order, Stage stage) {
         this.primaryStage = stage;
         this.order = order;
     }
@@ -68,35 +66,36 @@ public class RateController implements Initializable {
         loader.setLocation(getClass().getResource("/fxml/CustomerMenu.fxml"));
         loader.setControllerFactory(appContext::getBean);
         Scene scene = new Scene(loader.load());
-        scene.getStylesheets().add("css/menu.css");
-        CustomerMenuController controller = loader.getController();
+        scene.getStylesheets().add("/css/menu.css");
+        MenuController controller = loader.getController();
         controller.setMap(new HashMap<>(), primaryStage);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    public void rateOne(MouseEvent mouseEvent) {
+    public void rateOne() {
         setRate(1, G2, G3, G4, G5);
     }
 
-    public void rateTwo(MouseEvent mouseEvent) {
+    public void rateTwo() {
         setRate(2, G1, G3, G4, G5);
     }
 
-    public void rateThree(MouseEvent mouseEvent) {
+    public void rateThree() {
         setRate(3, G1, G2, G4, G5);
     }
 
-    public void rateFour(MouseEvent mouseEvent) {
+    public void rateFour() {
         setRate(4, G1, G2, G3, G5);
     }
 
-    public void rateFive(MouseEvent mouseEvent) {
+    public void rateFive() {
         setRate(5, G1, G2, G3, G4);
     }
 
     private void setRate(int r, Group g1, Group g2, Group g3, Group g4) {
-        rate = r;
+        Order orderObj = new Order(order);
+        customerController.rateOrder(orderObj, r);
         g1.setVisible(false);
         g2.setVisible(false);
         g3.setVisible(false);

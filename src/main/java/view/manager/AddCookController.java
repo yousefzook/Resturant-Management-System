@@ -1,4 +1,4 @@
-package view;
+package view.manager;
 
 import controller.ManagerController;
 import javafx.fxml.FXML;

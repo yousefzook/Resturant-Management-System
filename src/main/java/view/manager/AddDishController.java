@@ -1,4 +1,4 @@
-package view;
+package view.manager;
 
 import controller.ManagerController;
 import javafx.fxml.FXML;
@@ -106,9 +106,7 @@ public class AddDishController implements Initializable {
         } catch (Exception e) {
             return false;
         }
-        if(photoPath == null)
-            return false;
-        return true;
+        return photoPath != null;
     }
 
     public void backToMenu() throws IOException {
@@ -125,7 +123,7 @@ public class AddDishController implements Initializable {
                 new FileChooser.ExtensionFilter("PNG", "*.png")
         );
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
-        if(selectedFile == null)
+        if (selectedFile == null)
             return;
         photoPath = selectedFile.toPath().toString();
 

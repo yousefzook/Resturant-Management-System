@@ -1,4 +1,4 @@
-package main;
+package main.customer;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,12 +10,12 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import view.CustomerMenuController;
+import view.customer.MenuController;
 
 import java.util.HashMap;
 
 @SpringBootApplication
-@ComponentScan(value = {"controller", "view"})
+@ComponentScan(value = {"controller", "view.customer"})
 @EnableJpaRepositories(value = "model.repository")
 @EntityScan(value = "model.entity")
 public class CustomerApp extends Application {
@@ -30,8 +30,8 @@ public class CustomerApp extends Application {
     public void start(Stage primaryStage) throws Exception {
         fxmlLoader.setLocation(getClass().getResource("/fxml/CustomerMenu.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        scene.getStylesheets().add("css/menu.css");
-        CustomerMenuController controller = fxmlLoader.getController();
+        scene.getStylesheets().add("/css/menu.css");
+        MenuController controller = fxmlLoader.getController();
         controller.setMap(new HashMap<>(), primaryStage);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -39,7 +39,7 @@ public class CustomerApp extends Application {
 
     @Override
     public void init() {
-        springContext = SpringApplication.run(ManagerApp.class);
+        springContext = SpringApplication.run(CustomerApp.class);
         fxmlLoader = new FXMLLoader();
         fxmlLoader.setControllerFactory(springContext::getBean);
     }
