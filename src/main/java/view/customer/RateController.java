@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import lombok.Setter;
+import model.actionresults.EmptyResponse;
 import model.entity.Dish;
 import model.entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +96,10 @@ public class RateController implements Initializable {
 
     private void setRate(int r, Group g1, Group g2, Group g3, Group g4) {
         Order orderObj = new Order(order);
-        customerController.rateOrder(orderObj, r);
+        EmptyResponse response = customerController.rateOrder(orderObj, r);
+        if (!response.isSuccess()) {
+            //TODO report error.
+        }
         g1.setVisible(false);
         g2.setVisible(false);
         g3.setVisible(false);

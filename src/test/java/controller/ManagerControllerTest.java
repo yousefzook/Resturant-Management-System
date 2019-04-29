@@ -75,7 +75,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test addDish with empty name")
     @Test
-    void addDishWithEmptyName() {
+    void TestAddDishWithEmptyName() {
         testDish.setName("");
         EmptyResponse response = managerController.addDish(testDish);
 
@@ -85,7 +85,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test add dish with null name")
     @Test
-    void addDishWithNullName() {
+    void TestAddDishWithNullName() {
         testDish.setName(null);
         EmptyResponse response = managerController.addDish(testDish);
 
@@ -95,7 +95,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test addDish with empty description")
     @Test
-    void addDishWithEmptyDescription() {
+    void TestAddDishWithEmptyDescription() {
         testDish.setDescription("");
         EmptyResponse response = managerController.addDish(testDish);
 
@@ -105,7 +105,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test addDish with null description")
     @Test
-    void addDishWithNullDescription() {
+    void TestAddDishWithNullDescription() {
         testDish.setDescription("");
         EmptyResponse response = managerController.addDish(testDish);
 
@@ -115,7 +115,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test addDish with null imagePath")
     @Test
-    void addDishWithNullImagePath() {
+    void TestAddDishWithNullImagePath() {
         testDish.setImagePath(null);
         EmptyResponse response = managerController.addDish(testDish);
 
@@ -136,7 +136,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test addDish with invalid price")
     @Test
-    void addDishWithNegativePrice() {
+    void TestAddDishWithNegativePrice() {
         testDish.setPrice(-1F);
         EmptyResponse response = managerController.addDish(testDish);
 
@@ -147,7 +147,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test addDish. Should trigger the mock")
     @Test
-    void addDishNormalCase() throws UploadFailureException {
+    void TestAddDishNormalCase() throws UploadFailureException {
         String localImagePath = testDish.getImagePath();
         when(uploadCareService.saveImageToCloud(testDish.getImagePath())).thenReturn("UUID");
         when(dishRepo.save(testDish)).thenReturn(testDish);
@@ -160,7 +160,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test getDishes. Should trigger the mock")
     @Test
-    void getDishesNormalCase() {
+    void TestGetDishesNormalCase() {
         when(dishRepo.findAllByActive(true)).thenReturn(Collections.singletonList(testDish));
         DishResponse response = managerController.getDishes();
 
@@ -172,7 +172,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test updateDish with invalid id")
     @Test
-    void updateDishWithNegativeId() {
+    void TestUpdateDishWithNegativeId() {
         EmptyResponse response = managerController.updateDish(-1, testDish);
 
         assertFalse(response.isSuccess());
@@ -182,7 +182,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test updateDish with invalid newDish")
     @Test
-    void updateDishWithInvalidNewDishData() {
+    void TestUpdateDishWithInvalidNewDishData() {
         testDish.setPrice(-1F);
         EmptyResponse response = managerController.updateDish(0, testDish);
         assertFalse(response.isSuccess());
@@ -198,7 +198,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test updateDish dish with wrong id. Should trigger findById")
     @Test
-    void updateDishWithWrongId() {
+    void TestUpdateDishWithWrongId() {
         Dish oldDish = testDish;
         testDish = Dish.builder().name("New NAME").build();
 
@@ -211,7 +211,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test updateDish. Should trigger save")
     @Test
-    void updateDishNormalCase() {
+    void TestUpdateDishNormalCase() {
         Dish oldDish = testDish;
         Dish newDish = Dish.builder().name("New NAME").build();
 
@@ -227,7 +227,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test removeDish with invalid ID")
     @Test
-    void removeDishWithNegativeId() {
+    void TestRemoveDishWithNegativeId() {
         EmptyResponse response = managerController.removeDish(-1);
 
         assertFalse(response.isSuccess());
@@ -237,7 +237,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test removeDish. should trigger save")
     @Test
-    void removeDishNormalCase() {
+    void TestRemoveDishNormalCase() {
         when(dishRepo.findById(testDish.getId())).thenReturn(Optional.of(testDish));
         when(dishRepo.save(testDish)).thenReturn(testDish);
         EmptyResponse response = managerController.removeDish(testDish.getId());
@@ -251,7 +251,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test getCooks. should trigger mock")
     @Test
-    void getCooksNormalCase() {
+    void TestGetCooksNormalCase() {
         when(cookRepo.getAllHiredWithoutOrders()).thenReturn(Collections.singletonList(testCook));
         CookResponse response = managerController.getHiredCooks();
 
@@ -263,7 +263,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test addCook with invalid first name")
     @Test
-    void addCookWithInvalidFName() {
+    void TestAddCookWithInvalidFName() {
         testCook.setFirstName(null);
         EmptyResponse response = managerController.addCook(testCook);
 
@@ -273,7 +273,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test addCook with invalid last name")
     @Test
-    void addCookWithInvalidLName() {
+    void TestAddCookWithInvalidLName() {
         testCook.setLastName(null);
         EmptyResponse response = managerController.addCook(testCook);
 
@@ -283,7 +283,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test fire cook with invalid Id")
     @Test
-    void fireCookWithNegativeId() {
+    void TestFireCookWithNegativeId() {
         EmptyResponse response = managerController.fireCook(-1);
 
         assertFalse(response.isSuccess());
@@ -292,7 +292,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test fire. Should trigger mock")
     @Test
-    void fireCookNormalCase() {
+    void TestFireCookNormalCase() {
         when(cookRepo.findById(testCook.getId())).thenReturn(Optional.of(testCook));
         when(cookRepo.save(testCook)).thenReturn(testCook);
         EmptyResponse response = managerController.fireCook(testCook.getId());
@@ -305,7 +305,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test getTotalIncome with reversed start and end dates")
     @Test
-    void getTotalIncomeWithReversedDateShouldFail() {
+    void TestGetTotalIncomeWithReversedDate() {
         Date startDate = new Date(1318386508009L);
         Date endDate = new Date(1318386508000L);
         NumericResponse response = managerController.getTotalIncome(startDate, endDate);
@@ -316,7 +316,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test getTotalIncome. should trigger mock")
     @Test
-    void getTotalIncomeShouldSucceed() {
+    void TestGetTotalIncomeShouldSucceed() {
         Date startDate = new Date(1318386508000L);
         Date endDate = new Date(1318386508009L);
         when(transactionsRepo.getTotalIncome(startDate, endDate)).thenReturn(500F);
@@ -332,7 +332,7 @@ class ManagerControllerTest {
 
     @DisplayName("Test getIncomeToday. should return 0")
     @Test
-    void getIncomeToday() {
+    void TestGetIncomeToday() {
 
         NumericResponse response = managerController.getIncomeToday();
 

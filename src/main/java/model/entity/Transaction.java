@@ -29,7 +29,7 @@ public class Transaction {
     @JoinColumn(name = "table_id")
     private Table table;
 
-    @Column(name = "trans_date", columnDefinition = "DATE DEFAULT CURRENT_DATE", nullable = false)
+    @Column(name = "trans_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false)
     private Date date;
 
     @Column(name = "amount_phy", nullable = false)

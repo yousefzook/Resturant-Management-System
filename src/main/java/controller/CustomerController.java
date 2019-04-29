@@ -77,7 +77,6 @@ public class CustomerController {
             if (order.getDetails().isEmpty())
                 response.setMessage("Empty order is not allowed!");
             else {
-                System.out.println(order);
                 orderRepo.save(order);
                 // for each dish, save it in the transaction
                 for (Map.Entry<Dish, Integer> entry : order.getDetails().entrySet()) {

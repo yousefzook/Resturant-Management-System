@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Entity(name = "dish_details")
 @Data
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 public class Dish {
 

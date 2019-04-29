@@ -38,7 +38,7 @@ public class ManagerController {
     private OrderRepository orderRepo;
 
     @Autowired
-    private TransactionRepository transactionsRepo;
+    private TransactionRepository transactionRepo;
 
     @Autowired
     private UploadCareService uploadCareService;
@@ -225,7 +225,7 @@ public class ManagerController {
         } else {
             try {
 
-                response.setNumber(transactionsRepo.getTotalIncome(startDate, endDate));
+                response.setNumber(transactionRepo.getTotalIncome(startDate, endDate));
                 response.setSuccess(true);
             } catch (Exception e) {
                 response.setMessage(e.getMessage());
