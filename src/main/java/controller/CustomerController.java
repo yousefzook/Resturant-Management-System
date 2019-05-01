@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -72,27 +69,49 @@ public class CustomerController {
         Optional<Table> tableOptional = tableRepo.findById(order.getTable().getId());
         if (!tableOptional.isPresent()) {
             response.setMessage("Table does not exist");
-        } else {
-            Table table = tableOptional.get();
-            if (order.getDetails().isEmpty())
-                response.setMessage("Empty order is not allowed!");
-            else {
-                orderRepo.save(order);
-                // for each dish, save it in the transaction
-                for (Map.Entry<Dish, Integer> entry : order.getDetails().entrySet()) {
-                    Transaction t = Transaction.builder()
-                            .dish(entry.getKey())
-                            .amountPhy(entry.getValue())
-                            .amountFin(entry.getValue() * entry.getKey().getPrice())
-                            .date(new Date(System.currentTimeMillis()))
-                            .order(order)
-                            .table(table)
-                            .build();
-                    transRepo.save(t);
-                }
-                response.setSuccess(true);
-            }
+            return response;
         }
+        if (order.getDetails().isEmpty()) {
+            response.setMessage("Empty order is not allowed!");
+            return response;
+        }
+
+        EmptyResponse dishesCheckResponse = checkDishes(new ArrayList<>(order.getDetails().keySet()));
+        if (!dishesCheckResponse.isSuccess()) {
+            response.setMessage("We are sorry. The menu was updated!. Please try again.");
+            return response;
+        }
+        orderRepo.save(order);
+        // for each dish, save it in the transaction
+        for (Map.Entry<Dish, Integer> entry : order.getDetails().entrySet()) {
+            Transaction t = Transaction.builder()
+                    .dish(entry.getKey())
+                    .amountPhy(entry.getValue())
+                    .amountFin(entry.getValue() * entry.getKey().getPrice())
+                    .date(new Date(System.currentTimeMillis()))
+                    .order(order)
+                    .table(tableOptional.get())
+                    .build();
+            transRepo.save(t);
+        }
+        response.setSuccess(true);
+        return response;
+    }
+
+    public EmptyResponse checkDishes(List<Dish> dishes) {
+        EmptyResponse response = new EmptyResponse();
+        response.setSuccess(false);
+        if (dishes == null || dishes.isEmpty()) {
+            response.setMessage("Dishes cannot be null or Empty");
+            return response;
+        }
+        List<Dish> repoDishes = dishRepo.findAllByIdInAndActiveTrue(
+                dishes.stream().map(Dish::getId).collect(Collectors.toList()));
+        if (repoDishes.size() != dishes.size()) {
+            response.setMessage("One of the dishes in the order is not valid");
+            return response;
+        }
+        response.setSuccess(true);
         return response;
     }
 

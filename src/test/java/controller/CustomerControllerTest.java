@@ -170,6 +170,14 @@ public class CustomerControllerTest {
         when(tableRepo.findById(eq(testOrder.getTable().getId())))
                 .thenReturn(Optional.of(testTables.get(testOrder.getTable().getId())));
         when(orderRepo.save(testOrder)).thenReturn(testOrder);
+        when(dishRepo.findAllByIdInAndActiveTrue(
+                testOrder.getDetails().keySet()
+                        .stream()
+                        .map(Dish::getId)
+                        .collect(Collectors.toList())
+                )
+        ).thenReturn(new ArrayList<>(testOrder.getDetails().keySet()));
+
         when(transactionRepo.save(ArgumentMatchers.any(Transaction.class))).thenReturn(null);
 
         EmptyResponse response = customerController.confirmOrder(testOrder);
@@ -178,6 +186,7 @@ public class CustomerControllerTest {
         assertThat(response.getMessage(), isEmptyOrNullString());
         verify(tableRepo, times(1)).findById(testOrder.getTable().getId());
         verify(orderRepo, times(1)).save(testOrder);
+        verify(dishRepo, times(1)).findAllByIdInAndActiveTrue(anyList());
         ArgumentCaptor<Transaction> transactionsCaptor = ArgumentCaptor.forClass(Transaction.class);
         verify(transactionRepo, times(2)).save(transactionsCaptor.capture());
         List<Transaction> transactions = transactionsCaptor.getAllValues();

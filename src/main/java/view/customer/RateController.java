@@ -71,7 +71,6 @@ public class RateController implements Initializable {
         MenuController controller = loader.getController();
         controller.setMap(new HashMap<>(), primaryStage);
         primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
     public void rateOne() {

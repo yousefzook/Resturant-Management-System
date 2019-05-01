@@ -21,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
 import model.actionresults.DishResponse;
+import model.actionresults.EmptyResponse;
 import model.entity.Dish;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -29,10 +30,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class MenuController implements Initializable {
@@ -110,18 +109,25 @@ public class MenuController implements Initializable {
     }
 
     public void orderAction() throws IOException {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/fxml/Order.fxml"));
-        loader.setControllerFactory(appContext::getBean);
+        EmptyResponse response = customerController.checkDishes(new ArrayList<>(order.keySet()));
+        if (!response.isSuccess()) {
+            showError(response.getMessage());
+            order.clear();
+            buildScene();
+        } else {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/Order.fxml"));
+            loader.setControllerFactory(appContext::getBean);
 
-        Parent p = loader.load();
+            Parent p = loader.load();
 
-        Scene scene = new Scene(p);
+            Scene scene = new Scene(p);
 
-        OrderController controller = loader.getController();
-        controller.setView(order, primaryStage);
+            OrderController controller = loader.getController();
+            controller.setView(order, primaryStage);
 
-        primaryStage.setScene(scene);
+            primaryStage.setScene(scene);
+        }
     }
 
     private HBox getItem(Dish d) {
@@ -146,7 +152,7 @@ public class MenuController implements Initializable {
         vBox.setPadding(new Insets(0, 10, 0, 15));
 
 
-        Label rating = new Label("Rate: " + d.getRate() + " / 5");
+        Label rating = new Label("Rate: " + String.format("%.1f", d.getRate()) + " / 5");
         rating.setId("rateLable");
 
         Label time = new Label("Time: " + d.getTimeToPrepare() + " mins");

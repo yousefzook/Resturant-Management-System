@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
@@ -130,9 +131,21 @@ public class PayController implements Initializable {
 
         if (!response.isSuccess()) {
             showError(response.getMessage());
+            backToMenu();
         } else {
             loadRateController();
         }
+    }
+
+    public void backToMenu() throws IOException {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/fxml/CustomerMenu.fxml"));
+        loader.setControllerFactory(appContext::getBean);
+        Scene scene = new Scene(loader.load());
+        scene.getStylesheets().add("/css/menu.css");
+        MenuController controller = loader.getController();
+        controller.setMap(new HashMap<>(), primaryStage);
+        primaryStage.setScene(scene);
     }
 
     private void loadRateController() throws IOException {
