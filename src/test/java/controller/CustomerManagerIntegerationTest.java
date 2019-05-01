@@ -4,10 +4,12 @@ import com.uploadcare.upload.UploadFailureException;
 import main.manager.ManagerApp;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
+import model.actionresults.NumericResponse;
 import model.entity.Dish;
 import model.entity.Order;
 import model.entity.Table;
 import model.repository.*;
+import org.apache.commons.lang3.time.DateUtils;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +19,8 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,6 +40,9 @@ public class CustomerManagerIntegerationTest {
 
     @Mock
     private UploadCareService uploadCareService;
+
+    @Mock
+    private TransactionRepository transactionRepo;
 
     @InjectMocks
     private CustomerController customerController;
@@ -161,14 +168,95 @@ public class CustomerManagerIntegerationTest {
         assertThat(response.isSuccess(), is(true));
 
         Dish tempDish = testDish1.toBuilder().rate(1F).rateCount(1).build();
-        tempDish.setRateCount(tempDish.getRateCount()+1);
-        tempDish.setRate((tempDish.getRate()+5)/tempDish.getRateCount());
+        tempDish.setRateCount(tempDish.getRateCount() + 1);
+        tempDish.setRate((tempDish.getRate() + 5) / tempDish.getRateCount());
         when(dishRepo.getTopDishes(1)).thenReturn(Arrays.asList(tempDish).stream().filter(Dish::isActive).collect(Collectors.toList()));
         when(dishRepo.count()).thenReturn(1L);
 
         DishResponse topDishesResponse = managerController.getTopDishes(1);
         assertThat(topDishesResponse.getDishes().size(), is(1));
         assertThat(topDishesResponse.getDishes().get(0).getRate(), is(3F));
+
+
+    }
+
+    @DisplayName("Test update dish then get dishes")
+    @Test
+    void TestUpdateThenGetDishes() throws IOException, UploadFailureException {
+
+        /*
+         * get dishes should return dish1 and dish 2
+         * */
+        List<Dish> dishesList = new ArrayList<Dish>();
+        dishesList.add(testDish1);
+        dishesList.add(testDish2);
+
+        when(dishRepo.findAllByActive(true)).thenReturn(dishesList.stream().filter(Dish::isActive).collect(Collectors.toList()));
+        when(uploadCareService.downloadImageFromCloud(eq(testDish1.getImagePath()))).thenReturn("photos/Tandoori chicken.jpg");
+        when(uploadCareService.downloadImageFromCloud(eq(testDish2.getImagePath()))).thenReturn("photos/meat.jpg");
+
+        DishResponse response = customerController.getDishes();
+
+        assertTrue(response.isSuccess());
+        assertThat(response.getDishes(), Matchers.contains(testDish1, testDish2));
+        assertThat(response.getDishes().size(), is(2));
+
+        /*
+         * update dish2
+         */
+        when(dishRepo.findById(testDish2.getId())).thenReturn(Optional.of(testDish2));
+
+        Dish tempDish = testDish2.toBuilder().description("Description has been modified").id(5).build();
+        EmptyResponse updateResp = managerController.updateDish(2, tempDish);
+        assertTrue(updateResp.isSuccess());
+        testDish2.setActive(false);
+        dishesList.add(tempDish);
+        when(dishRepo.findAllByActive(true)).thenReturn(dishesList.stream().filter(Dish::isActive).collect(Collectors.toList()));
+
+
+
+        /*
+         * get dishes should return dish1 and modified dish2
+         * */
+        response = customerController.getDishes();
+        assertTrue(response.isSuccess());
+        assertThat(response.getDishes().size(), is(2));
+        assertThat(response.getDishes().get(1).getDescription(), is("Description has been modified"));
+
+
+    }
+
+
+    @DisplayName("Test getting total income after adding an order")
+    @Test
+    void TestOrderThenGetIncome() throws IOException, UploadFailureException {
+        List<Dish> dishesList = new ArrayList<Dish>();
+        dishesList.add(testDish1);
+
+        when(dishRepo.findAllById(testOrder.getDetails().keySet().stream()
+                .map(Dish::getId).collect(Collectors.toList()))).thenReturn(dishesList.stream().filter(Dish::isActive).collect(Collectors.toList()));
+
+
+        EmptyResponse response = customerController.rateOrder(testOrder, 5);
+        assertThat(response.isSuccess(), is(true));
+
+        Dish tempDish = testDish1.toBuilder().rate(1F).rateCount(1).build();
+        tempDish.setRateCount(tempDish.getRateCount() + 1);
+        tempDish.setRate((tempDish.getRate() + 5) / tempDish.getRateCount());
+        when(dishRepo.getTopDishes(1)).thenReturn(Arrays.asList(tempDish).stream().filter(Dish::isActive).collect(Collectors.toList()));
+        when(dishRepo.count()).thenReturn(1L);
+
+        Date startDate = Date.from(LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        Date endDate = DateUtils.addMilliseconds(
+                DateUtils.ceiling(new Date(System.currentTimeMillis()), Calendar.DATE), -1);
+
+        when(transactionRepo.getTotalIncome(startDate, endDate)).thenReturn(15F);
+
+        NumericResponse incomeResp = managerController.getIncomeToday();
+        assertTrue(incomeResp.isSuccess());
+        assertThat(incomeResp.getNumber(), is(testDish1.getPrice()));
 
 
     }

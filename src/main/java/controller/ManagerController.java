@@ -122,6 +122,8 @@ public class ManagerController {
                 newDish.setActive(true);
                 dishRepo.save(newDish);
                 response.setSuccess(true);
+            }else{
+                response.setMessage("The dishID is not exist");
             }
         }
         return response;
