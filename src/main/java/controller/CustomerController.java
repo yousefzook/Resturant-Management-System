@@ -115,6 +115,7 @@ public class CustomerController {
                 dishRepo.save(d);
             });
             dishRepo.saveAll(inOrderDishes);
+            response.setSuccess(true);
         }
         return response;
     }

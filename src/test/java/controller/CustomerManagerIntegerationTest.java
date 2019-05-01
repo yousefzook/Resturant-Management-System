@@ -5,6 +5,8 @@ import main.manager.ManagerApp;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
 import model.entity.Dish;
+import model.entity.Order;
+import model.entity.Table;
 import model.repository.*;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,10 +17,9 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -44,6 +45,10 @@ public class CustomerManagerIntegerationTest {
 
     private Dish testDish1, testDish2, testDish3;
 
+    private Order testOrder;
+
+    private List<Table> testTables;
+
 
     @BeforeEach
     private void setUpEach() {
@@ -55,8 +60,8 @@ public class CustomerManagerIntegerationTest {
                 .price(15F)
                 .timeToPrepare(15)
                 .imagePath("photos/Tandoori chicken.jpg")
-                .rate(5F)
-                .rateCount(0)
+                .rate(1F)
+                .rateCount(1)
                 .build();
 
         testDish2 = Dish.builder()
@@ -67,7 +72,7 @@ public class CustomerManagerIntegerationTest {
                 .price(10F)
                 .timeToPrepare(10)
                 .imagePath("photos/meat.jpg")
-                .rate(4.5F)
+                .rate(1.5F)
                 .rateCount(1)
                 .build();
 
@@ -82,6 +87,12 @@ public class CustomerManagerIntegerationTest {
                 .rate(3.5F)
                 .rateCount(1)
                 .build();
+
+        testTables = IntStream.range(0, 5).mapToObj(Table::new).collect(Collectors.toList());
+        Map<Dish, Integer> testOrderDetails = new HashMap<>();
+        testOrderDetails.put(testDish1, 2);
+        testOrder = new Order(testOrderDetails);
+        testOrder.setTable(testTables.get(new Random().nextInt(testTables.size())));
 
     }
 
@@ -136,4 +147,29 @@ public class CustomerManagerIntegerationTest {
     }
 
 
+    @DisplayName("Test rating order then manager gets top dishes")
+    @Test
+    void TestRateThenGetTop() throws IOException, UploadFailureException {
+        List<Dish> dishesList = new ArrayList<Dish>();
+        dishesList.add(testDish1);
+
+        when(dishRepo.findAllById(testOrder.getDetails().keySet().stream()
+                .map(Dish::getId).collect(Collectors.toList()))).thenReturn(dishesList.stream().filter(Dish::isActive).collect(Collectors.toList()));
+
+
+        EmptyResponse response = customerController.rateOrder(testOrder, 5);
+        assertThat(response.isSuccess(), is(true));
+
+        Dish tempDish = testDish1.toBuilder().rate(1F).rateCount(1).build();
+        tempDish.setRateCount(tempDish.getRateCount()+1);
+        tempDish.setRate((tempDish.getRate()+5)/tempDish.getRateCount());
+        when(dishRepo.getTopDishes(1)).thenReturn(Arrays.asList(tempDish).stream().filter(Dish::isActive).collect(Collectors.toList()));
+        when(dishRepo.count()).thenReturn(1L);
+
+        DishResponse topDishesResponse = managerController.getTopDishes(1);
+        assertThat(topDishesResponse.getDishes().size(), is(1));
+        assertThat(topDishesResponse.getDishes().get(0).getRate(), is(3F));
+
+
+    }
 }
