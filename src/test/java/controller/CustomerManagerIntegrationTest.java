@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 
 
 @SpringBootTest(classes = ManagerApp.class)
-public class CustomerManagerIntegerationTest {
+public class CustomerManagerIntegrationTest {
 
     @Mock
     private DishRepository dishRepo;
