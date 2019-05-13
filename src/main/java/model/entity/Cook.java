@@ -5,8 +5,9 @@ import lombok.NoArgsConstructor;
 import model.OrderState;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -29,14 +30,14 @@ public class Cook {
 
     @ElementCollection(targetClass = Order.class)
     @MapKey(name = "order_id")
-    private Set<Order> assignedOrders;
+    private List<Order> assignedOrders;
 
     public Cook(Integer id, String firstName, String lastName, boolean hired) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = id;
         this.hired = hired;
-        assignedOrders = new HashSet<>();
+        assignedOrders = new ArrayList<>();
     }
 
     public boolean acceptOrder(Order o) {
