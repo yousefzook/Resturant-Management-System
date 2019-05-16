@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="anchor" fx:id="anchor" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/menu.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.cook.CookOrdersController">
+   <children>
+      <Button layoutX="65.0" onAction="#logout" layoutY="349.0" mnemonicParsing="false" text="Logout" />
+      <ScrollPane id="scPane" fx:id="scPane" layoutX="23.0" layoutY="22.0" prefHeight="319.0" prefWidth="554.0" />
+      <Button layoutX="396.0" onAction="#refresh" layoutY="349.0" mnemonicParsing="false" text="Refresh" />
+   </children>
+</AnchorPane>

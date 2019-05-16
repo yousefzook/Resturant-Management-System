@@ -11,15 +11,14 @@ import model.repository.DishRepository;
 import model.repository.OrderRepository;
 import model.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Component
 public class CookController {
 
     @Autowired
@@ -109,7 +108,6 @@ public class CookController {
     public OrderResponse getInQueueOrders() {
         OrderResponse response = new OrderResponse();
         response.setSuccess(true);
-        response.setOrders(orderRepo.findAllByOrderState(OrderState.inQueue));
         return response;
     }
 

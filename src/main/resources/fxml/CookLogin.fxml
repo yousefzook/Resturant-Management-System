@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="anchor" fx:id="anchor" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/cookLogin.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.cook.CookLoginController">
+   <children>
+      <Label layoutX="24.0" layoutY="134.0" prefHeight="26.0" prefWidth="323.0" text="Please Choose Your ID:" />
+      <MenuButton fx:id="menu" layoutX="421.0" layoutY="129.0" maxHeight="50.0" mnemonicParsing="false" text="ID:">
+        <items>
+        </items>
+      </MenuButton>
+      <Button fx:id="enter" layoutX="255.0" layoutY="258.0" mnemonicParsing="false" onAction="#enter" text="Enter" />
+   </children>
+</AnchorPane>
