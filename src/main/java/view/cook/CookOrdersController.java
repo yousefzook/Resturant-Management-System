@@ -204,14 +204,20 @@ public class CookOrdersController implements Initializable {
         return crnt;
     }
 
-    private void actionListener(Button btn, Label state) throws Exception {
+    private void actionListener(Button btn, Label state) {
         btn.setOnAction(actionEvent -> {
             HBox hbox = (HBox) btn.getParent().getParent();
             Order currentOrder = map.get(hbox);
 
             if (btn.getText().equals("Accept")) {
 
-                EmptyResponse r = cookController.updateOrderState(cookId, currentOrder.getId(), OrderState.inQueue);
+                EmptyResponse r = null;
+                try {
+                    r = cookController.updateOrderState(cookId, currentOrder.getId(), OrderState.inQueue);
+                } catch (Exception e) {
+                    showError(e.getMessage());
+                    return;
+                }
                 if (r.isSuccess()) {
                     state.setText("ASSIGNED");
                     btn.setText("Done");
@@ -228,7 +234,13 @@ public class CookOrdersController implements Initializable {
                 //TODO BUILDSCENE() IF DISH IS ALREADY ACCEPTED
             } else {
 
-                EmptyResponse r = cookController.updateOrderState(cookId, currentOrder.getId(), OrderState.Done);
+                EmptyResponse r = null;
+                try {
+                    r = cookController.updateOrderState(cookId, currentOrder.getId(), OrderState.Done);
+                } catch (Exception e) {
+                    showError(e.getMessage());
+                    return;
+                }
                 if (r.isSuccess()) {
                     btn.getParent().getParent().getParent().getChildrenUnmodifiable().remove(hbox);
                     map.remove(hbox);

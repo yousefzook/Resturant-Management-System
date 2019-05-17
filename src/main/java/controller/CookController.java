@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -110,9 +109,8 @@ public class CookController {
 
     public OrderResponse getInQueueOrders() {
         OrderResponse response = new OrderResponse();
-        List<Order> ordersList;
-        ordersList = orderRepo.findAllByOrderState(OrderState.inQueue);
-        response.setOrders(ordersList);
+        response.setSuccess(false);
+        response.setOrders(orderRepo.findOrderByState(OrderState.inQueue));
         response.setSuccess(true);
         return response;
     }
@@ -125,8 +123,7 @@ public class CookController {
         if (!optionalCook.isPresent()) {
             response.setMessage(String.format("Cook with id %d does not exist", cookId));
         } else {
-            List<Order> assignedOrders = optionalCook.get().getAssignedOrders();
-            response.setOrders(assignedOrders);
+            response.setOrders(orderRepo.findOrderByCookAndState(optionalCook.get(), OrderState.Assigned));
             response.setSuccess(true);
         }
 

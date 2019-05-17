@@ -2,6 +2,8 @@ package model.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,12 +19,7 @@ public class Table {
     @Column(name = "table_id")
     private int id;
 
-    @OneToMany
-    @JoinColumn(name = "table_id")
-    private List<Order> orders;
-
     public Table(int id) {
-        orders = new ArrayList<>();
         this.id = id;
     }
 }

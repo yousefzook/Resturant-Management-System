@@ -1,6 +1,7 @@
 package model.repository;
 
 import model.OrderState;
+import model.entity.Cook;
 import model.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
+    List<Order> findOrderByState(OrderState state);
 
-    @Query(value = "SELECT * FROM order_details WHERE state = ?", nativeQuery = true)
-    List<Order> findAllByOrderState(OrderState orderState);
+    List<Order> findOrderByCookAndState(Cook cook, OrderState state);
 }
