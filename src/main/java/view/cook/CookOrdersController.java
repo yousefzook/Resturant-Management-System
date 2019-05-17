@@ -216,7 +216,11 @@ public class CookOrdersController implements Initializable {
                     state.setText("ASSIGNED");
                     btn.setText("Done");
                 } else {
-                    buildScene();
+                    try {
+                        buildScene();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 //TODO SEND TO DATABSE NEW STATE
                 //TODO CHANGE LABEL TO NEW STATE
