@@ -199,43 +199,44 @@ public class CookOrdersController implements Initializable {
         crnt.setId("menuBox");
         crnt.setSpacing(40);
         crnt.setPadding(new Insets(20, 10, 10, 30));
-        actionListener(btn , state);
+        actionListener(btn, state);
 
         return crnt;
     }
 
-    private void actionListener(Button btn ,Label state) throws Exception {
-        HBox hbox = (HBox) btn.getParent().getParent();
-        Order currentOrder = map.get(hbox);
+    private void actionListener(Button btn, Label state) throws Exception {
+        btn.setOnAction(actionEvent -> {
+            HBox hbox = (HBox) btn.getParent().getParent();
+            Order currentOrder = map.get(hbox);
 
-        if(btn.getText().equals("Accept")){
+            if (btn.getText().equals("Accept")) {
 
-            EmptyResponse r = cookController.updateOrderState(cookId ,currentOrder.getId() , OrderState.inQueue );
-           if(r.isSuccess()) {
-               state.setText("ASSIGNED");
-               btn.setText("Done");
-           }
-           else {
-               buildScene();
-           }
-            //TODO SEND TO DATABSE NEW STATE
-            //TODO CHANGE LABEL TO NEW STATE
-            //TODO ASSIGN ORDER TO CURRENT COOOKID IN DATABASE
-            //TODO BUILDSCENE() IF DISH IS ALREADY ACCEPTED
-        } else {
-
-            EmptyResponse r = cookController.updateOrderState(cookId , currentOrder.getId(), OrderState.Done);
-            if (r.isSuccess()) {
-                btn.getParent().getParent().getParent().getChildrenUnmodifiable().remove(hbox);
-                map.remove(hbox);
-
+                EmptyResponse r = cookController.updateOrderState(cookId, currentOrder.getId(), OrderState.inQueue);
+                if (r.isSuccess()) {
+                    state.setText("ASSIGNED");
+                    btn.setText("Done");
+                } else {
+                    buildScene();
+                }
+                //TODO SEND TO DATABSE NEW STATE
+                //TODO CHANGE LABEL TO NEW STATE
+                //TODO ASSIGN ORDER TO CURRENT COOOKID IN DATABASE
+                //TODO BUILDSCENE() IF DISH IS ALREADY ACCEPTED
             } else {
-                showError(r.getMessage());
-            }
 
-            //TODO SEND TO DATABSE NEW STATE
-            //TODO REMOVE CURRENT HBOX
-        }
+                EmptyResponse r = cookController.updateOrderState(cookId, currentOrder.getId(), OrderState.Done);
+                if (r.isSuccess()) {
+                    btn.getParent().getParent().getParent().getChildrenUnmodifiable().remove(hbox);
+                    map.remove(hbox);
+
+                } else {
+                    showError(r.getMessage());
+                }
+
+                //TODO SEND TO DATABSE NEW STATE
+                //TODO REMOVE CURRENT HBOX
+            }
+        });
     }
 
     private void showError(String message) {
