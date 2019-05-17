@@ -56,15 +56,16 @@ public class CookOrdersController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+    }
+
+    public void setCookID(int cookID) {
+        this.cookId = cookID;
         try {
             buildScene();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void setCookID(int cookID) {
-        this.cookId = cookID;
     }
 
     private void buildScene() throws Exception {
