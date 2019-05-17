@@ -9,7 +9,8 @@ import model.entity.Cook;
 import model.entity.Dish;
 import model.entity.Order;
 import model.entity.Table;
-import model.repository.*;
+import model.repository.CookRepository;
+import model.repository.OrderRepository;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -203,14 +204,12 @@ public class CookControllerTest {
     @Test
     void TestGetInQueueOrders() {
         when(cookRepo.getAllHiredWithoutOrders()).thenReturn(Collections.singletonList(cook1));
-        when(orderRepo.findAllByOrderState(OrderState.inQueue)).thenReturn(Collections.singletonList(testOrder));
+        when(orderRepo.findOrderByState(OrderState.inQueue)).thenReturn(Collections.singletonList(testOrder));
         testOrder.setState(OrderState.inQueue);
-        OrderResponse response = null;
-        response = cookController.getInQueueOrders();
+        OrderResponse response = cookController.getInQueueOrders();
         assertTrue(response.isSuccess());
         assertThat(response.getMessage(), isEmptyOrNullString());
     }
-
 
 
     @DisplayName("Test getOrdersAssignedTo invalid cook id, should return error message")

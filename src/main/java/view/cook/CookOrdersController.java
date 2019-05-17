@@ -74,7 +74,7 @@ public class CookOrdersController implements Initializable {
         scPane.setId("scPane");
         scPane.setLayoutX(10.0);
         scPane.setLayoutY(14.0);
-        scPane.setPrefHeight(496.0);
+        scPane.setMaxHeight(496.0);
         scPane.setPrefWidth(781.0);
         VBox vBox = new VBox();
         vBox.setSpacing(10);
@@ -186,7 +186,7 @@ public class CookOrdersController implements Initializable {
 
         // order details
         ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setPrefWidth(500);
+        scrollPane.setPrefWidth(450);
         VBox vBox1 = new VBox();
         for (Dish d : o.getDetails().keySet()) {
             Label label = new Label(d.getName() + "\t" + o.getDetails().get(d));
