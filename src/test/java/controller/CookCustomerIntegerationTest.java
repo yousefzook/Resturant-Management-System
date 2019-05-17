@@ -51,11 +51,9 @@ public class CookCustomerIntegerationTest {
     private CustomerController customerController;
 
     private Cook cook1;
-    private Cook cook2;
-    private Cook cook3;
     private Order testOrder;
     private List<Table> testTables;
-    private Dish testDish1, testDish2;
+    private Dish testDish1;
 
     @BeforeEach
     void setupEach() {
@@ -71,21 +69,9 @@ public class CookCustomerIntegerationTest {
                 .rateCount(0)
                 .build();
 
-        testDish2 = Dish.builder()
-                .id(2)
-                .name("Test Dish 2")
-                .description("Description 2")
-                .active(true)
-                .price(10F)
-                .timeToPrepare(10)
-                .imagePath("UUID2")
-                .rate(4.5F)
-                .rateCount(1)
-                .build();
 
         Map<Dish, Integer> testOrderDetails = new HashMap<>();
         testOrderDetails.put(testDish1, 2);
-        testOrderDetails.put(testDish2, 3);
         testOrder = new Order(testOrderDetails);
         testOrder.setTable(new Table());
         testOrder.setId(1);
@@ -95,20 +81,6 @@ public class CookCustomerIntegerationTest {
                 .lastName("name1")
                 .hired(true)
                 .assignedOrders(new ArrayList<>())
-                .build();
-        cook2 = Cook.builder()
-                .id(2)
-                .firstName("cook2")
-                .lastName("name2")
-                .hired(true)
-                .assignedOrders(new ArrayList<>())
-                .build();
-        cook2.acceptOrder(testOrder);
-        cook3 = Cook.builder()
-                .id(3)
-                .firstName("cook3")
-                .lastName("name3")
-                .hired(false)
                 .build();
 
         testTables = IntStream.range(0, 5).mapToObj(Table::new).collect(Collectors.toList());
