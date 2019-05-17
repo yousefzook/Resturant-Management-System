@@ -64,7 +64,7 @@ public class CookOrdersController implements Initializable {
     }
 
     public void setCookID(int cookID) {
-        this.cookId = 1;
+        this.cookId = cookID;
     }
 
     private void buildScene() throws Exception {
