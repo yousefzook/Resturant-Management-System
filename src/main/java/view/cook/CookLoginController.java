@@ -15,6 +15,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
+import model.actionresults.CookResponse;
+import model.entity.Cook;
 import model.entity.Dish;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -22,11 +24,12 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 @Component
-public class CookLoginController implements Initializable{
+public class CookLoginController implements Initializable {
 
     @Setter
     private Stage primaryStage;
@@ -53,19 +56,25 @@ public class CookLoginController implements Initializable{
 
         //TODO GET IDS FROM DATA BASE AND SHOW THEM IN MENU ITEM
         CookID = -1;
-        for(int i = 0 ;i < 5 ; i++){
-            MenuItem item = new MenuItem("helloooo "+ i);
-            menu.getItems().add(item);
-            int x = i;
-            item.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    CookID = x;
-                    menu.setText(String.valueOf(x));
-                    System.out.println(x);
-                }
-            });
+        CookResponse r = cookController.getCooks();
+        if (!r.isSuccess())
+            showError(r.getMessage());
+        else {
+            List<Cook> cook = r.getCooks();
+            for (Cook c : cook) {
+                MenuItem item = new MenuItem(String.valueOf(c.getId()));
+                menu.getItems().add(item);
+                int x = c.getId();
+                item.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        CookID = x;
+                        menu.setText(String.valueOf(x));
+                        System.out.println(x);
+                    }
+                });
 
+            }
         }
 
     }
@@ -80,8 +89,7 @@ public class CookLoginController implements Initializable{
 
     public void enter() throws IOException {
 
-        if(CookID == -1)
-        {
+        if (CookID == -1) {
             showError("Please select you ID");
             return;
         }
