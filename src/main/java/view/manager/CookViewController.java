@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Component
-public class CookController implements Initializable {
+public class CookViewController implements Initializable {
 
     @Setter
     private Stage primaryStage;
@@ -46,11 +46,11 @@ public class CookController implements Initializable {
 
     private Map<HBox, Integer> map;
 
-    CookController(Stage primaryStage) {
+    CookViewController(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
-    public CookController() {
+    public CookViewController() {
     }
 
     public void initialize(URL url, ResourceBundle resourceBundle) {

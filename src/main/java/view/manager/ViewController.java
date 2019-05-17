@@ -33,7 +33,7 @@ public class ViewController {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ManagerCook.fxml"));
         fxmlLoader.setControllerFactory(appContext::getBean);
         primaryStage.setScene(new Scene(fxmlLoader.load()));
-        ((CookController) fxmlLoader.getController()).setPrimaryStage(primaryStage);
+        ((CookViewController) fxmlLoader.getController()).setPrimaryStage(primaryStage);
     }
 
     public void showMenu() throws IOException {

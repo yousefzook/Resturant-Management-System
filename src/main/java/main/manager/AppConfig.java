@@ -30,8 +30,8 @@ public class AppConfig {
     }
 
     @Bean
-    public CookController cookController() {
-        return new CookController();
+    public CookViewController cookController() {
+        return new CookViewController();
     }
 
     @Bean

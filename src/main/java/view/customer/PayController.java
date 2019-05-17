@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 @Component
 public class PayController implements Initializable {
 
-    private static final int TABLE_NUMBER = 5;
+    private static final int TABLE_NUMBER = 2;
     @Setter
     private Stage primaryStage;
 
