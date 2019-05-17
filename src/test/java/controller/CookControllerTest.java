@@ -4,6 +4,7 @@ import main.cook.CookApp;
 import model.OrderState;
 import model.actionresults.CookResponse;
 import model.actionresults.EmptyResponse;
+import model.actionresults.OrderResponse;
 import model.entity.Cook;
 import model.entity.Dish;
 import model.entity.Order;
@@ -44,6 +45,7 @@ public class CookControllerTest {
     private Cook cook3;
     private Order testOrder;
     private Dish testDish1, testDish2;
+
     @BeforeEach
     void setupEach() {
         testDish1 = Dish.builder()
@@ -196,4 +198,36 @@ public class CookControllerTest {
         assertThat(response.getMessage(), isEmptyOrNullString());
     }
 
+
+    @DisplayName("Test getInQueueOrders, should return testOrder")
+    @Test
+    void TestGetInQueueOrders() {
+        when(cookRepo.getAllHiredWithoutOrders()).thenReturn(Collections.singletonList(cook1));
+        when(orderRepo.findAllByOrderState(OrderState.inQueue)).thenReturn(Collections.singletonList(testOrder));
+        testOrder.setState(OrderState.inQueue);
+        OrderResponse response = null;
+        response = cookController.getInQueueOrders();
+        assertTrue(response.isSuccess());
+        assertThat(response.getMessage(), isEmptyOrNullString());
+    }
+
+
+
+    @DisplayName("Test getOrdersAssignedTo invalid cook id, should return error message")
+    @Test
+    void TestGOrdersAssignedToInvalidCookId() {
+        OrderResponse response = cookController.getOrdersAssignedTo(2);
+        assertFalse(response.isSuccess());
+        assertThat(response.getMessage(), not(isEmptyOrNullString()));
+    }
+
+
+    @DisplayName("Test getOrdersAssignedTo valid cook id, should return success")
+    @Test
+    void TestGOrdersAssignedToValidCookId() {
+        when(cookRepo.findById(1)).thenReturn(Optional.of(cook1));
+        OrderResponse response = cookController.getOrdersAssignedTo(1);
+        assertTrue(response.isSuccess());
+        assertThat(response.getMessage(), isEmptyOrNullString());
+    }
 }

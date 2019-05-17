@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
-//    @Query("SELECT new Order(id, cook, table, details, state) FROM Order WHERE state = :orderState")
-//    List<Order> findAllByOrderState(OrderState orderState);
+    @Query(value = "SELECT * FROM order_details WHERE state = ?", nativeQuery = true)
+    List<Order> findAllByOrderState(OrderState orderState);
 }

@@ -110,6 +110,9 @@ public class CookController {
 
     public OrderResponse getInQueueOrders() {
         OrderResponse response = new OrderResponse();
+        List<Order> ordersList;
+        ordersList = orderRepo.findAllByOrderState(OrderState.inQueue);
+        response.setOrders(ordersList);
         response.setSuccess(true);
         return response;
     }
@@ -124,6 +127,7 @@ public class CookController {
         } else {
             List<Order> assignedOrders = optionalCook.get().getAssignedOrders();
             response.setOrders(assignedOrders);
+            response.setSuccess(true);
         }
 
         return response;
