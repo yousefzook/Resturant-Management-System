@@ -51,7 +51,7 @@ public class CookController {
         return response;
     }
 
-    public EmptyResponse setOrderADone(int cookId, int orderId, OrderState newState) throws Exception {
+    public EmptyResponse updateOrderState(int cookId, int orderId, OrderState newState) throws Exception {
         EmptyResponse response = new EmptyResponse();
         response.setSuccess(false);
 
@@ -85,6 +85,7 @@ public class CookController {
                     orderRepo.save(optionalOrder.get());
                     optionalCook.get().getAssignedOrders().add(optionalOrder.get());
                     cookRepo.save(optionalCook.get());
+                    response.setSuccess(true);
                 }
                 break;
             case Assigned:
@@ -95,10 +96,12 @@ public class CookController {
                     orderRepo.save(optionalOrder.get());
                     optionalCook.get().getAssignedOrders().remove(optionalOrder.get());
                     cookRepo.save(optionalCook.get());
+                    response.setSuccess(true);
                 }
                 break;
             case Done:
                 response.setMessage("Cannot alter done orders");
+                break;
             default:
                 throw new Exception("Invalid OrderState");
         }

@@ -209,7 +209,7 @@ public class CookOrdersController implements Initializable {
 
         if(btn.getText().equals("Accept")){
 
-            EmptyResponse r = cookController.setOrderADone(cookId ,currentOrder.getId() , OrderState.inQueue );
+            EmptyResponse r = cookController.updateOrderState(cookId ,currentOrder.getId() , OrderState.inQueue );
            if(r.isSuccess()) {
                state.setText("ASSIGNED");
                btn.setText("Done");
@@ -223,7 +223,7 @@ public class CookOrdersController implements Initializable {
             //TODO BUILDSCENE() IF DISH IS ALREADY ACCEPTED
         } else {
 
-            EmptyResponse r = cookController.setOrderADone(cookId , currentOrder.getId(), OrderState.Done);
+            EmptyResponse r = cookController.updateOrderState(cookId , currentOrder.getId(), OrderState.Done);
             if (r.isSuccess()) {
                 btn.getParent().getParent().getParent().getChildrenUnmodifiable().remove(hbox);
                 map.remove(hbox);
