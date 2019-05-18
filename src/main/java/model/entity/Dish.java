@@ -1,17 +1,18 @@
 package model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
 
-@Entity(name = "dish_details")
 @Data
+@Entity(name = "dish_details")
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public class Dish {
+
+    public Dish() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -43,7 +44,4 @@ public class Dish {
 
     @Column(name = "is_active", columnDefinition = "boolean default true", nullable = false)
     private boolean active = true;
-
-    public Dish() {
-    }
 }

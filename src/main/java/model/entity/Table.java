@@ -1,18 +1,17 @@
 package model.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
-@Data
-@NoArgsConstructor
 @Entity(name = "table_details")
+@Setter
+@Getter
 public class Table {
+
+    public Table() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

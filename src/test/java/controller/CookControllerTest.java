@@ -92,7 +92,6 @@ public class CookControllerTest {
                 .hired(true)
                 .assignedOrders(new ArrayList<>())
                 .build();
-        cook2.acceptOrder(testOrder);
         cook3 = Cook.builder()
                 .id(3)
                 .firstName("cook3")

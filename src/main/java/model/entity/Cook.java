@@ -2,23 +2,24 @@ package model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import model.OrderState;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
 @Entity
 @Builder
 @AllArgsConstructor
+@Setter
+@Getter
 public class Cook {
+
+    public Cook() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -34,9 +35,9 @@ public class Cook {
     @Column(name = "is_hired", columnDefinition = "boolean default true", nullable = false)
     private Boolean hired;
 
-    @ElementCollection(targetClass = Order.class)
+    @ElementCollection(targetClass = Order.class, fetch = FetchType.EAGER)
     @MapKey(name = "order_id")
-    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Order> assignedOrders;
 
     public Cook(Integer id, String firstName, String lastName, boolean hired) {
@@ -45,13 +46,5 @@ public class Cook {
         this.id = id;
         this.hired = hired;
         assignedOrders = new ArrayList<>();
-    }
-
-    public boolean acceptOrder(Order o) {
-        return true;
-    }
-
-    public boolean setOrderState(Order o, OrderState s) {
-        return true;
     }
 }

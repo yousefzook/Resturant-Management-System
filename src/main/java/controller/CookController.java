@@ -60,17 +60,15 @@ public class CookController {
             return response;
         }
 
-        OrderState oldState = optionalOrder.get().getState();
         Optional<Cook> optionalCook = cookRepo.findById(cookId);
-
-
-        if (oldState == newState) {
-            response.setMessage("Order state is already set to " + newState);
+        if (!optionalCook.isPresent()) {
+            response.setMessage(String.format("Cook with id %d does not exist", cookId));
             return response;
         }
 
-        if (!optionalCook.isPresent()) {
-            response.setMessage(String.format("Cook with id %d does not exist", cookId));
+        OrderState oldState = optionalOrder.get().getState();
+        if (oldState == newState) {
+            response.setMessage("Order state is already set to " + newState);
             return response;
         }
 
@@ -80,11 +78,24 @@ public class CookController {
                     response.setMessage("Cannot set an inQueue order directly to done");
                 } else {
                     optionalOrder.get().setState(newState);
-                    optionalOrder.get().setCook(cookRepo.getOne(cookId));
+                    optionalOrder.get().setCook(optionalCook.get());
                     orderRepo.save(optionalOrder.get());
+
+                    System.out.println("xxx===============");
+                    System.out.println(optionalOrder.get().getId());
+                    System.out.println("xxx========");
+                    cookRepo.findById(cookId).get().getAssignedOrders().stream().map(Order::getId).forEach(System.out::println);
+                    System.out.println("xxx===============");
+
                     optionalCook.get().getAssignedOrders().add(optionalOrder.get());
                     cookRepo.save(optionalCook.get());
                     response.setSuccess(true);
+
+                    System.out.println("===============");
+                    System.out.println(optionalOrder.get().getId());
+                    System.out.println("========");
+                    cookRepo.findById(cookId).get().getAssignedOrders().stream().map(Order::getId).forEach(System.out::println);
+                    System.out.println("===============");
                 }
                 break;
             case Assigned:

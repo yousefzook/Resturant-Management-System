@@ -1,7 +1,8 @@
 package model.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import model.OrderState;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -9,24 +10,26 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.util.Map;
 
-@Data
 @Entity(name = "order_details")
-@NoArgsConstructor
+@Setter
+@Getter
+@AllArgsConstructor
 public class Order {
+
+    public Order() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "order_id")
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cook_id")
-    @Fetch(FetchMode.SELECT)
     private Cook cook;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "table_id", nullable = false)
-    @Fetch(FetchMode.JOIN)
     private Table table;
 
     @Column(name = "order_state", nullable = false)

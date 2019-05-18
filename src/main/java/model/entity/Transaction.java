@@ -2,16 +2,22 @@ package model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Data
 @Builder
 @AllArgsConstructor
+@Setter
+@Getter
 public class Transaction {
+
+    public Transaction() {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "trans_id", nullable = false)
@@ -29,7 +35,7 @@ public class Transaction {
     @JoinColumn(name = "table_id")
     private Table table;
 
-    @Column(name = "trans_date", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false)
+    @Column(name = "trans_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false)
     private Date date;
 
     @Column(name = "amount_phy", nullable = false)
