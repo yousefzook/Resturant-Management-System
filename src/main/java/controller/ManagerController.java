@@ -1,12 +1,14 @@
 package controller;
 
 import com.uploadcare.upload.UploadFailureException;
+import model.OrderState;
 import model.actionresults.CookResponse;
 import model.actionresults.DishResponse;
 import model.actionresults.EmptyResponse;
 import model.actionresults.NumericResponse;
 import model.entity.Cook;
 import model.entity.Dish;
+import model.entity.Order;
 import model.repository.CookRepository;
 import model.repository.DishRepository;
 import model.repository.OrderRepository;
@@ -18,12 +20,9 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class ManagerController {
@@ -122,7 +121,7 @@ public class ManagerController {
                 newDish.setActive(true);
                 dishRepo.save(newDish);
                 response.setSuccess(true);
-            }else{
+            } else {
                 response.setMessage("The dishID is not exist");
             }
         }
@@ -252,6 +251,30 @@ public class ManagerController {
         return response;
     }
 
+    //    public CookResponse getTopCooks(int limit) {
+//        CookResponse response = new CookResponse();
+//        response.setSuccess(false);
+//
+//        if (limit < 1) {
+//            response.setMessage("Limit must be a positive integer");
+//        } else {
+//            String st = "SELECT c.cook_id, c.f_name, c.l_name, c.is_hired, COUNT(ao.assigned_orders_order_id) " +
+//                    "FROM cook c JOIN  (SELECT ao.cook_cook_id, ao.assigned_orders_order_id FROM cook_assigned_orders ao) ao " +
+//                    "ON c.cook_id = ao.cook_cook_id " +
+//                    "GROUP BY c.cook_id " +
+//                    "ORDER BY COUNT(ao.assigned_orders_order_id) DESC LIMIT ?";
+//            Query statement = em.createNativeQuery(st);
+//            statement.setParameter(1, limit);
+//
+//
+//
+//
+//            response.setCooks(statement.getResultList());
+//            response.setSuccess(true);
+//        }
+//
+//        return response;
+//    }
     public CookResponse getTopCooks(int limit) {
         CookResponse response = new CookResponse();
         response.setSuccess(false);
@@ -259,17 +282,31 @@ public class ManagerController {
         if (limit < 1) {
             response.setMessage("Limit must be a positive integer");
         } else {
-            String st = "SELECT c.cook_id, c.f_name, c.l_name, c.is_hired, COUNT(ao.assigned_orders_order_id) " +
-                    "FROM cook c JOIN  (SELECT ao.cook_cook_id, ao.assigned_orders_order_id FROM cook_assigned_orders ao) ao " +
-                    "ON c.cook_id = ao.cook_cook_id " +
-                    "GROUP BY c.cook_id " +
-                    "ORDER BY COUNT(ao.assigned_orders_order_id) DESC LIMIT ?";
-            Query statement = em.createNativeQuery(st);
-            statement.setParameter(1, limit);
-            response.setCooks(statement.getResultList());
+            List<Order> orderList = orderRepo.findOrderByState(OrderState.Done);
+            Map<Integer, Integer> rep = new HashMap<>();
+            orderList.forEach(o -> rep.put(o.getCook().getId(), rep.getOrDefault(o.getCook().getId(), 0) + 1));
+
+            Optional<Integer> cookIdOptional = rep.entrySet().stream().reduce((a, b) -> {
+                if (a.getValue() > b.getValue()) {
+                    return a;
+                } else {
+                    return b;
+                }
+            }).map(Map.Entry::getKey);
+
+            if (!cookIdOptional.isPresent()) {
+                response.setCooks(new ArrayList<>());
+            } else {
+                Optional<Cook> optionalCook = cookRepo.findById(cookIdOptional.get());
+                if (!optionalCook.isPresent()) {
+                    response.setCooks(new ArrayList<>());
+                } else {
+                    response.setCooks(Collections.singletonList(optionalCook.get()));
+                }
+
+            }
             response.setSuccess(true);
         }
-
         return response;
     }
 }
