@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import model.OrderState;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class Cook {
 
     @ElementCollection(targetClass = Order.class)
     @MapKey(name = "order_id")
+    @Fetch(FetchMode.JOIN)
     private List<Order> assignedOrders;
 
     public Cook(Integer id, String firstName, String lastName, boolean hired) {

@@ -18,12 +18,12 @@ import lombok.Setter;
 import model.OrderState;
 import model.actionresults.EmptyResponse;
 import model.actionresults.OrderResponse;
+import model.entity.Cook;
 import model.entity.Dish;
 import model.entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
-import view.customer.MenuController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -50,7 +50,10 @@ public class CookOrdersController implements Initializable {
     @FXML
     public AnchorPane anchor;
 
-    int cookId;
+    @FXML
+    public Label cook;
+
+    private Cook signedCook;
     private Map<HBox, Order> map = new HashMap<>();
 
 
@@ -59,8 +62,8 @@ public class CookOrdersController implements Initializable {
 
     }
 
-    public void setCookID(int cookID) {
-        this.cookId = cookID;
+    public void setCook(Cook signedCook) {
+        this.signedCook = signedCook;
         try {
             buildScene();
         } catch (Exception e) {
@@ -68,9 +71,9 @@ public class CookOrdersController implements Initializable {
         }
     }
 
-    private void buildScene() throws Exception {
+    private void buildScene() {
 
-        ScrollPane scPane = new ScrollPane();
+        cook.setText(signedCook.getId() + ": " + signedCook.getFirstName() + signedCook.getLastName());
         scPane.setId("scPane");
         scPane.setLayoutX(10.0);
         scPane.setLayoutY(14.0);
@@ -80,7 +83,7 @@ public class CookOrdersController implements Initializable {
         vBox.setSpacing(10);
         vBox.setPadding(new Insets(10, 0, 0, 20));
 
-        OrderResponse r1 = cookController.getOrdersAssignedTo(cookId);
+        OrderResponse r1 = cookController.getOrdersAssignedTo(signedCook.getId());
         OrderResponse r2 = cookController.getInQueueOrders();
 
         if (!r1.isSuccess() || !r2.isSuccess())
@@ -97,80 +100,9 @@ public class CookOrdersController implements Initializable {
             }
             scPane.setContent(vBox);
         }
-
-        anchor.getChildren().add(scPane);
     }
 
-//    private void buildScene() throws Exception {
-//
-//        ScrollPane scPane = new ScrollPane();
-//        scPane.setId("scPane");
-//        scPane.setLayoutX(10.0);
-//        scPane.setLayoutY(14.0);
-//        scPane.setPrefHeight(496.0);
-//        scPane.setPrefWidth(781.0);
-//        VBox vBox = new VBox();
-//        vBox.setSpacing(10);
-//        vBox.setPadding(new Insets(10, 0, 0, 20));
-//
-////        OrderResponse r1 = cookController.getOrdersAssignedTo(cookId);
-////        OrderResponse r2 = cookController.getInQueueOrders();
-//
-////        if (!r1.isSuccess() || !r2.isSuccess())
-////            showError(r1.getMessage() + " , " + r2.getMessage());
-////        else {
-////            List<Order> list = r1.getOrders();
-////            list.addAll(r2.getOrders());
-//
-//        Order or1 = new Order();
-//        Order or2 = new Order();
-//
-//        or1.setState(OrderState.inQueue);
-//        or2.setState(OrderState.inQueue);
-//
-//        Map<Dish , Integer> temp = new HashMap<>();
-//        Dish d = new Dish();
-//        d.setPrice((float) 423);
-//        d.setName("balala");
-//        Dish d2 = new Dish();
-//        d2.setPrice((float) 423);
-//        d2.setName("helloooooooooooooo");
-//
-//        Dish d3 = new Dish();
-//        d3.setPrice((float) 423);
-//        d3.setName("ahleeeeeeeen");
-//
-//        Dish d4 = new Dish();
-//        d4.setPrice((float) 423);
-//        d4.setName("balaaaaaaaaaaaaaaaaaaaaaaaaaala 2 ");
-//
-//        Dish d5 = new Dish();
-//        d5.setPrice((float) 423);
-//        d5.setName("mar7abaaaaaaaaa ");
-//
-//        temp.put(d , 3);
-//        temp.put(d2 , 4);
-//        temp.put(d3 , 5);
-//        temp.put(d4 , 6);
-//        temp.put(d5 , 6);
-//        or1.setDetails(temp);
-////            for (Order o : list) {
-//        HBox crnt = getItem(or1);
-//        map.put(crnt, or1);
-//        or2.setDetails(temp);
-////            for (Order o : list) {
-//        HBox crnt2 = getItem(or2);
-//        map.put(crnt2, or2);
-//
-//        vBox.getChildren().addAll(crnt , crnt2);
-////            }
-//        scPane.setContent(vBox);
-////        }
-//
-//        anchor.getChildren().add(scPane);
-//    }
-
-    private HBox getItem(Order o) throws Exception { // state, content
+    private HBox getItem(Order o) { // state, content
         //state , button
         VBox vBox = new VBox();
         Label state = new Label(o.getState().toString());
@@ -210,19 +142,20 @@ public class CookOrdersController implements Initializable {
             Order currentOrder = map.get(hbox);
 
             if (btn.getText().equals("Accept")) {
-
-                EmptyResponse r = null;
+                EmptyResponse r;
                 try {
-                    r = cookController.updateOrderState(cookId, currentOrder.getId(), OrderState.inQueue);
+                    r = cookController.updateOrderState(signedCook.getId(), currentOrder.getId(), OrderState.Assigned);
                 } catch (Exception e) {
-                    showError(e.getMessage());
+                    e.printStackTrace();
                     return;
                 }
+
                 if (r.isSuccess()) {
                     state.setText("ASSIGNED");
                     btn.setText("Done");
                 } else {
                     try {
+                        showError(r.getMessage());
                         buildScene();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -234,17 +167,16 @@ public class CookOrdersController implements Initializable {
                 //TODO BUILDSCENE() IF DISH IS ALREADY ACCEPTED
             } else {
 
-                EmptyResponse r = null;
+                EmptyResponse r;
                 try {
-                    r = cookController.updateOrderState(cookId, currentOrder.getId(), OrderState.Done);
+                    r = cookController.updateOrderState(signedCook.getId(), currentOrder.getId(), OrderState.Done);
                 } catch (Exception e) {
-                    showError(e.getMessage());
+                    e.printStackTrace();
                     return;
                 }
                 if (r.isSuccess()) {
-                    btn.getParent().getParent().getParent().getChildrenUnmodifiable().remove(hbox);
+                    ((VBox) btn.getParent().getParent().getParent()).getChildren().remove(hbox);
                     map.remove(hbox);
-
                 } else {
                     showError(r.getMessage());
                 }
@@ -263,7 +195,7 @@ public class CookOrdersController implements Initializable {
         errorAlert.showAndWait();
     }
 
-    public void refresh() throws Exception {
+    public void refresh() {
         buildScene();
     }
 
@@ -273,7 +205,7 @@ public class CookOrdersController implements Initializable {
         loader.setControllerFactory(appContext::getBean);
         Scene scene = new Scene(loader.load());
         scene.getStylesheets().add("/css/CookLogin.css");
-        MenuController controller = loader.getController();
+        CookLoginController controller = loader.getController();
         controller.setPrimaryStage(primaryStage);
         primaryStage.setScene(scene);
     }
